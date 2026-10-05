@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SKILLS_DATA } from '../data/portfolioData';
-import { Code2, Cpu, Wrench, PenTool, Layout, Database, Cloud, Activity } from 'lucide-react';
+import { Code2, Cpu, PenTool, Layout, Database, Cloud, Activity } from 'lucide-react';
 
 const getIconUrl = (name: string) => {
   const n = name.toLowerCase();
@@ -127,7 +127,7 @@ export function Skills() {
           <div className="w-full relative z-10">
             <div className="absolute inset-0 bg-gradient-to-t from-brand-sky/10 to-transparent rounded-full blur-3xl -z-10" />
             <img 
-              src="/brand/robot-skills.png" 
+              src={`${import.meta.env.BASE_URL}brand/robot-skills.png`} 
               alt="Robot working on laptop" 
               className="w-full h-auto object-contain mix-blend-multiply drop-shadow-xl hover:scale-105 transition-transform duration-500"
             />
