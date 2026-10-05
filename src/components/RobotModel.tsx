@@ -17,8 +17,10 @@ interface Props {
 }
 
 /** Renders /models/robot.glb and plays one Mixamo clip by name. */
+const ROBOT_MODEL_URL = `${import.meta.env.BASE_URL}models/robot.glb`;
+
 export function RobotModel({ clip = 'Idle_15', loop = true, onFinished, scale = 1, position = [0, 0, 0] }: Props) {
-  const { scene, animations } = useGLTF('/models/robot.glb');
+  const { scene, animations } = useGLTF(ROBOT_MODEL_URL);
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { ref, actions, mixer } = useAnimations(animations, clone);
 
@@ -39,4 +41,4 @@ export function RobotModel({ clip = 'Idle_15', loop = true, onFinished, scale = 
 
   return <primitive ref={ref} object={clone} scale={scale} position={position} />;
 }
-useGLTF.preload('/models/robot.glb');
+useGLTF.preload(ROBOT_MODEL_URL);
