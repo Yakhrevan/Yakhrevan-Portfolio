@@ -20,7 +20,7 @@ interface LabRobotProps {
 }
 
 function LabRobot({ clipName, position = [0, -1, 0] }: LabRobotProps) {
-  const { scene, animations } = useGLTF('/models/robot.glb');
+  const { scene, animations } = useGLTF(`${import.meta.env.BASE_URL}models/robot.glb`);
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { ref, actions, mixer } = useAnimations(animations);
 
