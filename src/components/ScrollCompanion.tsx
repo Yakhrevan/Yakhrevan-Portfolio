@@ -20,17 +20,8 @@ interface ScrollCompanionProps {
 export function ScrollCompanion({ sectionIds }: ScrollCompanionProps) {
   const [activeSection, setActiveSection] = useState('home');
   const [visible, setVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  const handleResize = useCallback(() => {
-    setIsMobile(window.innerWidth < 1024);
-  }, []);
-
   useEffect(() => {
-    handleResize();
-    window.addEventListener('resize', handleResize, { passive: true });
-    return () => window.removeEventListener('resize', handleResize);
-  }, [handleResize]);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
