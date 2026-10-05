@@ -37,7 +37,7 @@ export function Hero() {
 
       {/* Floating Skill Icons */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        {FLOATING_SKILLS.map((skill, index) => (
+        {FLOATING_SKILLS.map((skill) => (
           <motion.div
             key={skill.name}
             initial={{ opacity: 0, y: 20, rotate: -10 }}
