@@ -99,7 +99,7 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               onError={(e) => {
                 e.currentTarget.onerror = null;
-                e.currentTarget.src = "/projects/morphobot.svg";
+                e.currentTarget.src = `${import.meta.env.BASE_URL}projects/morphobot.svg`;
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/20 to-transparent pointer-events-none" />
