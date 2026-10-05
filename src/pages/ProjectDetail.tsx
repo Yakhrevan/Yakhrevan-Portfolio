@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Github, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Github, ExternalLink, CheckCircle2, Tag, Calendar } from 'lucide-react';
 import { Project } from '../types/portfolio';
 
 interface ProjectDetailProps {
