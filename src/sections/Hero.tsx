@@ -10,7 +10,7 @@ const FLOATING_SKILLS = [
   { name: 'Arduino', src: 'https://cdn.simpleicons.org/arduino/00979D', top: '15%', left: '25%', delay: 1.2, size: 'w-12 h-12' },
 
   // Center & Mid-Left/Right
-  { name: 'SolidWorks', src: '/solidworks.svg', top: '25%', left: '85%', delay: 1, size: 'w-16 h-16' },
+  { name: 'SolidWorks', src: `${import.meta.env.BASE_URL}solidworks.svg`, top: '25%', left: '85%', delay: 1, size: 'w-16 h-16' },
   { name: 'STM32', src: 'https://cdn.simpleicons.org/stmicroelectronics/03234B', top: '45%', left: '2%', delay: 2.5, size: 'w-14 h-14' },
   { name: 'C++', src: 'https://cdn.simpleicons.org/cplusplus/00599C', top: '40%', left: '52%', delay: 2, size: 'w-12 h-12' },
   { name: 'Raspberry Pi', src: 'https://cdn.simpleicons.org/raspberrypi/A22846', top: '55%', left: '42%', delay: 0.8, size: 'w-12 h-12' },
@@ -67,7 +67,7 @@ export function Hero() {
           {/* Profile badge */}
           <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-sm">
             <div className="relative w-7 h-7 rounded-full overflow-hidden ring-2 ring-brand-blue/30 shrink-0">
-              <img src="/profile.jpg" alt={P.name} className="w-full h-full object-cover" />
+              <img src={`${import.meta.env.BASE_URL}profile.jpg`} alt={P.name} className="w-full h-full object-cover" />
             </div>
             <span className="text-xs font-bold text-brand-navy tracking-wide">
               {P.name}{' '}
@@ -107,7 +107,7 @@ export function Hero() {
               Connect with me <ArrowRight className="w-4 h-4" />
             </a>
             <a
-              href="/YAKHREVAN_S_Resume.pdf"
+              href={`${import.meta.env.BASE_URL}YAKHREVAN_S_Resume.pdf`}
               download="Yakhrevan_S_Resume.pdf"
               className="btn-ghost flex items-center gap-2"
             >
@@ -153,7 +153,7 @@ export function Hero() {
           {/* Large Profile photo */}
           <div className="relative w-72 h-72 sm:w-96 sm:h-96 xl:w-[420px] xl:h-[420px] rounded-full overflow-hidden shadow-2xl ring-8 ring-white/50 border-4 border-white z-20">
             <img
-              src="/profile.jpg"
+              src={`${import.meta.env.BASE_URL}profile.jpg`}
               alt={P.name}
               className="w-full h-full object-cover"
             />
