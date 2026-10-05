@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { EXPERIENCE_DATA } from '../data/portfolioData';
 import { Robot, SpeechNote } from '../components/Robot';
@@ -12,7 +11,7 @@ export function Experience() {
       changeState('Walking');
       setSpeed(2.5); // Fast running effect
     } else if (index === 1) {
-      changeState('Alert'); // Alert / Excited
+      changeState('Excited'); // Alert / Excited
       setSpeed(1);
     } else if (index === 2) {
       changeState('Curious');
