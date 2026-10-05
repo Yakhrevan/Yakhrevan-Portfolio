@@ -21,7 +21,6 @@ export function ScrollCompanion({ sectionIds }: ScrollCompanionProps) {
   const [activeSection, setActiveSection] = useState('home');
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
       // Determine active section
       let current = sectionIds[0] || 'home';
       for (const id of sectionIds) {
