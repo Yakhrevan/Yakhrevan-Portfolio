@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Robot3D } from './Robot3D';
 import type { ClipName } from './RobotModel';
@@ -19,16 +19,9 @@ interface ScrollCompanionProps {
 
 export function ScrollCompanion({ sectionIds }: ScrollCompanionProps) {
   const [activeSection, setActiveSection] = useState('home');
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-  }, []);
-
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      // Show companion after scrolling past the hero
-      setVisible(scrollY > window.innerHeight * 0.7);
-
       // Determine active section
       let current = sectionIds[0] || 'home';
       for (const id of sectionIds) {
