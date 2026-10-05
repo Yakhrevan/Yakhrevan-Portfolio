@@ -64,7 +64,7 @@ export function Projects({ onProjectClick }: ProjectsProps) {
               {/* Image */}
               <div className="h-52 overflow-hidden bg-slate-100 relative">
                 <img
-                  src={project.image} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/projects/morphobot.svg"; }}
+                  src={project.image} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = `${import.meta.env.BASE_URL}projects/morphobot.svg`; }}
                   alt={project.title}
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
