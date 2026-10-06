@@ -11,7 +11,7 @@ export function Experience() {
       changeState('Walking');
       setSpeed(2.5); // Fast running effect
     } else if (index === 1) {
-      changeState('Excited'); // Alert / Excited
+      changeState('Alert'); // Alert / Excited
       setSpeed(1);
     } else if (index === 2) {
       changeState('Curious');
