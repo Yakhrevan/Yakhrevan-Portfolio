@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Github, Linkedin, Mail, Download } from 'lucide-react';
 import { PERSONAL_INFO as P } from '../data/portfolioData';
-import { Robot3D } from '../components/Robot3D';
+
 
 const FLOATING_SKILLS = [
   // Top area
@@ -166,8 +166,8 @@ export function Hero() {
             transition={{ delay: 1, duration: 0.6 }}
             className="mt-8 flex flex-col sm:flex-row items-center gap-4 bg-white/80 backdrop-blur-md px-6 py-3 rounded-2xl shadow-xl border border-white z-20"
           >
-             <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 drop-shadow-md overflow-hidden rounded-full">
-               <Robot3D clip="Idle_15" cam={[0, 1.0, 3.5]} fov={38} className="w-full h-full" />
+             <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 drop-shadow-md overflow-hidden rounded-full border-2 border-brand-blue/20 bg-white">
+               <img src={`${import.meta.env.BASE_URL}brand/hero-robot-reading.png`} alt="Robot Reading" className="w-full h-full object-cover" />
              </div>
              <div className="text-sm font-bold text-brand-navy text-center sm:text-left">
                "<span className="text-brand-blue">Think.</span> <span className="text-brand-orange">Build.</span> <span className="text-brand-blue">Repeat.</span>"
