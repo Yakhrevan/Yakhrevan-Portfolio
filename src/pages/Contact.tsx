@@ -185,7 +185,7 @@ export const Contact: React.FC = () => {
                         required
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="john@example.com"
+                        placeholder="yakhrevan@example.com"
                         className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-sky focus:bg-white outline-none transition-colors text-sm"
                       />
                     </div>
