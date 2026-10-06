@@ -83,7 +83,7 @@ const CLIP_LABELS: Record<string, string> = {
 };
 
 function AnimationDetector({ onClipsLoaded }: { onClipsLoaded: (clips: string[]) => void }) {
-  const { animations } = useGLTF('/models/robot.glb');
+  const { animations } = useGLTF(`${import.meta.env.BASE_URL}models/robot.glb`);
   
   useEffect(() => {
     if (animations && animations.length > 0) {

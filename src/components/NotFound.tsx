@@ -26,7 +26,7 @@ export function NotFound() {
           </Suspense>
         </Canvas>
       </div>
-      <a href="/" className="btn-primary">
+      <a href={import.meta.env.BASE_URL} className="btn-primary">
         <Home className="w-4 h-4" /> Go Home
       </a>
     </main>

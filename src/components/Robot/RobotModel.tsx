@@ -1,9 +1,8 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
 import { SkeletonUtils } from 'three-stdlib';
 import { RobotStateConfig } from '../../types/robot';
-import { ProceduralRobot } from './ProceduralRobot';
 import { robotController } from './RobotController';
 
 interface RobotModelProps {
@@ -103,35 +102,15 @@ const GLTFModelWrapper: React.FC<RobotModelProps & { modelUrl: string }> = ({
 };
 
 export const RobotModel: React.FC<RobotModelProps> = (props) => {
-  const [hasGLTFModel, setHasGLTFModel] = useState<boolean>(false);
-  const modelPath = '/models/robot.glb';
+  const modelPath = `${import.meta.env.BASE_URL}models/robot.glb`;
 
   useEffect(() => {
-    // Check if external /models/robot.glb exists in public folder
-    fetch(modelPath, { method: 'HEAD' })
-      .then((res) => {
-        if (res.ok && res.headers.get('content-type')?.includes('gltf')) {
-          setHasGLTFModel(true);
-          robotController.setModelType('gltf');
-        } else {
-          setHasGLTFModel(false);
-          robotController.setModelType('procedural');
-        }
-      })
-      .catch(() => {
-        setHasGLTFModel(false);
-        robotController.setModelType('procedural');
-      });
+    robotController.setModelType('gltf');
   }, []);
 
-  if (hasGLTFModel) {
-    return (
-      <Suspense fallback={<ProceduralRobot {...props} />}>
-        <GLTFModelWrapper modelUrl={modelPath} {...props} />
-      </Suspense>
-    );
-  }
-
-  // Fallback to high-quality procedural 3D mascot model
-  return <ProceduralRobot {...props} />;
+  return (
+    <Suspense fallback={null}>
+      <GLTFModelWrapper modelUrl={modelPath} {...props} />
+    </Suspense>
+  );
 };

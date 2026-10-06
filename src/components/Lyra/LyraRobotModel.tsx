@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { useLyra } from './LyraAnimationController';
 
 export const LyraRobotModel: React.FC = () => {
-  const { scene } = useGLTF('/robot/robot.glb');
+  const { scene } = useGLTF(`${import.meta.env.BASE_URL}robot/robot.glb`);
   const { currentState, reducedMotion } = useLyra();
   
   // Ref for the main group to apply procedural animations
@@ -96,4 +96,4 @@ export const LyraRobotModel: React.FC = () => {
   );
 };
 
-useGLTF.preload('/robot/robot.glb');
+useGLTF.preload(`${import.meta.env.BASE_URL}robot/robot.glb`);

@@ -54,7 +54,7 @@ export function Navbar() {
           className="flex items-center gap-2.5 group"
           aria-label="Go to home"
         >
-          <img src="/brand/logo-navy.png" alt="Yakhrevan Logo" className="w-8 h-8 object-contain group-hover:scale-105 transition-transform" />
+          <img src={`${import.meta.env.BASE_URL}brand/logo-navy.png`} alt="Yakhrevan Logo" className="w-8 h-8 object-contain group-hover:scale-105 transition-transform" />
           <span className="font-extrabold tracking-wide text-brand-navy text-lg">
             YAKH<span className="text-brand-blue">REVAN</span>
           </span>

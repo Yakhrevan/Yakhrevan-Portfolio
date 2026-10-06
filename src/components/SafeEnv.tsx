@@ -3,7 +3,7 @@ import { Environment, Lightformer } from '@react-three/drei';
 import { useGLTF } from '@react-three/drei';
 
 // Serve Draco locally (no CDN) so GLB never hangs offline / behind blockers.
-useGLTF.setDecoderPath('/draco/');
+useGLTF.setDecoderPath(`${import.meta.env.BASE_URL}draco/`);
 
 /** Offline studio lighting — replaces <Environment preset="city"> which fetched an HDR from a CDN. */
 export function SafeEnv() {
@@ -23,7 +23,7 @@ export class Safe3D extends Component<{ children: ReactNode; fallback?: ReactNod
   static getDerivedStateFromError() { return { err: true }; }
   render() {
     return this.state.err
-      ? (this.props.fallback ?? <img src="/brand/robot-front.webp" alt="Robot" className="h-full w-full object-contain" />)
+      ? (this.props.fallback ?? <img src={`${import.meta.env.BASE_URL}brand/robot-front.webp`} alt="Robot" className="h-full w-full object-contain" />)
       : this.props.children;
   }
 }

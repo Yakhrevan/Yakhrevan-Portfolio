@@ -23,7 +23,7 @@ export function Footer() {
         {/* Brand */}
         <div>
           <div className="flex items-center gap-3">
-            <img src="/brand/logo-white.png" alt="" className="h-9" aria-hidden="true" />
+            <img src={`${import.meta.env.BASE_URL}brand/logo-white.png`} alt="" className="h-9" aria-hidden="true" />
             <span className="text-xl font-extrabold tracking-wide">YAKHREVAN</span>
           </div>
           <p className="mt-4 text-sm text-slate-300">{P.tagline}</p>

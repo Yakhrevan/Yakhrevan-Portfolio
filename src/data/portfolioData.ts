@@ -25,7 +25,7 @@ export const PROJECTS_DATA: Project[] = [
     description: "A transformable robot that switches between rover and drone modes for agriculture, search & rescue.",
     longDescription: "Designed a transformable robot with mechanical transformation via servo-actuated gear train. It utilizes 4 BLDC motors for flight and 2 BLDC for rover locomotion (36:1 tracked-wheel ratio). The ROS2 autonomous logic detects obstacles, transforms, flies over, lands, and resumes mapping. Built with 11 ROS2 nodes, EKF, RTABMAP, Gazebo simulation, STM32 bridge, and MAVROS with Zero Drag Nova flight controller.",
     tags: ["ROS2", "STM32", "MAVROS", "Gazebo", "RTABMAP", "Drone"],
-    image: `${ASSET_BASE}/projects/morphobot.svg`,
+    image: `${ASSET_BASE}projects/morphobot.svg`,
     highlights: [
       "Mechanical transformation via servo-actuated gear train",
       "ROS2 autonomous logic for obstacle detection and mode switching",
@@ -51,7 +51,7 @@ export const PROJECTS_DATA: Project[] = [
     description: "Developed differential drive robot with ROS2 Humble and Nav2 stack for autonomous navigation.",
     longDescription: "Built an autonomous differential drive robot using the ROS2 Humble framework and Nav2 stack. The system implements SLAM via slam toolbox, A* path planning, and costmap-based obstacle avoidance. It integrates wheel encoders, an IMU, and LiDAR for accurate state estimation and mapping.",
     tags: ["ROS2", "Nav2", "SLAM", "LiDAR", "IMU"],
-    image: `${ASSET_BASE}/projects/obstacle-bot.svg`,
+    image: `${ASSET_BASE}projects/obstacle-bot.svg`,
     highlights: [
       "Developed differential drive robot with ROS2 Humble and Nav2",
       "Implemented SLAM (slam toolbox) and A* path planning",
@@ -77,7 +77,7 @@ export const PROJECTS_DATA: Project[] = [
     description: "Developed a real-time ground control website for Morphobot.",
     longDescription: "A ground control station web application built using HTML/CSS/JS for Morphobot. It uses WebSocket for bidirectional command sending (velocity, mode switch, servo control) and telemetry data display. It also integrates WebRTC for a low-latency video feed from the robot's onboard camera and provides real-time feedback of sensor data, battery status, and robot mode.",
     tags: ["HTML/CSS/JS", "WebSocket", "WebRTC", "Ground Control"],
-    image: `${ASSET_BASE}/projects/default.svg`,
+    image: `${ASSET_BASE}projects/default.svg`,
     highlights: [
       "Real-time ground control website (HTML/CSS/JS)",
       "WebSocket for bidirectional command sending and telemetry",
@@ -103,7 +103,7 @@ export const PROJECTS_DATA: Project[] = [
     description: "6-DOF arm on Mecanum-wheel base for warehouse automation.",
     longDescription: "PickBot features a 6-DOF robotic arm mounted on a Mecanum-wheel base. It utilizes an ESP32 microcontroller with IR, temperature, and smoke sensors. The system is controlled via a custom React Native app over Bluetooth/Wi-Fi, aimed at warehouse automation tasks.",
     tags: ["ESP32", "6-DOF Arm", "Mecanum", "React Native", "Automation"],
-    image: `${ASSET_BASE}/projects/pickbot.svg`,
+    image: `${ASSET_BASE}projects/pickbot.svg`,
     highlights: [
       "6-DOF robotic arm on Mecanum-wheel base",
       "Integrated ESP32, IR/temperature/smoke sensors",
@@ -129,7 +129,7 @@ export const PROJECTS_DATA: Project[] = [
     description: "React Native app for EV fleet management, driver health, and EV telemetry.",
     longDescription: "A React Native application designed for EV fleet management. It features real-time GPS location tracking, driver health monitoring (heart rate/fatigue alerts), and EV telemetry (SOC, motor temp, speed). The app includes a team module with role-based task assignment (admin/member) and uses a Firebase/Firestore backend, integrating with STM32 CAN data via Bluetooth/Wi-Fi.",
     tags: ["React Native", "Firebase", "STM32", "CAN", "Telemetry"],
-    image: `${ASSET_BASE}/projects/default.svg`,
+    image: `${ASSET_BASE}projects/default.svg`,
     highlights: [
       "Real-time GPS location and driver health alerts",
       "EV telemetry display (SOC, motor temp, speed)",
@@ -155,7 +155,7 @@ export const PROJECTS_DATA: Project[] = [
     description: "Web dashboard for precision agriculture monitoring (Smart India Hackathon).",
     longDescription: "Built a web dashboard for precision agriculture monitoring as part of Smart India Hackathon. It displays real-time soil moisture, temperature, humidity, and crop health indicators from field sensors. It is integrated with a LoRa/GSM gateway allowing remote actuation of water pumps. Developed using HTML/CSS/JS, Chart.js for visualization, and Firebase for real-time database sync.",
     tags: ["HTML/CSS/JS", "Chart.js", "Firebase", "LoRa", "Agriculture"],
-    image: `${ASSET_BASE}/projects/default.svg`,
+    image: `${ASSET_BASE}projects/default.svg`,
     highlights: [
       "Displays real-time soil moisture, temperature, humidity",
       "Integrated with LoRa/GSM gateway for remote actuation",

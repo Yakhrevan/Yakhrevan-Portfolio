@@ -77,7 +77,7 @@ export function About() {
                 <div className="relative shrink-0">
                   <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden shadow-md ring-4 ring-white">
                     <img
-                      src="/profile.jpg"
+                      src={`${import.meta.env.BASE_URL}profile.jpg`}
                       alt={P.name}
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     />
