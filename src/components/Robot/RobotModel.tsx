@@ -36,6 +36,7 @@ const STATE_TO_CLIP: Record<string, string> = {
   Working: 'Talk_with_Left_Hand_on_Hip',
   Celebrating: 'Bubble_Dance',
   Error: 'Alert',
+  Alert: 'Alert',
   'Wake Up': 'Wake_Up_and_Look_Up',
 };
 const ONE_SHOT_CLIPS = new Set(['Big_Wave_Hello', 'Wake_Up_and_Look_Up', 'Alert']);

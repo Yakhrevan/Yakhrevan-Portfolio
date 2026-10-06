@@ -257,6 +257,22 @@ export const ROBOT_STATE_CONFIGS: Record<RobotState, RobotStateConfig> = {
     lightColor: '#00FFFF',
     speechText: "Good morning! Ready to explore the portfolio!",
   },
+  Alert: {
+    state: 'Alert',
+    eyeShape: 'wide',
+    mouthExpression: 'open',
+    bodyPose: {
+      headRotation: [0.1, 0, 0],
+      headPosition: [0, 0.1, 0.1],
+      leftArmRotation: [-0.3, 0, 0.1],
+      rightArmRotation: [-0.3, 0, -0.1],
+      torsoRotation: [0, 0, 0],
+      hoverOffset: 0.1,
+      floatSpeed: 5.0,
+    },
+    lightColor: '#F59E0B',
+    speechText: "Alert mode activated!",
+  },
 };
 
 type Listener = (state: RobotControllerState) => void;
