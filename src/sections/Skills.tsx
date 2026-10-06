@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SKILLS_DATA } from '../data/portfolioData';
-import { Code2, Cpu, PenTool, Layout, Database, Cloud, Activity, Map, MapPin } from 'lucide-react';
+import { Code2, Cpu, PenTool, Layout, Database, Cloud, Activity, Map } from 'lucide-react';
 
 const getIconUrl = (name: string) => {
   const n = name.toLowerCase();
