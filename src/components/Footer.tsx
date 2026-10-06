@@ -50,7 +50,7 @@ export function Footer() {
         <div className="md:col-span-3 lg:col-span-4 flex md:justify-center">
           <div>
             <h4 className="font-bold mb-5 text-sm tracking-wide text-white uppercase">Quick Links</h4>
-            <ul className="space-y-3 text-sm text-slate-400">
+            <ul className="grid grid-cols-2 gap-x-12 gap-y-3 text-sm text-slate-400">
               {NAV_LINKS.map(({ id, label }) => (
                 <li key={id}>
                   <a
