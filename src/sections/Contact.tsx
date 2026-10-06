@@ -109,7 +109,7 @@ export function Contact() {
                       name="name" 
                       required 
                       className="w-full px-5 py-3.5 rounded-2xl bg-brand-bg/50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand-blue/10 focus:border-brand-blue transition-all font-medium text-brand-navy placeholder:text-brand-slate/40" 
-                      placeholder="John Doe" 
+                      placeholder="Yakhrevan" 
                     />
                   </div>
                   <div className="space-y-1.5">

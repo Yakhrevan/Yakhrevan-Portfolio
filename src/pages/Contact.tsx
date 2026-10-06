@@ -174,7 +174,7 @@ export const Contact: React.FC = () => {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="John Doe"
+                        placeholder="Yakhrevan"
                         className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-sky focus:bg-white outline-none transition-colors text-sm"
                       />
                     </div>
