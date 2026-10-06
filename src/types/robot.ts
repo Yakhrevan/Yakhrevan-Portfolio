@@ -14,7 +14,8 @@ export type RobotState =
   | 'Working'
   | 'Celebrating'
   | 'Error'
-  | 'Wake Up';
+  | 'Wake Up'
+  | 'Alert';
 
 export interface RobotStateConfig {
   state: RobotState;

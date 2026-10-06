@@ -32,7 +32,7 @@ const STATE_TO_CLIP: Record<string, string> = {
   Sad: 'Dozing_Elderly',
   Sleepy: 'Dozing_Elderly',
   Waving: 'Big_Wave_Hello',
-  Walking: 'Walking',
+  Walking: 'run_fast_3_inplace',
   Working: 'Talk_with_Left_Hand_on_Hip',
   Celebrating: 'Bubble_Dance',
   Error: 'Alert',
