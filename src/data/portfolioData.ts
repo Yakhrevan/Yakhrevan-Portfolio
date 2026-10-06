@@ -192,7 +192,8 @@ export const SKILLS_DATA: SkillCategory[] = [
     iconName: "Cpu",
     skills: [
       { name: "ROS / ROS 2", level: 85, tagline: "Robot Operating System" },
-      { name: "Nav2 & SLAM", level: 80, tagline: "Navigation & Mapping" },
+      { name: "Nav2", level: 80, tagline: "Autonomous Navigation" },
+      { name: "SLAM", level: 80, tagline: "Localization & Mapping" },
       { name: "MAVROS", level: 75, tagline: "MAVLink Communication" },
       { name: "OpenCV", level: 75, tagline: "Computer Vision" },
       { name: "React Native", level: 80, tagline: "Mobile App Dev" },

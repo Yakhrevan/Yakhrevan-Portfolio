@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SKILLS_DATA } from '../data/portfolioData';
-import { Code2, Cpu, PenTool, Layout, Database, Cloud, Activity } from 'lucide-react';
+import { Code2, Cpu, PenTool, Layout, Database, Cloud, Activity, Map, MapPin } from 'lucide-react';
 
 const getIconUrl = (name: string) => {
   const n = name.toLowerCase();
@@ -34,6 +34,8 @@ const getGenericIcon = (name: string) => {
   if (n.includes('hardware') || n.includes('embedded')) return <Cpu className="w-8 h-8 text-slate-700" />;
   if (n.includes('database')) return <Database className="w-8 h-8 text-emerald-500" />;
   if (n.includes('cloud')) return <Cloud className="w-8 h-8 text-sky-400" />;
+  if (n.includes('nav') || n.includes('slam') || n.includes('map')) return <Map className="w-8 h-8 text-emerald-400" />;
+  if (n.includes('cv') || n.includes('vision')) return <Activity className="w-8 h-8 text-purple-400" />;
   return <Activity className="w-8 h-8 text-brand-navy" />;
 }
 
