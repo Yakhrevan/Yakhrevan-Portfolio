@@ -30,7 +30,7 @@ export function Lab() {
   const [autoRotate, setAutoRotate] = useState(true);
 
   return (
-    <section id="lab" className="py-24 bg-brand-navy text-white">
+    <section id="lab" className="py-12 lg:py-24 bg-brand-navy text-white">
       <div className="container-x">
         <span className="eyebrow !text-brand-sky">3D Lab</span>
         <h2 className="h2 mt-4 text-white">Rotate the <span className="text-brand-sky">Robot</span> · 360°</h2>

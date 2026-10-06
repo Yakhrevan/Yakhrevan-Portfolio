@@ -119,7 +119,7 @@ export function RobotLab() {
   const [clips, setClips] = useState<{ id: string; label: string }[]>([]);
 
   return (
-    <section id="lab" className="py-24 bg-brand-navy text-white relative overflow-hidden">
+    <section id="lab" className="py-12 lg:py-24 bg-brand-navy text-white relative overflow-hidden">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-brand-navy via-[#0B1120] to-brand-navy pointer-events-none" />
 

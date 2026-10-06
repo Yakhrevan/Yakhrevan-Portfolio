@@ -54,7 +54,7 @@ export function Skills() {
   const categories = ['All', ...SKILLS_DATA.map(c => c.title)];
 
   return (
-    <section id="skills" className="py-24 bg-white relative overflow-hidden">
+    <section id="skills" className="py-12 lg:py-24 bg-white relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-brand-sky/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[30rem] h-[30rem] bg-brand-blue/5 rounded-full blur-[100px] pointer-events-none" />

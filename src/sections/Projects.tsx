@@ -25,7 +25,7 @@ const cardVariants = {
 
 export function Projects({ onProjectClick }: ProjectsProps) {
   return (
-    <section id="projects" className="py-24 bg-white relative overflow-hidden">
+    <section id="projects" className="py-12 lg:py-24 bg-white relative overflow-hidden">
       {/* Background ambient */}
       <div className="absolute top-1/4 -right-20 w-80 h-80 bg-brand-blue/5 rounded-full blur-3xl pointer-events-none" />
 

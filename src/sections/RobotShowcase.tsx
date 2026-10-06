@@ -16,7 +16,7 @@ export function RobotShowcase() {
   const active = VIEWS.find((v) => v.id === view)!;
 
   return (
-    <section id="meet-robot" className="py-24 bg-brand-bg relative overflow-hidden">
+    <section id="meet-robot" className="py-12 lg:py-24 bg-brand-bg relative overflow-hidden">
       <div className="absolute inset-0 grid-dots opacity-30 pointer-events-none" />
       <div className="container-x relative grid lg:grid-cols-[1fr_380px] gap-10 items-center">
         <div className="relative h-[420px] sm:h-[520px] rounded-3xl border border-slate-200 bg-white overflow-hidden">

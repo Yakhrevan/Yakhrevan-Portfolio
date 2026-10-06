@@ -33,7 +33,7 @@ export function About() {
   return (
     <section
       id="about"
-      className="py-24 bg-gradient-to-b from-white via-brand-bg/50 to-white relative overflow-hidden"
+      className="py-12 lg:py-24 bg-gradient-to-b from-white via-brand-bg/50 to-white relative overflow-hidden"
     >
       {/* Background ambient blobs */}
       <div className="absolute top-1/3 -left-32 w-96 h-96 bg-brand-sky/8 rounded-full blur-3xl pointer-events-none" />

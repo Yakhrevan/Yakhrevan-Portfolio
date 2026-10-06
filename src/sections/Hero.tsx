@@ -28,7 +28,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="bg-hero relative overflow-hidden pt-28 pb-16 lg:pt-32 min-h-screen flex items-center"
+      className="bg-hero relative overflow-hidden pt-28 pb-20 lg:pt-32 lg:pb-16 lg:min-h-screen flex flex-col lg:flex-row items-center justify-center"
     >
       {/* Background elements */}
       <div className="absolute inset-0 grid-dots opacity-30 [mask-image:radial-gradient(60%_60%_at_70%_40%,#000,transparent)] pointer-events-none" />

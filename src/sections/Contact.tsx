@@ -26,7 +26,7 @@ const CONTACT_LINKS = [
 
 export function Contact() {
   return (
-    <section id="contact" className="py-24 bg-brand-bg relative overflow-hidden">
+    <section id="contact" className="py-12 lg:py-24 bg-brand-bg relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute top-1/4 left-0 w-96 h-96 bg-brand-sky/8 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-brand-blue/6 rounded-full blur-3xl pointer-events-none" />

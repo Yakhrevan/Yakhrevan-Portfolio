@@ -20,7 +20,7 @@ export function Experience() {
   };
 
   return (
-    <section id="experience" className="py-24 bg-brand-bg">
+    <section id="experience" className="py-12 lg:py-24 bg-brand-bg">
       <div className="container-x grid lg:grid-cols-[1fr_auto] gap-10">
         <div>
           <span className="eyebrow">My Journey</span>
