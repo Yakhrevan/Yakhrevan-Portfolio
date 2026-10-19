@@ -1,5 +1,15 @@
 # Yakhrevan — Robotics & Mechatronics Portfolio
 
+<div align="center">
+
+[![Deploy Portfolio](https://github.com/Yakhrevan/Yakhrevan-Portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/Yakhrevan/Yakhrevan-Portfolio/actions/workflows/deploy.yml)
+[![ROS 2](https://img.shields.io/badge/ROS%202-Robotics-1F6FEB?style=for-the-badge&logo=ros&logoColor=white)](https://www.ros.org/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)](https://isocpp.org/)
+[![Embedded](https://img.shields.io/badge/Embedded-STM32%20%7C%20ESP32-0F766E?style=for-the-badge)](https://www.st.com/)
+
+</div>
+
 An interactive portfolio for **Yakhrevan, a Junior Robotics Engineer with a Mechatronics background**. The site presents robotics projects, technical interests, engineering experience, and an interactive 3D robot lab.
 
 **Live website:** https://yakhrevan.github.io/Yakhrevan-Portfolio/  
@@ -56,6 +66,8 @@ The documented robot controller supports 16 named states: Idle, Blink, Happy, Ex
 **Model note:** the repository includes a public/models/robot.glb asset path. Animation availability depends on the model's embedded clips and the controller/model integration; not every named state should be assumed to be a skeletal animation clip.
 
 ## Project Showcase
+
+The portfolio emphasizes robotics and mechatronics, with software projects presented alongside the systems they are intended to support. Core areas include ROS 2, embedded integration, mobile-robot navigation concepts, sensor interfaces, and engineering visualization.
 
 The portfolio's project data includes the following engineering themes:
 
@@ -148,6 +160,19 @@ The repository includes a GitHub Actions workflow at .github/workflows/deploy.ym
 Live site: https://yakhrevan.github.io/Yakhrevan-Portfolio/
 
 ## Engineering Notes
+
+### Robotics technology map
+
+| Area | Technologies represented in project work or study |
+|---|---|
+| Robotics middleware | ROS 2 Humble, TF2, URDF/Xacro, Nav2 concepts |
+| Navigation and perception | SLAM concepts, LiDAR, IMU, wheel encoders, obstacle avoidance |
+| Embedded integration | STM32, ESP32, C/C++, CAN, UART, SPI, I²C |
+| Development environment | Ubuntu/Linux, Docker, Git, CMake, colcon |
+| Visualization and interfaces | RViz, Gazebo, React, TypeScript, Three.js |
+
+These labels describe the technologies associated with the projects and ongoing study; they are not a claim that every subsystem is complete or hardware-validated.
+
 
 - Keep project descriptions aligned with the actual implementation status.
 - Avoid publishing private credentials, tokens, or personal data in source files.
