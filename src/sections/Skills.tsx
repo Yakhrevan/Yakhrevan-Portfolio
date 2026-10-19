@@ -104,16 +104,16 @@ export function Skills() {
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.3, delay: Math.min(idx * 0.02, 0.2) }}
                     key={skill.name}
-                    className="group bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-3 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-brand-sky/40 transition-all duration-300 cursor-default"
+                    className="group relative min-h-[132px] overflow-hidden rounded-2xl border border-slate-700/80 bg-[#101827] p-4 flex flex-col items-center justify-center gap-3 shadow-[0_8px_28px_-18px_rgba(15,23,42,0.7)] hover:shadow-[0_18px_45px_-20px_rgba(37,99,235,0.7)] hover:-translate-y-1 hover:border-blue-400/70 hover:bg-[#13213A] transition-all duration-300 cursor-default"
                   >
-                    <div className="w-12 h-12 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-12 h-12 rounded-xl border border-blue-400/20 bg-blue-500/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-500/20 transition-transform duration-300">
                       {iconUrl ? (
                         <img src={iconUrl} alt={skill.name} className="w-8 h-8 object-contain" />
                       ) : (
                         getGenericIcon(skill.name)
                       )}
                     </div>
-                    <span className="text-[13px] font-bold text-brand-navy text-center leading-tight">
+                    <span className="text-[13px] font-bold text-slate-100 text-center leading-tight">
                       {skill.name}
                     </span>
                   </motion.div>
