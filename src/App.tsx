@@ -11,6 +11,7 @@ import { Experience } from './sections/Experience';
 import { Projects } from './sections/Projects';
 import { RobotLab } from './sections/RobotLab';
 import { Contact } from './sections/Contact';
+import { GitHubRepos } from './sections/GitHubRepos';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { Project } from './types/portfolio';
 
@@ -38,6 +39,7 @@ export default function App() {
             <Skills />
             <Experience />
             <Projects onProjectClick={setSelectedProject} />
+            <GitHubRepos />
             <RobotLab />
             <Contact />
           </main>
