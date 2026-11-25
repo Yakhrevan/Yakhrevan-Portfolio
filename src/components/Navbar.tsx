@@ -4,10 +4,10 @@ import { Menu, X } from 'lucide-react';
 
 export const NAV_ITEMS = [
   { id: 'home', label: 'Home' },
+  { id: 'projects', label: 'Projects' },
   { id: 'about', label: 'About' },
   { id: 'skills', label: 'Skills' },
   { id: 'experience', label: 'Experience' },
-  { id: 'projects', label: 'Projects' },
   { id: 'lab', label: 'Robot Lab' },
   { id: 'contact', label: 'Contact' },
 ] as const;

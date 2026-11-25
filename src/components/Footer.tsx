@@ -3,9 +3,9 @@ import { PERSONAL_INFO as P } from '../data/portfolioData';
 
 const NAV_LINKS = [
   { id: 'home', label: 'Home' },
+  { id: 'projects', label: 'Projects' },
   { id: 'about', label: 'About' },
   { id: 'skills', label: 'Skills' },
-  { id: 'projects', label: 'Projects' },
   { id: 'lab', label: 'Robot Lab' },
   { id: 'contact', label: 'Contact' },
 ];

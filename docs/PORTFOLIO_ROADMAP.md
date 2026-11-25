@@ -7,7 +7,7 @@ Last updated: 2026-11-26. This document distinguishes published browser simulati
 | P1 | Autonomous Navigation Simulation | P6 live A*, LiDAR, differential drive, editable maps, 2.5D world projection, ROS-topic analogues, JSON mission outcomes, deterministic tests | Independent ROS 2 Humble + Gazebo Fortress runtime validation with recorded launch, odom, scan, goal and collision result evidence. Do not claim Nav2/SLAM until integrated and tested. |
 | P2 | Robot Control Center Dashboard | Browser-local interactive demo: AMR waypoint travel, simulated battery/odometry, task queue, E-stop latch, fault logs, run export, reducer tests; Canva editable design | Define and test an authenticated, rate-limited ROS 2 telemetry/control bridge on an isolated simulation before considering real hardware. The public demo currently has no backend. |
 | P3 | Professional Engineering Case Studies | Published common Problem → Architecture → Implementation → Testing → Results for PickBot, P6 and P2; browser diagrams, test/source links, evidence table, reproducible case-study index and eight-page Canva presentation | Extend evidence with real ROS/Gazebo logs or physical measurements only when available, with dates/setup. No hardware-tested statuses are currently claimed. |
-| P4 | Recruiter-Ready Portfolio | Existing featured projects, bio, contact and CV navigation | Review three featured engineering projects, individual contributions, direct CV download, contact CTA, responsive performance and image load. No invented metrics or employer results. |
+| P4 | Recruiter-Ready Portfolio | Top-three engineering spotlight (PickBot, P6, P2) with contributions and evidence boundaries, direct generated one-page PDF CV, immediate homepage, optimized hero photo, below-fold 3D deferral, prominent contact, focused metadata and regression checks | Review copy and CV facts with the owner before formal applications, continue to measure real-device speed and accessibility; keep the engineering claims tied to public source and results. |
 | P5 | Fleet Management Case Study | Planned, not implemented | Independent synthetic multi-robot allocation/recovery simulator and interactive architecture; no private company repositories, job information, protocols or secrets copied into public GitHub. |
 
 ## Evidence standard
@@ -15,6 +15,16 @@ Last updated: 2026-11-26. This document distinguishes published browser simulati
 - **Concept:** architecture, mockups or unverified specifications only.
 - **Simulation-tested:** reproducible browser or ROS/Gazebo execution with tests/screenshots and explicit assumptions.
 - **Hardware-tested:** actual robot measurements or recordings with setup and conditions documented. Never infer this from a simulation.
+
+## P4 recruiter handoff
+
+The first two homepage screens now connect a concise robotics introduction to **PickBot → P6 Navigation → P2 Control Center**. Each featured card separates the owner's provided design/specification/review role from AI-assisted demonstration implementation, links public source and the existing five-part case study, and labels simulation limits. The remaining projects follow as a separate list.
+
+`public/Yakhrevan_S_Resume.pdf` is a one-page public CV generated reproducibly via `python3 scripts/generate_resume.py` from data already available in the portfolio. **Review employment dates, current title, degree completion and all skill wording with Yakhrevan before using it in job applications.** The public CV is not an employer-verified employment certificate. No real email message is sent by this change.
+
+An editable Canva version of the CV is available at https://www.canva.com/d/T6LC-1YO3Jk3vAN. This is a separate design copy; making changes there does not automatically change the GitHub-hosted PDF.
+
+First load removes the timed 3D splash, serves a ~52 KB portrait WebP in place of a multi-megabyte JPG, defers the WebGL robot lab until near its viewport, and loads the decorative scroll companion after desktop scroll engagement. On mobile, the decorative companion is not requested. `npm run test:portfolio` checks the CV asset, CTA, featured evidence copy and deferred rendering wiring.
 
 ## P2 Robot Control Center demo
 

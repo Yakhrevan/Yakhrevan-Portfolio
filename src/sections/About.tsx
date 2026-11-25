@@ -77,21 +77,14 @@ export function About() {
                 <div className="relative shrink-0">
                   <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden shadow-md ring-4 ring-white">
                     <img
-                      src={`${import.meta.env.BASE_URL}profile.jpg`}
+                      src={`${import.meta.env.BASE_URL}profile.webp`}
                       alt={P.name}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  {/* Available badge */}
-                  <div className="absolute -bottom-2 -right-2 bg-white px-3 py-1.5 rounded-full shadow-md border border-slate-100 flex items-center gap-2">
-                    <span className="relative flex h-3 w-3">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
-                    </span>
-                    <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                      Available
-                    </span>
-                  </div>
+                  <div className="absolute -bottom-2 -right-2 rounded-full border border-slate-100 bg-white px-3 py-1.5 text-xs font-bold text-brand-blue shadow-md">Robotics + Embedded</div>
                 </div>
 
                 {/* Profile details */}

@@ -1,24 +1,7 @@
 import { motion } from 'framer-motion';
 import { EXPERIENCE_DATA } from '../data/portfolioData';
-import { Robot, SpeechNote } from '../components/Robot';
-import { useRobot } from '../hooks/useRobot';
 
 export function Experience() {
-  const { changeState, setSpeed } = useRobot();
-
-  const handleViewportEnter = (index: number) => {
-    if (index === 0) {
-      changeState('Walking');
-      setSpeed(2.5); // Fast running effect
-    } else if (index === 1) {
-      changeState('Alert'); // Alert / Excited
-      setSpeed(1);
-    } else if (index === 2) {
-      changeState('Curious');
-      setSpeed(1);
-    }
-  };
-
   return (
     <section id="experience" className="py-12 lg:py-24 bg-brand-bg">
       <div className="container-x grid lg:grid-cols-[1fr_auto] gap-10">
@@ -31,7 +14,6 @@ export function Experience() {
                 key={e.id}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                onViewportEnter={() => handleViewportEnter(i)}
                 viewport={{ margin: "-30% 0px -30% 0px" }}
                 transition={{ delay: i * 0.08 }}
                 className="pl-8 relative"
@@ -64,8 +46,8 @@ export function Experience() {
         </div>
         <div className="hidden lg:block relative w-80">
           <div className="sticky top-32 flex flex-col items-center">
-            <SpeechNote className="mb-4 rotate-6 z-10">Every step<br />counts!</SpeechNote>
-            <Robot pose="front" className="w-80 h-[32rem]" />
+            <div className="mb-4 rotate-3 z-10 rounded-2xl border border-brand-sky/20 bg-white/95 px-5 py-3 font-hand text-2xl text-brand-blue shadow-card">Every step counts!</div>
+            <img src={`${import.meta.env.BASE_URL}brand/robot-front.webp`} alt="" aria-hidden="true" loading="lazy" decoding="async" className="w-72 max-h-[27rem] object-contain drop-shadow-xl" />
           </div>
         </div>
       </div>

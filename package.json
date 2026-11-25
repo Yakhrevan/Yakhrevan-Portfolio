@@ -11,6 +11,7 @@
     "test:pickbot-v6": "node --experimental-strip-types --test tests/pickbot-v6.test.mjs",
     "test:nav": "node --experimental-strip-types --test tests/navigationCore.test.mjs",
     "test:control": "node --experimental-strip-types --test tests/controlCore.test.mjs",
+    "test:portfolio": "node --test tests/recruiterPortfolio.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

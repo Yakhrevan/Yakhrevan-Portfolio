@@ -108,7 +108,7 @@ export function Skills() {
                   >
                     <div className="w-12 h-12 rounded-xl border border-blue-400/20 bg-blue-500/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-500/20 transition-transform duration-300">
                       {iconUrl ? (
-                        <img src={iconUrl} alt={skill.name} className="w-8 h-8 object-contain" />
+                        <img src={iconUrl} alt={skill.name} loading="lazy" decoding="async" className="w-8 h-8 object-contain" />
                       ) : (
                         getGenericIcon(skill.name)
                       )}
@@ -131,6 +131,8 @@ export function Skills() {
             <img 
               src={`${import.meta.env.BASE_URL}brand/robot-skills.png`} 
               alt="Robot working on laptop" 
+              loading="lazy"
+              decoding="async"
               className="w-full h-auto object-contain mix-blend-multiply drop-shadow-xl hover:scale-105 transition-transform duration-500"
             />
           </div>

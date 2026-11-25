@@ -10,7 +10,7 @@
 
 </div>
 
-An interactive portfolio for **Yakhrevan, a Junior Robotics Engineer with a Mechatronics background**. The site presents robotics projects, technical interests, engineering experience, and an interactive 3D robot lab.
+An interactive portfolio for **Yakhrevan, a Junior Robotics Engineer with a Mechatronics background**. The recruiter-first homepage spotlights three inspectable engineering case studies, public source, and a one-click PDF CV; the 3D robot lab remains available below the fold.
 
 **Live website:** https://yakhrevan.github.io/Yakhrevan-Portfolio/  
 **Source repository:** https://github.com/Yakhrevan/Yakhrevan-Portfolio
@@ -36,17 +36,25 @@ The website is built with:
 
 The application is organized into these main sections:
 
-1. **Splash screen** — introductory loading experience.
-2. **Hero** — personal introduction and primary navigation into the portfolio.
+1. **Hero** — concise engineering focus, optimized portrait, contact and downloadable PDF CV (no timed splash).
+2. **Projects** — PickBot, P6 and P2 first, each with contribution, test and validation boundaries, source and live case study. Remaining work follows.
 3. **About** — engineering background and interests.
 4. **Skills** — technical areas and tools.
 5. **Experience** — professional experience section.
-6. **Projects** — project cards with detailed project views.
+6. **GitHub** — repository discovery.
 7. **Robot Lab** — interactive 3D robot experience.
 8. **Contact** — professional contact links.
 9. **Footer** — navigation and profile details.
 
-The application also includes responsive navigation and a scroll-aware robot companion.
+The application also includes responsive navigation and a scroll-aware robot companion, loaded only after desktop scroll engagement. The WebGL lab waits until the visitor approaches its section.
+
+### Recruiter-ready CV and homepage (P4)
+
+- **Download:** [one-page public PDF CV](public/Yakhrevan_S_Resume.pdf), also linked in the homepage hero.
+- **Editable Canva CV:** https://www.canva.com/d/T6LC-1YO3Jk3vAN (1-page editable import of the same PDF; verify text after edits).
+- **Rebuild the CV:** `python3 scripts/generate_resume.py` (requires ReportLab). It is based on previously published portfolio facts; **verify current employer/title, dates, education completion and wording before using for applications**.
+- **Honest ownership:** the owner supplied PickBot arm CAD, project scope, feature requirements and review; the current portfolio simulations were developed with AI assistance. Source and test results are inspectable. No hardware-tested claim is made for these browser demos.
+- **Performance:** removed timed WebGL splash; optimized first-view portrait from JPG to WebP; deferred WebGL lab and scroll companion; lazily loads below-fold illustrations and skill icons. `npm run test:portfolio` checks key recruiter paths.
 
 ## Interactive Robot System
 
@@ -135,7 +143,7 @@ Project descriptions in the portfolio communicate the intended scope and technol
 
 ## Repository Structure
 
-The source code is organized by interface components, page sections, data, and types. The main application composes the splash screen, navigation, scroll companion, portfolio sections, project-detail view, and footer.
+The source code is organized by interface components, page sections, data, and types. The main application composes navigation, a deferred scroll companion and robot lab, portfolio sections, project-detail view, and footer.
 
     Yakhrevan-Portfolio/
     ├── .github/
@@ -187,6 +195,7 @@ Vite prints the local development URL in the terminal.
     npm run test:control
     npm run test:pickbot
     npm run test:pickbot-v6
+    npm run test:portfolio
     npm run build
     npm run preview
 
@@ -195,6 +204,7 @@ Vite prints the local development URL in the terminal.
 - **npm run test:nav** requires Node.js 22.6+ for built-in TypeScript type stripping; the deployed website and `npm run build` remain compatible with the CI Node.js 20 runtime.
 - **npm run test:control** requires Node.js 22.6+ for built-in TypeScript type stripping.
 - **npm run test:pickbot-v6** requires Node.js 22.6+ for type stripping (Node 24 recommended).
+- **npm run test:portfolio** validates the recruiter homepage routes, CV asset and evidence labels.
 - **npm run preview** serves the built output locally for inspection.
 
 ## Deployment

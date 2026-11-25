@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { Mail, Linkedin, Github, ArrowRight } from 'lucide-react';
 import { PERSONAL_INFO as P } from '../data/portfolioData';
-import { Robot3D } from '../components/Robot3D';
 
 const CONTACT_LINKS = [
   {
@@ -143,15 +142,15 @@ export function Contact() {
               </form>
             </div>
 
-            {/* Small Floating Robot */}
-            <div className="absolute -top-16 -right-8 w-32 h-32 sm:w-48 sm:h-48 z-20 hidden md:block">
-              <Robot3D
-                clip="Big_Wave_Hello"
-                className="w-full h-full drop-shadow-2xl"
-                cam={[0, 1.0, 3.5]}
-                fov={38}
-              />
-            </div>
+            {/* Lightweight illustration, preserving the robot motif without loading WebGL here. */}
+            <img
+              src={`${import.meta.env.BASE_URL}brand/robot-front.webp`}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              aria-hidden="true"
+              className="absolute -top-14 -right-4 w-28 sm:w-36 z-20 hidden md:block drop-shadow-lg pointer-events-none"
+            />
           </motion.div>
         </div>
       </div>
