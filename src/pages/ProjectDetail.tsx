@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Github, ExternalLink, CheckCircle2, Tag, Calendar } from 'lucide-react';
 import { Project } from '../types/portfolio';
+import { PickBotInteractive } from '../components/PickBot/PickBotInteractive';
 
 interface ProjectDetailProps {
   project: Project;
@@ -86,8 +87,8 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
             </div>
           </motion.div>
 
-          {/* Featured Image */}
-          <motion.div
+          {/* PickBot has a dedicated interactive 3D viewer; other projects retain their images. */}
+          {project.id === 'pickbot' ? <PickBotInteractive /> : <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
@@ -103,7 +104,7 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/20 to-transparent pointer-events-none" />
-          </motion.div>
+          </motion.div>}
 
           {/* Content Grid */}
           <div className="mt-16 grid lg:grid-cols-3 gap-12">

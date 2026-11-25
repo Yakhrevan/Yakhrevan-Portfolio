@@ -98,26 +98,27 @@ export const PROJECTS_DATA: Project[] = [
   {
     id: "pickbot",
     title: "PickBot",
-    subtitle: "Mobile Robotic Arm for Pick-and-Place",
+    subtitle: "Four-Mecanum-Wheel Rover + Four-Joint Arm",
     category: "Robotics",
-    description: "6-DOF arm on Mecanum-wheel base for warehouse automation.",
-    longDescription: "PickBot features a 6-DOF robotic arm mounted on a Mecanum-wheel base. It utilizes an ESP32 microcontroller with IR, temperature, and smoke sensors. The system is controlled via a custom React Native app over Bluetooth/Wi-Fi, aimed at warehouse automation tasks.",
-    tags: ["ESP32", "6-DOF Arm", "Mecanum", "React Native", "Automation"],
-    image: `${ASSET_BASE}projects/pickbot.svg`,
+    description: "A four-mecanum-wheel mobile manipulator with a four-joint robotic arm for pick-and-place tasks.",
+    longDescription: "PickBot is my mobile manipulation project: a rover with four mecanum wheels and a four-joint arm for pick-and-place tasks. I designed the arm's mechanical CAD and am developing the robot control software. The interactive portfolio model preserves the supplied shoulder, elbow and wrist STL parts. Because complete chassis and wheel assembly CAD is not available here, those sections are illustrated as a concept rather than a measured replica of the physical robot.",
+    tags: ["4 Mecanum Wheels", "4-Joint Arm", "Mechanical CAD", "ESP32", "Pick-and-Place"],
+    image: `${ASSET_BASE}projects/pickbot-v3.webp`,
     highlights: [
-      "6-DOF robotic arm on Mecanum-wheel base",
-      "Integrated ESP32, IR/temperature/smoke sensors",
-      "Controlled via custom React Native app (Bluetooth/Wi-Fi)",
-      "Designed for warehouse automation"
+      "Four mecanum drive wheels with diagonally oriented rollers",
+      "Four articulated arm joints: base, shoulder, elbow and wrist",
+      "Original arm CAD parts preserved in the interactive 3D model",
+      "Robot control software under development"
     ],
     specs: [
-      { label: "Controller", value: "ESP32" },
-      { label: "Locomotion", value: "Mecanum Wheels" },
-      { label: "Manipulator", value: "6-DOF Arm" },
-      { label: "Control Interface", value: "React Native App" }
+      { label: "Locomotion", value: "4 Mecanum Wheels" },
+      { label: "Manipulator", value: "4 Articulated Joints" },
+      { label: "Mechanical Design", value: "Original STL Arm Components" },
+      { label: "Software Status", value: "In Development" },
+      { label: "3D Visualization", value: "Interactive Concept / Not Calibrated" }
     ],
     robotMood: "Excited",
-    robotComment: "Grabbing objects and sliding laterally with mecanum wheels!",
+    robotComment: "Four mecanum wheels for omnidirectional motion, plus a four-joint arm for pick-and-place!",
     githubUrl: "#",
     featured: true
   },
