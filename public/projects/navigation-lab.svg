@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">P6 Autonomous Navigation Lab preview</title>
+  <desc id="desc">Illustrative grid simulation preview with orange differential-drive robot, cyan planned route, and green navigation goal.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0e263e"/><stop offset="1" stop-color="#091423"/></linearGradient>
+    <pattern id="grid" width="35" height="35" patternUnits="userSpaceOnUse"><path d="M35 0H0V35" fill="none" stroke="#33516a" stroke-width="1" opacity=".62"/></pattern>
+    <linearGradient id="block" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#456782"/><stop offset="1" stop-color="#28445e"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <rect x="44" y="44" width="850" height="632" rx="18" fill="#0b2034" stroke="#3e5874" stroke-width="2"/>
+  <rect x="60" y="60" width="818" height="600" fill="url(#grid)"/>
+  <g fill="url(#block)" stroke="#6c8aa0" stroke-width="2">
+    <rect x="236" y="164" width="105" height="116" rx="5"/><rect x="236" y="384" width="105" height="120" rx="5"/>
+    <rect x="445" y="164" width="105" height="116" rx="5"/><rect x="445" y="384" width="105" height="120" rx="5"/>
+    <rect x="654" y="164" width="105" height="116" rx="5"/><rect x="654" y="384" width="105" height="120" rx="5"/>
+  </g>
+  <path d="M144 160L174 230L174 332L385 332L385 345L595 345L595 560L794 560" fill="none" stroke="#38dcef" stroke-width="19" opacity=".18" filter="url(#glow)"/>
+  <path d="M144 160L174 230L174 332L385 332L385 345L595 345L595 560L794 560" fill="none" stroke="#5be7fb" stroke-width="5" stroke-linecap="round" stroke-dasharray="19 12"/>
+  <g stroke="#6ee7cf" stroke-width="2" opacity=".42">
+    <path d="M144 160L215 105M144 160L224 147M144 160L211 203M144 160L183 241M144 160L114 255M144 160L56 209M144 160L58 117M144 160L100 70"/>
+  </g>
+  <circle cx="794" cy="560" r="28" fill="#16a878" fill-opacity=".15" stroke="#64e9b5" stroke-width="4"/>
+  <circle cx="794" cy="560" r="7" fill="#70f4c5"/>
+  <g transform="translate(144 160) rotate(30)">
+    <circle r="38" fill="#fb923c" fill-opacity=".12" stroke="#fb923c" stroke-width="2" opacity=".75"/>
+    <rect x="-22" y="-28" width="44" height="56" rx="10" fill="#f68b39" stroke="#ffe6b5" stroke-width="3"/>
+    <path d="M12 -13L35 0L12 13Z" fill="#fff7e8"/>
+    <rect x="-23" y="-34" width="10" height="12" rx="3" fill="#142333" stroke="#ffb873" stroke-width="2"/>
+    <rect x="-23" y="22" width="10" height="12" rx="3" fill="#142333" stroke="#ffb873" stroke-width="2"/>
+  </g>
+  <rect x="930" y="44" width="230" height="632" rx="18" fill="#10283f" stroke="#3e5874" stroke-width="2"/>
+  <text x="954" y="97" fill="#83c9e5" font-family="Arial, sans-serif" font-size="15" font-weight="bold" letter-spacing="2">NAVIGATION // P6</text>
+  <rect x="952" y="124" width="183" height="35" rx="9" fill="#164d50"/>
+  <circle cx="973" cy="141" r="5" fill="#69edc5"/>
+  <text x="990" y="147" fill="#7fffd0" font-family="Arial, sans-serif" font-size="13" font-weight="bold">ROUTE ACTIVE</text>
+  <text x="954" y="211" fill="#89a8bb" font-family="Arial, sans-serif" font-size="14">GOAL DISTANCE</text>
+  <text x="954" y="252" fill="#f3fcff" font-family="Arial, sans-serif" font-size="35" font-weight="bold">8.42 <tspan fill="#7e9aaf" font-size="17">m</tspan></text>
+  <line x1="952" x2="1136" y1="286" y2="286" stroke="#2e4961"/>
+  <text x="954" y="325" fill="#89a8bb" font-family="Arial, sans-serif" font-size="14">LiDAR /SCAN</text>
+  <text x="954" y="363" fill="#d4f5fb" font-family="Arial, sans-serif" font-size="25" font-weight="bold">60 beams</text>
+  <line x1="952" x2="1136" y1="395" y2="395" stroke="#2e4961"/>
+  <text x="954" y="432" fill="#89a8bb" font-family="Arial, sans-serif" font-size="14">PLANNING</text>
+  <text x="954" y="469" fill="#d4f5fb" font-family="Arial, sans-serif" font-size="25" font-weight="bold">A* + Grid</text>
+  <line x1="952" x2="1136" y1="499" y2="499" stroke="#2e4961"/>
+  <rect x="952" y="538" width="184" height="58" rx="11" fill="#174c5f"/>
+  <text x="1044" y="561" text-anchor="middle" fill="#a6f1ff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">DIFFERENTIAL</text>
+  <text x="1044" y="581" text-anchor="middle" fill="#a6f1ff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">DRIVE</text>
+  <text x="954" y="637" fill="#688ba4" font-family="Arial, sans-serif" font-size="11">ILLUSTRATIVE SIMULATION</text>
+</svg>

@@ -18,6 +18,34 @@ export const PERSONAL_INFO = {
 
 export const PROJECTS_DATA: Project[] = [
   {
+    id: "navigation-lab",
+    title: "P6 — Autonomous Navigation Lab",
+    subtitle: "Interactive A* planning, differential drive & simulated LiDAR",
+    category: "Robotics",
+    description: "A testable browser-local robot navigation simulator with collision-aware A*, differential-drive motion and range sensing.",
+    longDescription: "P6 is an interactive, deterministic navigation engineering demo built for this portfolio. The user can set destinations, edit an occupancy grid, trigger path replanning, observe simulated LiDAR returns, and inspect velocity/odometry telemetry. The browser controller uses A* search and differential-drive kinematics. ROS 2 topic names are shown as learning analogues: this version is not connected to ROS 2, Nav2, Gazebo or physical hardware.",
+    tags: ["A* Path Planning", "Differential Drive", "Simulated LiDAR", "TypeScript", "ROS 2 Concepts"],
+    image: `${ASSET_BASE}projects/navigation-lab.svg`,
+    highlights: [
+      "Click-to-set goals with footprint-aware A* path planning",
+      "Differential-drive controller integrates real simulated robot motion",
+      "360° raycast LiDAR returns with 60 range beams",
+      "Dynamic obstacle editing, replanning and collision checks",
+      "Browser-local emergency stop and simulated ROS topic telemetry"
+    ],
+    specs: [
+      { label: "Status", value: "Interactive Browser Simulation" },
+      { label: "Planner", value: "8-connected A* / Grid Map" },
+      { label: "Controller", value: "Differential Drive" },
+      { label: "Sensors", value: "60-beam Simulated LiDAR" },
+      { label: "ROS 2 / Hardware", value: "Not Connected" }
+    ],
+    robotMood: "Focused",
+    robotComment: "Set a goal and watch real path-planning logic navigate the local simulation!",
+    githubUrl: "https://github.com/Yakhrevan/Yakhrevan-Portfolio/tree/main/src/components/NavLab",
+    featured: true
+  },
+  {
     id: "morphobot",
     title: "Morphobot",
     subtitle: "Hybrid Rover-Drone Transformable Robot",

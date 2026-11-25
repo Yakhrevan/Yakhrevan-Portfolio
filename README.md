@@ -71,6 +71,15 @@ The portfolio emphasizes robotics and mechatronics, with software projects prese
 
 The portfolio's project data includes the following engineering themes:
 
+### P6 — Autonomous Navigation Lab (Interactive Browser Simulation)
+A standalone TypeScript navigation experiment with a clickable occupancy grid, footprint-aware 8-connected A*, differential-drive control, simulated 360° LiDAR raycasting, route replanning, simulated topic telemetry, and browser-local emergency stop.
+
+- **Live project:** https://yakhrevan.github.io/Yakhrevan-Portfolio/?project=navigation-lab
+- **Source:** [`src/components/NavLab/`](src/components/NavLab/)
+- **Try:** choose a map, select **Run mission**, click an alternate goal, or select **Obstacles** and change the map to force replanning.
+- **Verification:** `npm run test:nav` checks pathfinding, no-collision goal arrivals across three maps, map edits, simulated range readings, goal rejection, and emergency stop behavior. This test command requires Node.js 22.6+ (Node 24 recommended).
+- **Scope:** the lab uses a deterministic browser-side simulator and ROS 2-inspired topic labels. It does **not** execute ROS 2, Nav2, SLAM Toolbox, Gazebo, or physical robot hardware. These remain possible future integration stages.
+
 ### Morphobot — Hybrid Rover/Drone Concept
 A transformable robotics concept exploring ground and aerial mobility, ROS 2-based autonomy, embedded-controller integration, and simulation/perception/navigation technologies.
 
@@ -141,11 +150,14 @@ Vite prints the local development URL in the terminal.
 ### Quality checks
 
     npm run lint
+    npm run test:nav
+    npm run test:pickbot
     npm run build
     npm run preview
 
 - **npm run lint** runs TypeScript's no-emit check.
 - **npm run build** runs the TypeScript check and creates the production build.
+- **npm run test:nav** requires Node.js 22.6+ for built-in TypeScript type stripping; the deployed website and `npm run build` remain compatible with the CI Node.js 20 runtime.
 - **npm run preview** serves the built output locally for inspection.
 
 ## Deployment
