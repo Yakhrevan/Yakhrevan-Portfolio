@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
-// Original hero technology constellation, preserved with a mobile-safe layout.
+// Restored full-hero floating logos, intentionally subtle behind the content.
 const TECH = [
   { name: 'ROS 2', src: 'https://cdn.simpleicons.org/ros/22314E' },
   { name: 'React Native', src: 'https://cdn.simpleicons.org/react/61DAFB' },
@@ -16,56 +16,39 @@ const TECH = [
   { name: 'Git', src: 'https://cdn.simpleicons.org/git/F05032' },
 ] as const;
 
-const DESKTOP_POSITIONS = [
-  'left-[0%] top-[2%]', 'right-[0%] top-[2%]',
-  'left-[4%] top-[20%]', 'right-[2%] top-[20%]',
-  'left-[0%] top-[40%]', 'right-[0%] top-[40%]',
-  'left-[4%] top-[60%]', 'right-[2%] top-[60%]',
-  'left-[0%] top-[79%]', 'right-[0%] top-[79%]',
-  'left-[23%] top-[81%]', 'right-[23%] top-[81%]',
+// Positioning is relative to the ENTIRE home section, not the portrait frame.
+// The small-screen positions keep logos near the edges and away from primary CTAs.
+const POSITIONS = [
+  'left-[3%] top-[13%] lg:left-[5%] lg:top-[10%]',
+  'left-[76%] top-[6%] lg:left-[76%] lg:top-[6%]',
+  'left-[26%] top-[8%] lg:left-[38%] lg:top-[12%]',
+  'left-[85%] top-[30%] lg:left-[93%] lg:top-[30%]',
+  'left-[2%] top-[37%] lg:left-[2%] lg:top-[40%]',
+  'left-[51%] top-[27%] lg:left-[58%] lg:top-[30%]',
+  'left-[83%] top-[51%] lg:left-[75%] lg:top-[50%]',
+  'left-[5%] top-[65%] lg:left-[42%] lg:top-[59%]',
+  'left-[48%] top-[64%] lg:left-[24%] lg:top-[70%]',
+  'left-[87%] top-[76%] lg:left-[88%] lg:top-[77%]',
+  'left-[32%] top-[88%] lg:left-[59%] lg:top-[86%]',
+  'left-[7%] top-[90%] lg:left-[9%] lg:top-[89%]',
 ];
 
-function TechSymbol({ name, src }: { name: string; src: string }) {
-  return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-1 rounded-xl border border-blue-100 bg-white/90 px-1.5 py-2 shadow-sm backdrop-blur-sm" title={name}>
-      <img
-        src={src}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        onError={(event) => { event.currentTarget.style.display = 'none'; }}
-        className="h-6 w-6 object-contain sm:h-7 sm:w-7"
-      />
-      <span className="max-w-full text-center text-[9px] font-bold leading-tight text-brand-navy sm:text-[10px]">{name}</span>
-    </div>
-  );
-}
+export function FloatingSkills() {
+  const reduceMotion = useReducedMotion();
 
-export function FloatingSkills({ mode }: { mode: 'desktop' | 'mobile' }) {
-  if (mode === 'desktop') {
-    return (
-      <div className="pointer-events-none absolute inset-0 hidden lg:block" aria-label="Floating technology icons">
-        {TECH.map((tech, index) => (
-          <motion.div
-            key={tech.name}
-            className={`absolute h-[66px] w-[76px] xl:h-[72px] xl:w-[84px] ${DESKTOP_POSITIONS[index]}`}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: [0, -9, 0] }}
-            transition={{ opacity: { duration: .5, delay: .2 + index * .06 }, y: { repeat: Infinity, duration: 4.2 + (index % 4) * .55, ease: 'easeInOut', delay: index * .2 } }}
-          >
-            <TechSymbol name={tech.name} src={tech.src} />
-          </motion.div>
-        ))}
-      </div>
-    );
-  }
   return (
-      <div className="mt-5 grid grid-cols-4 gap-2 sm:grid-cols-6 lg:hidden" aria-label="Tools and technologies">
-        {TECH.map((tech) => (
-          <div key={tech.name} className="h-16 min-w-0">
-            <TechSymbol name={tech.name} src={tech.src} />
-          </div>
-        ))}
-      </div>
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+      {TECH.map((tech, index) => (
+        <motion.div
+          key={tech.name}
+          className={`absolute opacity-[.12] sm:opacity-[.18] lg:opacity-[.23] xl:opacity-[.28] ${POSITIONS[index]}`}
+          title={tech.name}
+          animate={reduceMotion ? undefined : { y: [0, -12, 0], rotate: [-6, 5, -6] }}
+          transition={reduceMotion ? undefined : { repeat: Infinity, duration: 5 + index % 4, ease: 'easeInOut', delay: index * .24 }}
+        >
+          <img src={tech.src} alt="" loading="lazy" decoding="async" className="h-10 w-10 object-contain drop-shadow-sm sm:h-12 sm:w-12 xl:h-14 xl:w-14" />
+        </motion.div>
+      ))}
+    </div>
   );
 }

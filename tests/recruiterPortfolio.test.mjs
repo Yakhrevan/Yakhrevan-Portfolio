@@ -56,12 +56,17 @@ test('original hero elements and full-sized project cards return without hiding 
   assert.match(hero, /Think\./);
   assert.match(hero, /Build\./);
   assert.match(hero, /Repeat\./);
-  assert.match(hero, /<FloatingSkills mode="desktop"/);
-  assert.match(hero, /<FloatingSkills mode="mobile"/);
+  assert.match(hero, /<FloatingSkills \/>/);
+  assert.match(hero, /aspect-square w-\[86%\].*rounded-\[1\.6rem\]/);
+  assert.doesNotMatch(hero, /<FloatingSkills mode=/);
   const skills = source('src/components/FloatingSkills.tsx');
   for (const tech of ['ROS 2', 'React Native', 'Arduino', 'SolidWorks', 'STM32', 'C++', 'Raspberry Pi', 'Python', 'OpenCV', 'Docker', 'Linux', 'Git']) {
     assert.ok(skills.includes(`name: '${tech}'`), `missing floating icon ${tech}`);
   }
+  assert.match(skills, /absolute inset-0 z-0 overflow-hidden/);
+  assert.match(skills, /Positioning is relative to the ENTIRE home section/);
+  assert.match(skills, /opacity-\[\.23\]/);
+  assert.doesNotMatch(skills, /rounded-xl border border-blue-100 bg-white\/90/);
   const projects = source('src/sections/Projects.tsx');
   assert.match(projects, /const otherProjects = PROJECTS_DATA\.filter/);
   assert.match(projects, /EVIDENCE\.map/);

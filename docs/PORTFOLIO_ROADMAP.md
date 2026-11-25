@@ -24,7 +24,7 @@ The first two homepage screens now connect a concise robotics introduction to **
 
 An editable one-page Canva alternative is available at https://www.canva.com/d/T6LC-1YO3Jk3vAN. It is not the original CV; making changes there does not automatically change the GitHub-hosted PDF.
 
-First load now restores the owner's animated robot welcome, with a Skip button and 2.9-second maximum duration; reduced-motion visitors, hash deep links and direct project pages bypass it. The hero keeps the ~52 KB portrait WebP, brings back the twelve floating technology logos (arranged in a readable mobile grid), the original robot-reading slogan, and the other projects' image-led cards. The interactive WebGL robot lab still defers until near its viewport and the scroll companion activates only after desktop engagement. `npm run test:portfolio` checks the CV asset, featured evidence, classic visual elements and deferred rendering wiring.
+First load now restores the owner's animated robot welcome, with a Skip button and 2.9-second maximum duration; reduced-motion visitors, hash deep links and direct project pages bypass it. The hero keeps the ~52 KB portrait WebP in a square frame, distributes all twelve technology logos as low-opacity floating overlays across the full home section instead of inside the portrait panel, and preserves the original robot-reading slogan and other projects' image-led cards. The interactive WebGL robot lab still defers until near its viewport and the scroll companion activates only after desktop engagement. `npm run test:portfolio` checks the CV asset, featured evidence, classic visual elements and deferred rendering wiring.
 
 ## P2 Robot Control Center demo
 
