@@ -1,12 +1,13 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Github, ExternalLink, CheckCircle2, Tag, Calendar, Share2, Check } from 'lucide-react';
+import { ArrowLeft, Github, ExternalLink, CheckCircle2, Tag, Calendar, Share2, Check, BookOpen } from 'lucide-react';
 import { Project } from '../types/portfolio';
 
 const PickBotStudio = lazy(() => import('../components/PickBot/PickBotStudio').then((module) => ({ default: module.PickBotStudio })));
 const PickBotCaseStudy = lazy(() => import('../components/PickBot/PickBotCaseStudy').then((module) => ({ default: module.PickBotCaseStudy })));
 const NavLab = lazy(() => import('../components/NavLab/NavLab').then((module) => ({ default: module.NavLab })));
 const ControlCenter = lazy(() => import('../components/ControlCenter/ControlCenter').then((module) => ({ default: module.ControlCenter })));
+const EngineeringCaseStudy = lazy(() => import('../components/CaseStudy/EngineeringCaseStudy').then((module) => ({ default: module.EngineeringCaseStudy })));
 
 interface ProjectDetailProps {
   project: Project;
@@ -109,6 +110,11 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
                 >
                   <ExternalLink className="w-5 h-5" />
                   {project.videoUrl ? 'Watch Demo' : 'Live Preview'}
+                </a>
+              )}
+              {(project.id === 'pickbot' || project.id === 'navigation-lab' || project.id === 'robot-control-center') && (
+                <a href="#engineering-case-study" className="btn inline-flex items-center gap-2 border-2 border-brand-blue/20 bg-white text-brand-blue transition-colors hover:border-brand-blue hover:bg-brand-sky-light">
+                  <BookOpen className="h-4 w-4" /> Engineering Case Study
                 </a>
               )}
             </div>
@@ -219,6 +225,11 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
               )}
             </motion.div>
           </div>
+          {(project.id === 'pickbot' || project.id === 'navigation-lab' || project.id === 'robot-control-center') && (
+            <Suspense fallback={<div className="mt-16 rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center text-sm text-brand-slate">Loading engineering evidence…</div>}>
+              <EngineeringCaseStudy projectId={project.id} />
+            </Suspense>
+          )}
           {project.id === 'pickbot' && <Suspense fallback={<div className="mt-16 text-sm text-brand-slate">Loading engineering case study…</div>}><PickBotCaseStudy /></Suspense>}
         </div>
       </main>

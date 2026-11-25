@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Yakhrevan S | Robotics Engineering Case Studies</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; color:#10263a; background:#dce6e9; font-family:Arial,Helvetica,sans-serif; }
+  .page { width:1280px; height:720px; overflow:hidden; position:relative; padding:55px 68px; background:#f6f8f7; page-break-after:always; }
+  .page.dark { background:#0b1e2c; color:#f0f8f9; }
+  .page:before { content:""; position:absolute; left:68px; right:68px; top:39px; border-top:2px solid #67d7db; }
+  .page-number { position:absolute; right:68px; bottom:39px; color:#678494; font:700 12px/1 monospace; letter-spacing:2px; }
+  .page.dark .page-number { color:#8ab1bd; }
+  .top { display:flex; justify-content:space-between; align-items:center; font:700 12px/1.4 monospace; letter-spacing:2px; text-transform:uppercase; color:#4d8291; }
+  .dark .top { color:#8dbbc7; }
+  .eyebrow { margin-top:36px; font:700 13px/1.5 monospace; letter-spacing:3px; text-transform:uppercase; color:#007c8f; }
+  .dark .eyebrow { color:#63d9e1; }
+  h1 { margin:12px 0 0; font-size:64px; line-height:1.04; letter-spacing:-3px; font-weight:900; }
+  h2 { margin:10px 0 0; font-size:48px; line-height:1.06; letter-spacing:-2px; font-weight:900; }
+  h3 { margin:0 0 12px; font-size:24px; font-weight:850; line-height:1.12; }
+  p { margin:0; font-size:17px; line-height:1.52; }
+  .lede { margin-top:18px; font-size:20px; max-width:850px; color:#4b6877; }
+  .dark .lede { color:#b1cad3; }
+  .line { height:2px; background:#c4d9df; margin:30px 0; }
+  .dark .line { background:#355665; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:28px; }
+  .three { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:22px; }
+  .panel { border:1px solid #cbdde2; background:#fff; padding:23px; border-radius:14px; }
+  .panel.muted { background:#e8f2f2; border-color:#cadee0; }
+  .dark .panel { background:#122d3e; border-color:#34586a; }
+  .panel p { font-size:16px; color:#496473; }
+  .dark .panel p { color:#b8d0d8; }
+  .label { display:block; margin-bottom:12px; font:700 12px/1.2 monospace; letter-spacing:1.8px; color:#0c8a99; text-transform:uppercase; }
+  .dark .label { color:#80e8ed; }
+  .micro { font:700 12px/1.5 monospace; letter-spacing:1px; text-transform:uppercase; color:#75909b; }
+  .flow { margin-top:30px; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; }
+  .flow > div { border:1px solid #4b7586; background:#173a4c; padding:20px; border-radius:12px; min-height:146px; }
+  .flow h3 { font-size:20px; }
+  .flow p { font-size:15px; color:#b8d5de; }
+  .metric { padding:22px 23px 21px; background:#e1eff0; border:1px solid #bfd9df; border-radius:14px; }
+  .metric b { display:block; color:#0b536b; font:900 49px/1.1 monospace; letter-spacing:-2px; }
+  .metric strong { display:block; font-size:16px; margin-top:13px; }
+  .metric small { display:block; margin-top:7px; font-size:13px; color:#587381; }
+  .dark .metric { background:#143948; border-color:#4c7c87; }
+  .dark .metric b { color:#9ff1ee; }
+  .dark .metric small { color:#a6c4cf; }
+  .badge { display:inline-block; padding:9px 13px; border:1px solid #80bfc1; border-radius:5px; background:#e2f1ee; color:#12687a; font:700 12px/1.1 monospace; letter-spacing:.7px; text-transform:uppercase; }
+  .badge.warn { background:#fff2d9; border-color:#dcba7b; color:#8c621c; }
+  .badge.darkbadge { background:#143e43; border-color:#5dabb0; color:#a6f9f3; }
+  .note { margin-top:25px; padding:17px 21px; border-left:4px solid #2bbec6; background:#e1eff1; font-size:16px; line-height:1.4; }
+  .dark .note { background:#153845; color:#d2e8eb; }
+  .bar { height:9px; background:#c8dde1; border-radius:9px; overflow:hidden; margin-top:17px; }
+  .bar > i { display:block; height:100%; width:100%; background:#42bfc6; }
+  .small-list { margin:10px 0 0; padding-left:19px; font-size:16px; line-height:1.6; }
+  .dark .small-list { color:#c2d8e0; }
+  .cover-geometry { position:absolute; width:500px; height:500px; border:2px solid #245063; border-radius:50%; right:-110px; top:96px; }
+  .cover-geometry:before { content:""; position:absolute; inset:65px; border-radius:50%; border:35px solid #154454; }
+  .cover-geometry:after { content:""; position:absolute; inset:190px; border-radius:50%; background:#55dbe0; box-shadow:0 0 0 42px #143747; }
+  .divider { width:90px; height:7px; background:#4bd6de; border-radius:4px; margin-top:38px; }
+</style>
+</head>
+<body>
+  <section class="page dark" data-document-role="page" data-label="01 Cover" data-speaker-notes="Independent portfolio evidence, not employer work or hardware qualification">
+    <div class="cover-geometry"></div>
+    <div class="top"><span>YS / ROBOTICS ENGINEERING</span><span>PORTFOLIO NOTEBOOK · 2026</span></div>
+    <div class="eyebrow" style="margin-top:95px">Three projects / one evidence standard</div>
+    <h1 style="font-size:78px;max-width:800px">ROBOTICS<br>ENGINEERING<br>CASE STUDIES<span style="color:#63e0e4">.</span></h1>
+    <div class="divider"></div>
+    <p class="lede" style="max-width:630px">Problem → Architecture → Implementation → Testing → Results</p>
+    <p style="margin-top:48px;font-size:17px;font-weight:700">YAKHREVAN S <span style="color:#6c9cad">/</span> MECHATRONICS ENGINEER</p>
+    <div class="page-number">01 / 08</div>
+  </section>
+
+  <section class="page" data-document-role="page" data-label="02 Evidence rubric">
+    <div class="top"><span>ENGINEERING METHOD</span><span>01 / EVIDENCE</span></div>
+    <div class="eyebrow">Truth in technical storytelling</div>
+    <h2>What does “verified” mean?</h2>
+    <p class="lede">Keep illustrative geometry, working software simulations and physical measurements separate.</p>
+    <div class="three" style="margin-top:46px">
+      <div class="panel muted" style="height:263px"><span class="badge warn">Concept / Pending</span><h3 style="margin-top:30px">Architecture or illustrative CAD</h3><p>A model or integration plan that has not yet been run or measured under real conditions.</p></div>
+      <div class="panel" style="height:263px"><span class="badge">Simulation-tested</span><h3 style="margin-top:30px">Repeatable software behavior</h3><p>A runnable test or browser model with known inputs, logic, outcomes and limitations.</p></div>
+      <div class="panel muted" style="height:263px"><span class="badge warn">Hardware-tested</span><h3 style="margin-top:30px">Physical measurement</h3><p>Requires a documented real setup, measured values, trial logs and failure context.</p></div>
+    </div>
+    <div class="note">None of the PickBot V6, P6 Navigation or P2 Control Center portfolio demos is presented as hardware-tested.</div>
+    <div class="page-number">02 / 08</div>
+  </section>
+
+  <section class="page dark" data-document-role="page" data-label="03 PickBot architecture">
+    <div class="top"><span>PICKBOT / MOBILE MANIPULATION</span><span>02 / SYSTEM</span></div>
+    <div class="eyebrow">Problem + architecture</div>
+    <h2>One platform. Two kinds of motion.</h2>
+    <p class="lede">How can a four-mecanum-wheel rover and four-joint arm coordinate target reaching, grasp and motion before physical calibration?</p>
+    <div class="flow" style="margin-top:37px">
+      <div><span class="label">01 INPUT</span><h3>Target + joystick</h3><p>Object position, gripper request and X/Y/yaw commands</p></div>
+      <div><span class="label">02 MODEL</span><h3>IK + wheel matrix</h3><p>Four-joint solution, four wheel RPM and trajectory</p></div>
+      <div><span class="label">03 CHECKS</span><h3>Constraints</h3><p>Reach, virtual contact, joint limits and envelope checks</p></div>
+      <div><span class="label">04 OUTPUT</span><h3>Virtual robot</h3><p>Arm, rover, gripper and state visualization</p></div>
+    </div>
+    <div class="two"><div class="panel"><span class="label">Source geometry</span><p>Selected original shoulder, elbow and wrist STL parts retained.</p></div><div class="panel"><span class="label">Design limit</span><p>Chassis and wheel CAD is illustrative; real dimensions and limits need measurement.</p></div></div>
+    <div class="page-number">03 / 08</div>
+  </section>
+
+  <section class="page" data-document-role="page" data-label="04 PickBot test evidence">
+    <div class="top"><span>PICKBOT / SOFTWARE VERIFICATION</span><span>03 / RESULTS</span></div>
+    <div class="eyebrow">Implementation + testing + results</div>
+    <h2>Mathematics first. Hardware claims later.</h2>
+    <div class="two" style="grid-template-columns:.7fr 1.3fr;gap:30px;margin-top:35px">
+      <div class="metric" style="height:296px"><span class="label">Regressions passed</span><b style="font-size:75px;margin-top:28px">08/08</b><strong>V6 software-model tests</strong><small>Reachability, grasp contact, payload overlap and mecanum math</small><div class="bar"><i></i></div></div>
+      <div class="panel" style="height:296px"><h3>Verified implementation</h3><ul class="small-list"><li>Drag-to-target analytic inverse kinematics</li><li>Contact-gated virtual grasp and simplified collision gates</li><li>FL/FR/RL/RR mecanum RPM equations</li><li>Modeled trajectory integration</li></ul><p class="micro" style="margin-top:17px">npm run test:pickbot-v6</p></div>
+    </div>
+    <div class="note">ROS 2 Humble URDF/Xacro and MoveIt semantic files are scaffolds only. No real payload, torque or repeatability measurement is claimed.</div>
+    <div class="page-number">04 / 08</div>
+  </section>
+
+  <section class="page dark" data-document-role="page" data-label="05 Navigation architecture">
+    <div class="top"><span>P6 / AUTONOMOUS NAVIGATION</span><span>04 / SYSTEM</span></div>
+    <div class="eyebrow">Problem + architecture</div>
+    <h2>A goal becomes a driven route.</h2>
+    <p class="lede">Run obstacle-aware path planning and inspect the controller and synthetic sensors—not just a static path screenshot.</p>
+    <div class="flow" style="margin-top:42px">
+      <div><span class="label">01 ENVIRONMENT</span><h3>Occupancy grid</h3><p>Click goal and edit obstacle cells</p></div>
+      <div><span class="label">02 PLANNING</span><h3>Footprint-aware A*</h3><p>8-way search, corner-cut checks and replan</p></div>
+      <div><span class="label">03 CONTROLLER</span><h3>Differential drive</h3><p>Fixed step, pose and distance integration</p></div>
+      <div><span class="label">04 OBSERVATION</span><h3>Raycast LiDAR</h3><p>60 beams, virtual odom, report JSON</p></div>
+    </div>
+    <div class="two"><div class="panel"><span class="label">World view</span><p>The isometric scene reads the same live browser state as the planner.</p></div><div class="panel"><span class="label">Scope</span><p>Not Nav2, Gazebo physics, SLAM or a real LiDAR sensor.</p></div></div>
+    <div class="page-number">05 / 08</div>
+  </section>
+
+  <section class="page" data-document-role="page" data-label="06 Navigation results">
+    <div class="top"><span>P6 / REPRODUCIBLE NAVIGATION</span><span>05 / RESULTS</span></div>
+    <div class="eyebrow">Testing + observed results</div>
+    <h2>Ten checks. One inspectable example.</h2>
+    <div class="three" style="margin-top:46px">
+      <div class="metric"><span class="label">Regressions passed</span><b>10/10</b><strong>Navigation tests</strong><small>3 preset map arrivals, route edits, LiDAR and safety</small></div>
+      <div class="metric"><span class="label">Travel distance</span><b>26.37m</b><strong>One warehouse run</strong><small>Observed simulated route, not a benchmark</small></div>
+      <div class="metric"><span class="label">Goal error</span><b>0.32m</b><strong>At 32.2 simulated seconds</strong><small>Single configured browser execution</small></div>
+    </div>
+    <div class="two" style="margin-top:26px"><div class="panel"><h3>Checks included</h3><p>A* corner rules, no collision on three preset maps, replanning, range validity, E-stop and fixed-step determinism.</p></div><div class="panel muted"><h3>Evidence boundary</h3><p>Results describe a browser-local grid/kinematics model. No dynamic slip, localization error or ROS/Gazebo runtime.</p></div></div>
+    <div class="page-number">06 / 08</div>
+  </section>
+
+  <section class="page dark" data-document-role="page" data-label="07 Control Center architecture">
+    <div class="top"><span>P2 / ROBOT CONTROL CENTER</span><span>06 / SYSTEM</span></div>
+    <div class="eyebrow">Problem + architecture</div>
+    <h2>A control room that changes state.</h2>
+    <p class="lede">A synthetic single-robot operator console with task dispatch, telemetry and safety states that respond to real browser controls.</p>
+    <div class="flow" style="margin-top:39px">
+      <div><span class="label">01 OPERATOR</span><h3>Dispatch + stop</h3><p>Queue, start, pause, fault and E-stop</p></div>
+      <div><span class="label">02 REDUCER</span><h3>Single state</h3><p>Deterministic transition and safety interlock model</p></div>
+      <div><span class="label">03 ROBOT</span><h3>Waypoint motion</h3><p>Virtual pose, speed, distance and battery estimate</p></div>
+      <div><span class="label">04 EVIDENCE</span><h3>Log + JSON</h3><p>Event history, task outcomes and export</p></div>
+    </div>
+    <div class="two"><div class="panel"><span class="label">Latched E-stop</span><p>Manual release returns the stopped robot to paused, not running.</p></div><div class="panel"><span class="label">No backend</span><p>ROS-like topics are interface ideas, not real connections.</p></div></div>
+    <div class="page-number">07 / 08</div>
+  </section>
+
+  <section class="page" data-document-role="page" data-label="08 Control Center tests and next steps">
+    <div class="top"><span>P2 / TESTING + NEXT ACCEPTANCE</span><span>07 / RESULTS</span></div>
+    <div class="eyebrow">Results + honest next step</div>
+    <h2>Safety logic tested in software.</h2>
+    <div class="two" style="grid-template-columns:.72fr 1.28fr;gap:26px;margin-top:38px">
+      <div class="metric" style="height:294px"><span class="label">Regression suite</span><b style="font-size:73px;margin-top:26px">09/09</b><strong>Control-state checks passed</strong><small>Dispatch, pause, E-stop, fault recovery, task export</small><div class="bar"><i></i></div></div>
+      <div class="panel" style="height:294px"><h3>What the tests demonstrate</h3><ul class="small-list"><li>Queued jobs advance a simulated AMR</li><li>Software emergency stop latches and freezes motion</li><li>Fault acknowledgement never auto-resumes</li><li>Task outcomes export to JSON</li></ul><p class="micro" style="margin-top:16px">npm run test:control</p></div>
+    </div>
+    <div class="note">Next: authenticated ROS 2 telemetry/command adapter and isolated integration tests. A physical emergency-stop circuit requires independent hardware validation.</div>
+    <p class="micro" style="margin-top:20px">Engineering claims follow reproducible evidence. No employer-private code or metrics.</p>
+    <div class="page-number">08 / 08</div>
+  </section>
+</body>
+</html>

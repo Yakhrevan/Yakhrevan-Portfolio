@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, FolderDot } from 'lucide-react';
+import { BookOpen, ExternalLink, Github, FolderDot } from 'lucide-react';
 import { Project } from '../types/portfolio';
 import { useRobot } from '../hooks/useRobot';
 
@@ -38,6 +38,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
             {project.category}
           </span>
         </div>
+        {(project.id === 'pickbot' || project.id === 'navigation-lab' || project.id === 'robot-control-center') && (
+          <div className="absolute right-4 top-4 rounded-full border border-white/25 bg-[#0a2536]/90 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wide text-cyan-100 shadow-sm backdrop-blur-md">
+            <span className="inline-flex items-center gap-1.5"><BookOpen className="h-3 w-3" aria-hidden="true" /> Case study</span>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
