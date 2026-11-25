@@ -6,6 +6,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRIVE_PATTERNS, DRIVE_PREVIEW_POSES, DROP_POINT, GLTF_AXLE_SPIN_SIGN, PHYSICAL_WHEEL_NODES, PICKUP_POINT, TOOL_TIP_OFFSET } from './demo';
 import type { DriveMode, PayloadState, PickBotControls } from './demo';
+import { mecanumWheelRadPerSec } from './kinematics';
+import type { DrivePose, Position3, Twist2 } from './kinematics';
 
 const MODEL_URL = `${import.meta.env.BASE_URL}models/pickbot-v3.glb.gz`;
 const Y_AXIS = new Vector3(0, 1, 0);
@@ -73,17 +75,20 @@ interface AssemblyProps {
   controls: PickBotControls;
   driveMode: DriveMode;
   payloadState: PayloadState;
+  ikTarget?: Position3;
+  driveVelocity?: Twist2;
+  drivePose?: DrivePose;
 }
 
-function RobotAssembly({ controls, driveMode, payloadState }: AssemblyProps) {
+function RobotAssembly(props: AssemblyProps) {
   const original = useCompressedModel();
   if (!original) {
     return <Html center><div className="whitespace-nowrap rounded-full bg-brand-navy/90 px-4 py-2 text-sm font-semibold text-white shadow-lg">Loading PickBot model…</div></Html>;
   }
-  return <LoadedRobot original={original} controls={controls} driveMode={driveMode} payloadState={payloadState} />;
+  return <LoadedRobot original={original} {...props} />;
 }
 
-function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyProps & { original: Object3D }) {
+function LoadedRobot({ original, controls, driveMode, payloadState, ikTarget, driveVelocity, drivePose }: AssemblyProps & { original: Object3D }) {
   const scene = useMemo(() => original.clone(true), [original]);
   const wheelPhase = useRef([0, 0, 0, 0]);
   const rollerPhase = useRef([0, 0, 0, 0]);
@@ -174,9 +179,10 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
   useFrame((_state, delta) => {
     const dt = Math.min(delta, 0.05);
     const pattern = DRIVE_PATTERNS[driveMode];
+    const wheelAngularVelocity = driveVelocity ? mecanumWheelRadPerSec(driveVelocity) : null;
     parts.wheels.forEach((wheel, index) => {
       // Blender's +local-Y axle becomes -local-Z under the glTF Y-up export.
-      wheelPhase.current[index] += GLTF_AXLE_SPIN_SIGN * dt * 4 * pattern[index];
+      wheelPhase.current[index] += GLTF_AXLE_SPIN_SIGN * dt * (wheelAngularVelocity ? wheelAngularVelocity[index] : 4 * pattern[index]);
       // Signed wheel patterns illustrate kinematics, not calibrated odometry.
       wheel.quaternion.copy(parts.wheelRest[index]).multiply(
         wheelRotation.setFromAxisAngle(Z_AXIS, wheelPhase.current[index]),
@@ -186,8 +192,8 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
     // Free-running diagonal rollers are what allow sideways motion. At the
     // contact patch their rolling speed follows lateral chassis velocity:
     // v_y + yaw_rate * wheel_x (front +, rear -). Only a visual approximation.
-    const lateral = driveMode === 'strafe-left' ? 1 : driveMode === 'strafe-right' ? -1 : 0;
-    const yaw = driveMode === 'rotate-left' ? 1 : driveMode === 'rotate-right' ? -1 : 0;
+    const lateral = driveVelocity ? driveVelocity.vy / 0.25 : driveMode === 'strafe-left' ? 1 : driveMode === 'strafe-right' ? -1 : 0;
+    const yaw = driveVelocity ? driveVelocity.omega / 0.75 : driveMode === 'rotate-left' ? 1 : driveMode === 'rotate-right' ? -1 : 0;
     parts.rollers.forEach((wheelRollers, index) => {
       rollerPhase.current[index] += dt * 8 * (lateral + yaw * (index < 2 ? 1 : -1));
       wheelRollers.forEach((roller, rollerIndex) => {
@@ -198,14 +204,20 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
     });
 
     // A bounded one-direction maneuver, never a sinusoidal reversal of the command.
-    motionPhase.current = driveMode === 'stop' ? 0 : Math.min(1, motionPhase.current + dt * 0.9);
-    const preview = motionPhase.current * motionPhase.current * (3 - 2 * motionPhase.current);
-    // glTF X is forward and -Z is robot-left.
-    const [dx, dz, yawOffset] = DRIVE_PREVIEW_POSES[driveMode];
-    const blend = Math.min(1, dt * 7);
-    scene.position.x += (dx * preview - scene.position.x) * blend;
-    scene.position.z += (dz * preview - scene.position.z) * blend;
-    scene.rotation.y += (yawOffset * preview - scene.rotation.y) * blend;
+    if (drivePose) {
+      // Keep the chassis centered in the 3D inspection stage; the 2D plot
+      // retains the unbounded simulated odometry trajectory.
+      scene.position.set(Math.max(-0.3, Math.min(0.3, drivePose.x)), 0, Math.max(-0.3, Math.min(0.3, -drivePose.y)));
+      scene.rotation.y = drivePose.theta;
+    } else {
+      motionPhase.current = driveMode === 'stop' ? 0 : Math.min(1, motionPhase.current + dt * 0.9);
+      const preview = motionPhase.current * motionPhase.current * (3 - 2 * motionPhase.current);
+      const [dx, dz, yawOffset] = DRIVE_PREVIEW_POSES[driveMode];
+      const blend = Math.min(1, dt * 7);
+      scene.position.x += (dx * preview - scene.position.x) * blend;
+      scene.position.z += (dz * preview - scene.position.z) * blend;
+      scene.rotation.y += (yawOffset * preview - scene.rotation.y) * blend;
+    }
 
     if (payloadRef.current && payloadState !== 'hidden') {
       if (payloadState === 'attached' && parts.gripperMount) {
@@ -217,7 +229,11 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
         // Keep the display payload upright during transport: no simulated object tumbling.
         payloadRef.current.quaternion.identity();
       } else {
-        payloadRef.current.position.copy(payloadState === 'destination' ? DESTINATION_POSITION : SOURCE_POSITION);
+        if (payloadState === 'target' && ikTarget) {
+          payloadRef.current.position.set(ikTarget.x, ikTarget.y, ikTarget.z);
+        } else {
+          payloadRef.current.position.copy(payloadState === 'destination' ? DESTINATION_POSITION : SOURCE_POSITION);
+        }
         payloadRef.current.quaternion.identity();
       }
     }
@@ -228,7 +244,7 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
       <primitive object={scene} />
       {payloadState !== 'hidden' && (
         <>
-          {[SOURCE_POSITION, DESTINATION_POSITION].map((position, index) => (
+          {(ikTarget && payloadState === 'target' ? [new Vector3(ikTarget.x, 0, ikTarget.z)] : [SOURCE_POSITION, DESTINATION_POSITION]).map((position, index) => (
             <group key={index} position={[position.x, 0, position.z]}>
               <mesh position={[0, 0.112, 0]} castShadow receiveShadow>
                 <cylinderGeometry args={[0.075, 0.10, 0.224, 32]} />
@@ -250,7 +266,7 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
   );
 }
 
-export default function PickBotCanvas({ controls, driveMode, payloadState }: AssemblyProps) {
+export default function PickBotCanvas(props: AssemblyProps) {
   return (
     <Canvas
       shadows
@@ -272,7 +288,7 @@ export default function PickBotCanvas({ controls, driveMode, payloadState }: Ass
       <gridHelper args={[2, 20, '#476078', '#24384d']} position={[0, -0.007, 0]} />
       <ContactShadows position={[0, -0.006, 0]} opacity={0.28} scale={2} blur={2.5} far={1.4} resolution={256} />
       <Suspense fallback={<Html center><div className="whitespace-nowrap rounded-full bg-brand-navy/90 px-4 py-2 text-sm font-semibold text-white shadow-lg">Loading PickBot model…</div></Html>}>
-        <RobotAssembly controls={controls} driveMode={driveMode} payloadState={payloadState} />
+        <RobotAssembly {...props} />
       </Suspense>
       <OrbitControls
         makeDefault

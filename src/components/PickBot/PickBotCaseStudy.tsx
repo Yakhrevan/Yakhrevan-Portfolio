@@ -15,9 +15,21 @@ const evidence = [
   },
   {
     title: 'Tool path & grasp',
-    status: 'CAD-aligned visual demo',
-    detail: 'The virtual block and two raised stations align with forward-kinematic tool-tip positions calculated from the concept GLB. Four joints and the gripper remain user-controllable.',
+    status: 'Kinematics and contact simulation',
+    detail: 'The IK lab solves a drag target from the concept GLB geometry, checks tool contact before virtual attachment, and reports unreachable targets and simplified collision/limit failures.',
     confirmed: true,
+  },
+  {
+    title: 'Mecanum drive + odometry',
+    status: 'Browser-tested mathematics',
+    detail: 'A two-axis joystick and yaw control resolve four wheel speeds in RPM. The browser draws integrated open-loop X/Y/heading trajectories; roller-ground physics is not simulated.',
+    confirmed: true,
+  },
+  {
+    title: 'ROS 2 / MoveIt 2',
+    status: 'Description scaffold / not run',
+    detail: 'URDF/Xacro, RViz launch, Humble controller YAML and an initial MoveIt semantic arm group are checked into the repository. No ROS runtime or motion planner has been executed here.',
+    confirmed: false,
   },
   {
     title: 'Physical performance',
@@ -93,16 +105,16 @@ export function PickBotCaseStudy() {
         </div>
 
         <div className="grid gap-3 lg:grid-cols-[1fr_32px_1fr_32px_1fr] lg:items-center">
-          <DiagramCard icon={Move3D} eyebrow="01 · Input" heading="Operator interface" detail="Manual J1–J4 sliders, gripper opening, drive mode selection and a timed demo." />
+          <DiagramCard icon={Move3D} eyebrow="01 · Input" heading="Target & velocity commands" detail="Drag a 3D target, operate the gripper, command a two-axis joystick plus yaw, or replay the timed sequence." />
           <ArrowUpRight className="mx-auto hidden h-5 w-5 rotate-45 text-brand-blue lg:block" aria-hidden="true" />
-          <DiagramCard icon={Cpu} eyebrow="02 · Simulation" heading="Pose & wheel commands" detail="Interpolated poses with GLB-aligned pickup/drop contact points and an X-roller wheel matrix; no physics solver or IK." dark />
+          <DiagramCard icon={Cpu} eyebrow="02 · Simulation" heading="IK, contact & drive model" detail="Analytic J1–J4 IK with contact and chassis-envelope checks; mecanum velocity matrix, per-wheel RPM and open-loop trajectory integration." dark />
           <ArrowUpRight className="mx-auto hidden h-5 w-5 rotate-45 text-brand-blue lg:block" aria-hidden="true" />
           <div className="grid gap-3">
             <DiagramCard icon={Route} eyebrow="03a · Locomotion" heading="FL · FR · RL · RR" detail="Four independent mecanum wheel pivots." />
             <DiagramCard icon={Wrench} eyebrow="03b · Manipulator" heading="J1 · J2 · J3 · J4" detail="Four arm joints and a separate gripper." />
           </div>
         </div>
-        <p className="mt-3 text-xs leading-relaxed text-slate-500">The display arm cannot reach a floor-level object outside its base at the modeled dimensions, so this demo uses raised pickup/drop stations. The real embedded controller, actuator interfaces, wiring, joint limits, calibration and feedback loop remain outside this browser model and require hardware evidence.</p>
+        <p className="mt-3 text-xs leading-relaxed text-slate-500">The display arm cannot reach a floor-level object outside its base at the modeled dimensions, so the virtual grasp object stands on a raised station. V6 uses lightweight geometric checks, not rigid-body contact dynamics or self-collision meshes. The real actuator interfaces, wiring, physical joint limits and closed-loop feedback still require hardware evidence.</p>
       </div>
 
       <div>

@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="pickbot_concept_v6">
+  <!-- Coordinates: ROS X front, Y left, Z up. Simplified collision geometry,
+       approximate concept dimensions, NOT a fabrication or calibrated model. -->
+  <material name="navy"><color rgba="0.12 0.22 0.34 1" /></material>
+  <material name="blue"><color rgba="0.15 0.45 0.82 1" /></material>
+  <material name="orange"><color rgba="0.98 0.55 0.25 1" /></material>
+  <material name="rubber"><color rgba="0.09 0.12 0.16 1" /></material>
+  <link name="base_link">
+    <visual><origin xyz="0 0 0.185"/><geometry><box size="0.43 0.35 0.13"/></geometry><material name="navy"/></visual>
+    <collision><origin xyz="0 0 0.185"/><geometry><box size="0.43 0.35 0.13"/></geometry></collision>
+    <inertial><origin xyz="0 0 0.185"/><mass value="5"/><inertia ixx="0.068" iyy="0.088" izz="0.126" ixy="0" ixz="0" iyz="0"/></inertial>
+  </link>
+
+  <!-- Wheel envelope radius 91 mm and four positions follow the authored concept GLB;
+       cylinders do not reproduce mecanum roller shapes or contact physics. -->
+  <xacro:macro name="wheel" params="corner x y">
+    <link name="${corner}_wheel_link">
+      <visual><origin rpy="1.570796327 0 0"/><geometry><cylinder radius="0.091" length="0.05"/></geometry><material name="rubber"/></visual>
+      <collision><origin rpy="1.570796327 0 0"/><geometry><cylinder radius="0.091" length="0.05"/></geometry></collision>
+      <inertial><mass value="0.4"/><inertia ixx="0.0012" iyy="0.0012" izz="0.0012" ixy="0" ixz="0" iyz="0"/></inertial>
+    </link>
+    <joint name="${corner}_wheel_joint" type="continuous">
+      <parent link="base_link"/><child link="${corner}_wheel_link"/>
+      <origin xyz="${x} ${y} 0.091"/><axis xyz="0 1 0"/>
+    </joint>
+  </xacro:macro>
+  <xacro:wheel corner="front_left" x="0.221" y="0.226"/>
+  <xacro:wheel corner="front_right" x="0.221" y="-0.226"/>
+  <xacro:wheel corner="rear_left" x="-0.221" y="0.226"/>
+  <xacro:wheel corner="rear_right" x="-0.221" y="-0.226"/>
+
+  <link name="arm_base_link">
+    <visual><origin xyz="0 0 0.064"/><geometry><cylinder radius="0.051" length="0.128"/></geometry><material name="blue"/></visual>
+    <collision><origin xyz="0 0 0.064"/><geometry><cylinder radius="0.051" length="0.128"/></geometry></collision>
+  </link>
+  <joint name="arm_base_yaw_joint" type="revolute">
+    <parent link="base_link"/><child link="arm_base_link"/>
+    <origin xyz="0.027 0 0.316"/><axis xyz="0 0 1"/>
+    <limit lower="-2.44346" upper="2.44346" effort="10" velocity="1.2"/>
+  </joint>
+
+  <xacro:macro name="arm_segment" params="name length radius color">
+    <link name="${name}">
+      <visual><origin xyz="${length/2} 0 0"/><geometry><box size="${length} ${radius} ${radius}"/></geometry><material name="${color}"/></visual>
+      <collision><origin xyz="${length/2} 0 0"/><geometry><box size="${length} ${radius} ${radius}"/></geometry></collision>
+    </link>
+  </xacro:macro>
+  <xacro:arm_segment name="upper_arm_link" length="0.151" radius="0.038" color="blue"/>
+  <xacro:arm_segment name="forearm_link" length="0.151" radius="0.035" color="blue"/>
+  <xacro:arm_segment name="wrist_link" length="0.146" radius="0.029" color="orange"/>
+
+  <!-- At zero command the GLB has +61, -44 and +24 deg rest pitch,
+       with positive shoulder/elbow/wrist controls lowering local link pitch. -->
+  <joint name="shoulder_joint" type="revolute">
+    <parent link="arm_base_link"/><child link="upper_arm_link"/>
+    <origin xyz="0.016 0 0.137" rpy="0 -1.06465084 0"/><axis xyz="0 1 0"/>
+    <limit lower="-0.610865" upper="1.745329" effort="10" velocity="1.2"/>
+  </joint>
+  <joint name="elbow_joint" type="revolute">
+    <parent link="upper_arm_link"/><child link="forearm_link"/>
+    <origin xyz="0.151 0 0" rpy="0 0.767944871 0"/><axis xyz="0 1 0"/>
+    <limit lower="-1.5707963" upper="1.5707963" effort="8" velocity="1.5"/>
+  </joint>
+  <joint name="wrist_joint" type="revolute">
+    <parent link="forearm_link"/><child link="wrist_link"/>
+    <origin xyz="0.151 0 0" rpy="0 -0.41887902 0"/><axis xyz="0 1 0"/>
+    <limit lower="-1.5707963" upper="1.5707963" effort="5" velocity="1.7"/>
+  </joint>
+  <link name="gripper_link">
+    <visual><origin xyz="0.0325 0 0"/><geometry><box size="0.065 0.06 0.027"/></geometry><material name="orange"/></visual>
+    <collision><origin xyz="0.0325 0 0"/><geometry><box size="0.065 0.06 0.027"/></geometry></collision>
+  </link>
+  <joint name="tool_mount_joint" type="fixed"><parent link="wrist_link"/><child link="gripper_link"/><origin xyz="0.146 0 0"/></joint>
+  <link name="tool_tip"/>
+  <joint name="tool_tip_fixed" type="fixed"><parent link="gripper_link"/><child link="tool_tip"/><origin xyz="0.065 0 0"/></joint>
+</robot>

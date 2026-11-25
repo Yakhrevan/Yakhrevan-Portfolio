@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot name="pickbot_concept_v6">
+  <!-- Initial semantic group. Generate and review full MoveIt 2 config using
+       Setup Assistant before launching planning (kinematics, virtual joints,
+       self-collision matrix and controller mapping are not provided here). -->
+  <group name="pickbot_arm">
+    <joint name="arm_base_yaw_joint"/>
+    <joint name="shoulder_joint"/>
+    <joint name="elbow_joint"/>
+    <joint name="wrist_joint"/>
+  </group>
+  <group_state name="home" group="pickbot_arm">
+    <joint name="arm_base_yaw_joint" value="0"/>
+    <joint name="shoulder_joint" value="0"/>
+    <joint name="elbow_joint" value="0"/>
+    <joint name="wrist_joint" value="0"/>
+  </group_state>
+</robot>

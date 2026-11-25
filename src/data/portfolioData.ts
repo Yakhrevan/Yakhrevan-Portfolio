@@ -128,15 +128,17 @@ export const PROJECTS_DATA: Project[] = [
     title: "PickBot",
     subtitle: "Four-Mecanum-Wheel Rover + Four-Joint Arm",
     category: "Robotics",
-    description: "A four-mecanum-wheel mobile manipulator with a four-joint robotic arm for pick-and-place tasks.",
-    longDescription: "PickBot is my mobile manipulation project: a rover with four mecanum wheels and a four-joint arm for pick-and-place tasks. I designed the arm's mechanical CAD and am developing the robot control software. The interactive portfolio model preserves the supplied shoulder, elbow and wrist STL parts. Because complete chassis and wheel assembly CAD is not available here, those sections are illustrated as a concept rather than a measured replica of the physical robot.",
-    tags: ["4 Mecanum Wheels", "4-Joint Arm", "Mechanical CAD", "ESP32", "Pick-and-Place"],
+    description: "Four-mecanum-wheel mobile manipulator with an interactive V6 arm-IK, grasp and holonomic drive lab.",
+    longDescription: "PickBot is my mobile manipulation project: a rover with four mecanum wheels and a four-joint arm for pick-and-place tasks. I designed the arm's mechanical CAD and am developing its control software. The V6 portfolio studio adds calibrated concept-geometry inverse kinematics, draggable object targets, contact-gated virtual grasps, simplified collision/joint-limit checks, ROS-compatible planar velocity inputs, four-wheel RPM calculations and an open-loop trajectory plot. Initial ROS 2 Humble description and controller-planning files are in the repository; actual ROS/MoveIt execution and hardware validation are pending. The interactive 3D model retains the supplied shoulder, elbow and wrist STL parts; complete chassis and wheel CAD is unavailable, so those sections are illustrative.",
+    tags: ["4 Mecanum Wheels", "4-Joint Arm", "Inverse Kinematics", "ROS 2 Interface", "Pick-and-Place"],
     image: `${ASSET_BASE}projects/pickbot-v3.webp`,
     highlights: [
       "Four mecanum drive wheels with diagonally oriented rollers",
       "Four articulated arm joints: base, shoulder, elbow and wrist",
       "Original arm CAD parts preserved in the interactive 3D model",
-      "Robot control software under development"
+      "V6 drag-to-target IK with contact-gated pickup and geometric reach/collision checks",
+      "Mecanum joystick with calculated FL/FR/RL/RR RPM and simulated trajectory",
+      "ROS 2 Humble URDF/Xacro and MoveIt 2 planning scaffold — not yet executed"
     ],
     specs: [
       { label: "Locomotion", value: "4 Mecanum Wheels" },

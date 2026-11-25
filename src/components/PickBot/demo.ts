@@ -70,7 +70,7 @@ export const DRIVE_CHOICES: { mode: Exclude<DriveMode, 'stop'>; label: string }[
   { mode: 'rotate-right', label: 'Rotate right' },
 ];
 
-export type PayloadState = 'hidden' | 'source' | 'attached' | 'destination';
+export type PayloadState = 'hidden' | 'source' | 'target' | 'attached' | 'destination';
 
 export interface DemoStep {
   at: number;

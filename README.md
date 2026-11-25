@@ -89,6 +89,19 @@ A mobile-robot project centered on ROS 2 Humble, Nav2, mapping/navigation concep
 ### PickBot — Mecanum Mobile Robot with Arm
 A mobile manipulation concept combining a mecanum-wheel base, a multi-degree-of-freedom arm, ESP32 control, and environmental sensors.
 
+**PickBot V6 interactive engineering studio** adds:
+
+- Drag-to-target analytic IK for four arm joints, automatic reach/limit checks, a simplified chassis collision envelope, and a virtual grasp that attaches only after gripper closure and tool-target contact.
+- Two-axis mecanum joystick plus `linear.x`, `linear.y`, `angular.z` inputs; computed FL/FR/RL/RR wheel RPM from a 91 mm concept wheel radius and a plotted open-loop trajectory.
+- An initial ROS 2 Humble `pickbot_description` package with simplified URDF/Xacro, RViz display launch, controller YAML template, and MoveIt 2 SRDF arm-group starting point.
+- Seven additional mathematical regression tests. The original V5 calibrated playback remains available in its own studio tab.
+
+**Try it:** https://yakhrevan.github.io/Yakhrevan-Portfolio/?project=pickbot
+
+**Source:** [`src/components/PickBot/`](src/components/PickBot/) and [`ros2/pickbot_description/`](ros2/pickbot_description/).
+
+**Important limits:** the browser is a kinematic/illustrative simulator, not full rigid-body physics. The ROS files have not been run on a ROS machine; the MoveIt setup still requires solver, self-collision and controller configuration. See the [ROS 2 handoff README](ros2/pickbot_description/README.md).
+
 ### Morphobot Ground Station
 A web-based ground-control interface concept for commands and telemetry, with WebSocket communication and a WebRTC video-streaming path described in the project data.
 
@@ -152,12 +165,14 @@ Vite prints the local development URL in the terminal.
     npm run lint
     npm run test:nav
     npm run test:pickbot
+    npm run test:pickbot-v6
     npm run build
     npm run preview
 
 - **npm run lint** runs TypeScript's no-emit check.
 - **npm run build** runs the TypeScript check and creates the production build.
 - **npm run test:nav** requires Node.js 22.6+ for built-in TypeScript type stripping; the deployed website and `npm run build` remain compatible with the CI Node.js 20 runtime.
+- **npm run test:pickbot-v6** requires Node.js 22.6+ for type stripping (Node 24 recommended).
 - **npm run preview** serves the built output locally for inspection.
 
 ## Deployment

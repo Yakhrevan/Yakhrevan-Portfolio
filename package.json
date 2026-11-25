@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "lint": "tsc --noEmit",
     "test:pickbot": "node --test tests/pickbot-motion.test.mjs",
+    "test:pickbot-v6": "node --experimental-strip-types --test tests/pickbot-v6.test.mjs",
     "test:nav": "node --experimental-strip-types --test tests/navigationCore.test.mjs",
     "preview": "vite preview"
   },

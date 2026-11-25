@@ -5,12 +5,16 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 import {
   DEMO_DURATION_MS,
   DEMO_STEPS,
-  DRIVE_CHOICES,
-  DRIVE_PATTERNS,
+  DROP_POINT,
   HOME_POSE,
+  PICKUP_POINT,
   samplePickPlace,
 } from './demo';
 import type { DriveMode, PickBotControls } from './demo';
+import { PickBotIKLab } from './PickBotIKLab';
+import { PickBotMecanumLab } from './PickBotMecanumLab';
+import { ARM, graspContact, integrateMecanum, solveIK, ZERO_DRIVE_POSE, ZERO_TWIST } from './kinematics';
+import type { IKResult, Position3, Twist2, DrivePose } from './kinematics';
 
 const PickBotCanvas = lazy(() => import('./PickBotCanvas'));
 const IMAGE_URL = `${import.meta.env.BASE_URL}projects/pickbot-v3.webp`;
@@ -21,7 +25,7 @@ const STAGE_FRAMES: Record<string, string> = {
 };
 
 type Joint = keyof PickBotControls;
-type StudioTab = 'joints' | 'drive' | 'demo';
+type StudioTab = 'ik' | 'joints' | 'drive' | 'demo';
 
 const SLIDERS: { key: Joint; label: string; min: number; max: number; unit: string }[] = [
   { key: 'base', label: 'J1 · Base yaw', min: -140, max: 140, unit: '°' },
@@ -32,6 +36,7 @@ const SLIDERS: { key: Joint; label: string; min: number; max: number; unit: stri
 ];
 
 const TABS: { id: StudioTab; label: string }[] = [
+  { id: 'ik', label: 'IK target' },
   { id: 'joints', label: 'Joint control' },
   { id: 'drive', label: 'Mecanum drive' },
   { id: 'demo', label: 'Pick & place' },
@@ -68,17 +73,23 @@ function supportsWebGL(): boolean {
 
 export function PickBotStudio() {
   const prefersReducedMotion = useReducedMotion();
-  const [tab, setTab] = useState<StudioTab>('joints');
+  const [tab, setTab] = useState<StudioTab>('ik');
   const [manualControls, setManualControls] = useState<PickBotControls>({ ...HOME_POSE });
-  const [driveMode, setDriveMode] = useState<DriveMode>('stop');
+  const [ikTarget, setIkTarget] = useState<Position3>({ x: PICKUP_POINT[0], y: PICKUP_POINT[1], z: PICKUP_POINT[2] });
+  const [ikControls, setIkControls] = useState<PickBotControls>({ base: 0, shoulder: 60, elbow: 0, wrist: 0, grip: 100 });
+  const [ikSolution, setIkSolution] = useState<IKResult>(() => solveIK({ x: PICKUP_POINT[0], y: PICKUP_POINT[1], z: PICKUP_POINT[2] }));
+  const [ikAttached, setIkAttached] = useState(false);
+  const [ikNotice, setIkNotice] = useState('Move the object in the top-view workspace, then close the gripper to test contact.');
+  const [driveCommand, setDriveCommand] = useState<Twist2>({ ...ZERO_TWIST });
+  const [drivePreset, setDrivePreset] = useState<DriveMode>('stop');
+  const [driveState, setDriveState] = useState<{ pose: DrivePose; trail: DrivePose[] }>({ pose: { ...ZERO_DRIVE_POSE }, trail: [{ ...ZERO_DRIVE_POSE }] });
   const [elapsedMs, setElapsedMs] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [enabled, setEnabled] = useState(false);
   const [unsupported, setUnsupported] = useState(false);
 
   const demo = useMemo(() => samplePickPlace(elapsedMs), [elapsedMs]);
-  const displayedControls = tab === 'demo' ? demo.controls : manualControls;
-  const activeDriveMode = tab === 'drive' ? driveMode : 'stop';
+  const displayedControls = tab === 'demo' ? demo.controls : tab === 'ik' ? ikControls : manualControls;
   // When WebGL is disabled, advance real CAD renders with the timeline instead
   // of leaving the robot frozen on the old product thumbnail.
   const stillFrame = STAGE_FRAMES[demo.step.label] ?? 'ready';
@@ -87,9 +98,21 @@ export function PickBotStudio() {
   useEffect(() => {
     if (prefersReducedMotion) {
       setPlaying(false);
-      setDriveMode('stop');
+      setDriveCommand({ ...ZERO_TWIST });
+      setDrivePreset('stop');
     }
   }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    if (tab !== 'drive' || (driveCommand.vx === 0 && driveCommand.vy === 0 && driveCommand.omega === 0)) return;
+    const interval = window.setInterval(() => {
+      setDriveState(({ pose, trail }) => {
+        const next = integrateMecanum(pose, driveCommand, 0.05);
+        return { pose: next, trail: [...trail.slice(-239), next] };
+      });
+    }, 50);
+    return () => window.clearInterval(interval);
+  }, [tab, driveCommand]);
 
   useEffect(() => {
     if (!playing) return;
@@ -127,8 +150,82 @@ export function PickBotStudio() {
 
   const selectTab = (next: StudioTab) => {
     setPlaying(false);
-    setDriveMode('stop');
+    setDriveCommand({ ...ZERO_TWIST });
+    setDrivePreset('stop');
     setTab(next);
+  };
+
+  const changeIKTarget = (next: Position3) => {
+    const result = solveIK(next, ikControls);
+    setIkTarget(next);
+    setIkSolution(result);
+    if (result.ok) {
+      setIkControls({ ...result.controls, grip: ikAttached ? 0 : 100 });
+      setIkNotice(ikAttached ? 'Payload follows the solved gripper pose. Lower onto support before release.' : 'Target solved. Close the virtual fingers to verify grasp contact.');
+    } else {
+      setIkNotice(`Motion stopped: ${result.reason}`);
+    }
+  };
+
+  const resetIK = () => {
+    const target = { x: PICKUP_POINT[0], y: PICKUP_POINT[1], z: PICKUP_POINT[2] };
+    const controls = { base: 0, shoulder: 60, elbow: 0, wrist: 0, grip: 100 };
+    setIkTarget(target);
+    setIkControls(controls);
+    setIkSolution(solveIK(target, controls));
+    setIkAttached(false);
+    setIkNotice('Object reset on its source pedestal. Drag it or close the gripper to attempt pickup.');
+  };
+
+  const graspIK = () => {
+    const closed = { ...ikControls, grip: 0 };
+    setIkControls(closed);
+    const grasp = graspContact(closed, ikTarget);
+    if (!ikSolution.ok || !grasp.contact) {
+      setIkAttached(false);
+      setIkNotice(`Failed grasp · ${ikSolution.ok ? grasp.reason : ikSolution.reason}`);
+      return;
+    }
+    setIkAttached(true);
+    setIkNotice('Gripper contact confirmed. Payload attached; lift, transfer, then lower before release.');
+  };
+
+  const releaseIK = () => {
+    if (!ikAttached) return;
+    if (!ikSolution.ok || Math.abs(ikTarget.y - ARM.objectHeight) > ARM.contactTolerance) {
+      setIkNotice('Release blocked: lower the payload onto its support plane at Y = 284 mm first.');
+      return;
+    }
+    const contact = graspContact({ ...ikControls, grip: 0 }, ikTarget);
+    if (!contact.contact) {
+      setIkNotice(`Release blocked: ${contact.reason}`);
+      return;
+    }
+    setIkAttached(false);
+    setIkControls((current) => ({ ...current, grip: 100 }));
+    setIkNotice('Object released on its support. Contact verified; gripper fingers opened.');
+  };
+
+  const updateDriveCommand = (command: Twist2) => {
+    setDrivePreset('stop');
+    setDriveCommand(command);
+    if (!enabled && !unsupported) launchViewer();
+  };
+
+  const selectDrivePreset = (mode: DriveMode) => {
+    const next = drivePreset === mode ? 'stop' : mode;
+    const commands: Record<DriveMode, Twist2> = {
+      stop: ZERO_TWIST,
+      forward: { vx: 0.24, vy: 0, omega: 0 },
+      reverse: { vx: -0.24, vy: 0, omega: 0 },
+      'strafe-left': { vx: 0, vy: 0.24, omega: 0 },
+      'strafe-right': { vx: 0, vy: -0.24, omega: 0 },
+      'rotate-left': { vx: 0, vy: 0, omega: 0.75 },
+      'rotate-right': { vx: 0, vy: 0, omega: -0.75 },
+    };
+    setDrivePreset(next);
+    setDriveCommand(commands[next]);
+    if (!enabled && !unsupported) launchViewer();
   };
 
   const updateControl = (key: Joint, value: number) => {
@@ -138,7 +235,7 @@ export function PickBotStudio() {
   const reset = () => {
     setPlaying(false);
     setElapsedMs(0);
-    setDriveMode('stop');
+    setDriveCommand({ ...ZERO_TWIST });
     setManualControls({ ...HOME_POSE });
   };
 
@@ -149,14 +246,8 @@ export function PickBotStudio() {
     }
     if (elapsedMs >= DEMO_DURATION_MS) setElapsedMs(0);
     if (!enabled) launchViewer();
-    setDriveMode('stop');
+    setDriveCommand({ ...ZERO_TWIST });
     setPlaying(true);
-  };
-
-  const selectDriveMode = (next: DriveMode) => {
-    // Keep the wheel-command preview interactive even where WebGL is absent.
-    if (!enabled && !unsupported) launchViewer();
-    setDriveMode((current) => current === next ? 'stop' : next);
   };
 
   return (
@@ -164,25 +255,28 @@ export function PickBotStudio() {
       <div className="px-6 pb-6 pt-7 sm:px-8">
         <div className="flex flex-wrap items-center gap-3">
           <span className="rounded-full bg-brand-sky-light px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-brand-blue">Interactive engineering studio</span>
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-widest text-slate-400">PickBot · V4 concept</span>
+          <span className="font-mono text-[11px] font-semibold uppercase tracking-widest text-slate-400">PickBot · V6 engineering simulation</span>
         </div>
         <h2 id="pickbot-interactive-title" className="mt-3 text-2xl font-extrabold tracking-tight text-brand-navy sm:text-3xl">
-          Explore. Drive. Simulate.
+          Target. Grasp. Drive. Simulate.
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-slate">
-          Inspect a four-mecanum-wheel rover, control its four arm joints, preview wheel patterns and play an illustrative pick-and-place sequence. No commands are sent to real hardware.
+          Drag a virtual target to solve arm IK and test contact-based grasping. Drive four mecanum wheels with X/Y/yaw commands, inspect calculated RPM and a plotted path, or replay the original calibrated sequence. No real hardware commands are sent.
         </p>
       </div>
 
       <div className="grid lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="relative min-h-[340px] overflow-hidden bg-[#101d2b] sm:min-h-[500px]">
+        <div className="relative min-h-[340px] overflow-hidden bg-[#101d2b] sm:min-h-[500px] lg:h-[690px]">
           {enabled ? (
             <ViewerErrorBoundary>
               <Suspense fallback={<div className="flex min-h-[340px] items-center justify-center text-sm font-semibold text-white/80">Preparing interactive viewer…</div>}>
                 <PickBotCanvas
                   controls={displayedControls}
-                  driveMode={activeDriveMode}
-                  payloadState={tab === 'demo' ? demo.payload : 'hidden'}
+                  driveMode="stop"
+                  payloadState={tab === 'ik' ? ikAttached ? 'attached' : 'target' : tab === 'demo' ? demo.payload : 'hidden'}
+                  ikTarget={tab === 'ik' ? ikTarget : undefined}
+                  driveVelocity={tab === 'drive' ? driveCommand : undefined}
+                  drivePose={tab === 'drive' ? driveState.pose : undefined}
                 />
               </Suspense>
             </ViewerErrorBoundary>
@@ -213,8 +307,8 @@ export function PickBotStudio() {
           )}
         </div>
 
-        <div className="flex flex-col border-t border-slate-200 bg-slate-50/80 lg:border-l lg:border-t-0">
-          <div role="tablist" aria-label="PickBot interactive controls" className="grid grid-cols-3 gap-1 border-b border-slate-200 bg-white p-2">
+        <div className="flex flex-col border-t border-slate-200 bg-slate-50/80 lg:max-h-[690px] lg:overflow-y-auto lg:border-l lg:border-t-0">
+          <div role="tablist" aria-label="PickBot interactive controls" className="grid grid-cols-4 gap-1 border-b border-slate-200 bg-white p-2">
             {TABS.map(({ id, label }) => (
               <button
                 key={id}
@@ -230,6 +324,8 @@ export function PickBotStudio() {
               </button>
             ))}
           </div>
+
+          {tab === 'ik' && <PickBotIKLab target={ikTarget} controls={ikControls} solution={ikSolution} attached={ikAttached} notice={ikNotice} onTarget={changeIKTarget} onReset={resetIK} onGrasp={graspIK} onRelease={releaseIK} onLift={() => changeIKTarget({ ...ikTarget, y: ikTarget.y + 0.12 })} onLower={() => changeIKTarget({ ...ikTarget, y: ARM.objectHeight })} onDropBay={() => changeIKTarget({ x: DROP_POINT[0], y: ikTarget.y, z: DROP_POINT[2] })} />}
 
           {tab === 'joints' && (
             <div id="pickbot-panel-joints" role="tabpanel" aria-labelledby="pickbot-tab-joints" className="flex flex-1 flex-col p-5 sm:p-6">
@@ -263,35 +359,7 @@ export function PickBotStudio() {
             </div>
           )}
 
-          {tab === 'drive' && (
-            <div id="pickbot-panel-drive" role="tabpanel" aria-labelledby="pickbot-tab-drive" className="flex flex-1 flex-col p-5 sm:p-6">
-              <div className="mb-5">
-                <h3 className="font-bold text-brand-navy">Mecanum drive lab</h3>
-                <p className="mt-2 text-xs leading-relaxed text-brand-slate">Robot frame: +X forward, +Y left (−Z in the viewer). Wheel locations and roller handedness follow the actual concept GLB.</p>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {DRIVE_CHOICES.map(({ mode, label }) => (
-                  <button key={mode} type="button" aria-pressed={driveMode === mode} onClick={() => selectDriveMode(mode)} className={`min-h-12 rounded-xl border px-3 py-2 text-xs font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-blue ${driveMode === mode ? 'border-brand-blue bg-brand-blue text-white' : 'border-slate-200 bg-white text-brand-slate hover:border-brand-blue hover:text-brand-blue'}`}>
-                    {label}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-5 rounded-xl border border-slate-200 bg-white p-4">
-                <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400">Robot top view · front ↑</p>
-                <div className="mx-auto mt-3 grid max-w-[230px] grid-cols-2 gap-2 text-center">
-                  {DRIVE_PATTERNS[driveMode].map((direction, index) => (
-                    <div key={index} className="rounded-lg bg-brand-sky-light p-2" aria-label={`${['Front left', 'Front right', 'Rear left', 'Rear right'][index]} wheel ${direction === 1 ? 'forward' : direction === -1 ? 'reverse' : 'stopped'}`}>
-                      <span className="block font-mono text-[10px] font-bold text-brand-slate">{['FL', 'FR', 'RL', 'RR'][index]}</span>
-                      <span className="mt-1 block font-mono text-lg font-black text-brand-blue">{direction === 1 ? '+' : direction === -1 ? '−' : '·'}</span>
-                    </div>
-                  ))}
-                </div>
-                <p className="mt-3 text-center text-[10px] leading-relaxed text-slate-500">+ forward-equivalent spin · − reverse · · stopped</p>
-              </div>
-              <button type="button" onClick={() => setDriveMode('stop')} className="mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-navy px-3 py-2.5 text-xs font-bold text-white hover:bg-brand-blue"><Pause className="h-4 w-4" aria-hidden="true" /> Stop wheels</button>
-              <p className="mt-4 text-[11px] leading-relaxed text-slate-500">The 3D rover makes a short, bounded direction preview. This is kinematic illustration only: verify actual motor polarity, wheel order and roller orientation before applying commands to hardware.</p>
-            </div>
-          )}
+          {tab === 'drive' && <PickBotMecanumLab command={driveCommand} pose={driveState.pose} trail={driveState.trail} activePreset={drivePreset} onCommand={updateDriveCommand} onPreset={selectDrivePreset} onStop={() => { setDriveCommand({ ...ZERO_TWIST }); setDrivePreset('stop'); }} onReset={() => { setDriveCommand({ ...ZERO_TWIST }); setDrivePreset('stop'); setDriveState({ pose: { ...ZERO_DRIVE_POSE }, trail: [{ ...ZERO_DRIVE_POSE }] }); }} />}
 
           {tab === 'demo' && (
             <div id="pickbot-panel-demo" role="tabpanel" aria-labelledby="pickbot-tab-demo" className="flex flex-1 flex-col p-5 sm:p-6">
