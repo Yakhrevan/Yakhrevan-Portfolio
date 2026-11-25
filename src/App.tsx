@@ -1,4 +1,5 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { DeferredSection } from './components/DeferredSection';
@@ -16,6 +17,7 @@ import { PROJECTS_DATA } from './data/portfolioData';
 const SECTION_IDS = ['home', 'projects', 'about', 'skills', 'experience', 'lab', 'contact'] as const;
 const RobotLab = lazy(() => import('./sections/RobotLab').then((module) => ({ default: module.RobotLab })));
 const ScrollCompanion = lazy(() => import('./components/ScrollCompanion').then((module) => ({ default: module.ScrollCompanion })));
+const Splash = lazy(() => import('./components/Splash').then((module) => ({ default: module.Splash })));
 
 function projectFromUrl(): Project | null {
   const projectId = new URLSearchParams(window.location.search).get('project');
@@ -25,6 +27,12 @@ function projectFromUrl(): Project | null {
 export default function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(projectFromUrl);
   const [showCompanion, setShowCompanion] = useState(false);
+  const [showIntro, setShowIntro] = useState(() =>
+    projectFromUrl() === null &&
+    window.location.hash === '' &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+  const dismissIntro = useCallback(() => setShowIntro(false), []);
 
   useEffect(() => {
     const handleBackForward = () => setSelectedProject(projectFromUrl());
@@ -64,6 +72,13 @@ export default function App() {
 
   return (
     <>
+      <AnimatePresence>
+        {showIntro && (
+          <Suspense fallback={<div className="fixed inset-0 z-[100] flex items-center justify-center bg-brand-bg text-sm font-bold text-brand-blue" role="status">Preparing your robotics portfolio…</div>}>
+            <Splash onDone={dismissIntro} />
+          </Suspense>
+        )}
+      </AnimatePresence>
       {selectedProject && (
         <ProjectDetail project={selectedProject} onBack={closeProject} />
       )}

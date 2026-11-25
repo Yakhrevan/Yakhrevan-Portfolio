@@ -127,15 +127,30 @@ export function Projects({ onProjectClick }: ProjectsProps) {
             </div>
             <p className="max-w-xl text-xs leading-relaxed text-brand-slate">Project descriptions below reflect the published portfolio; verification and supporting evidence vary by project.</p>
           </div>
-          <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-7 grid items-stretch gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {otherProjects.map((project) => (
-              <article key={project.id} className="flex min-w-0 gap-4 rounded-2xl border border-slate-200/80 bg-white p-3 sm:p-4">
-                <img src={project.image} alt="" loading="lazy" decoding="async" className="h-20 w-20 shrink-0 rounded-xl bg-slate-100 object-cover" />
-                <div className="min-w-0 flex-1">
-                  <h4 className="text-sm font-extrabold leading-snug text-brand-navy">{project.title}</h4>
-                  <p className="mt-1 text-xs leading-relaxed text-brand-slate">{project.subtitle}</p>
-                  <button type="button" onClick={() => onProjectClick?.(project)} className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-brand-blue hover:underline">
-                    Project details <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              <article key={project.id} className="group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lift">
+                <div className="relative h-48 overflow-hidden bg-slate-100 sm:h-52">
+                  <img
+                    src={project.image}
+                    onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = `${import.meta.env.BASE_URL}projects/morphobot.svg`; }}
+                    alt={`${project.title} project illustration`}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <span className="absolute left-4 top-4 rounded-full bg-brand-blue/95 px-3 py-1 font-mono text-[11px] font-bold text-white shadow-sm">{project.category}</span>
+                </div>
+                <div className="flex flex-1 flex-col p-5 sm:p-6">
+                  <h4 className="text-lg font-extrabold leading-snug text-brand-navy transition-colors group-hover:text-brand-blue">{project.title}</h4>
+                  <p className="mt-2 text-sm leading-relaxed text-brand-slate">{project.subtitle}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {project.tags.slice(0, 4).map((tag) => (
+                      <span key={tag} className="rounded-lg bg-brand-sky-light px-2.5 py-1 text-[11px] font-bold text-brand-blue">{tag}</span>
+                    ))}
+                  </div>
+                  <button type="button" onClick={() => onProjectClick?.(project)} className="mt-auto inline-flex min-h-11 items-center gap-2 self-start pt-5 text-sm font-bold text-brand-blue hover:gap-3 hover:underline focus-visible:rounded">
+                    View Project <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </div>
               </article>

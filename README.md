@@ -36,7 +36,7 @@ The website is built with:
 
 The application is organized into these main sections:
 
-1. **Hero** — concise engineering focus, optimized portrait, contact and downloadable PDF CV (no timed splash).
+1. **Welcome + Hero** — skippable classic robot intro, floating tech icons, round optimized portrait, “Think. Build. Repeat.” illustration, engineering focus, contact and downloadable original PDF CV.
 2. **Projects** — PickBot, P6 and P2 first, each with contribution, test and validation boundaries, source and live case study. Remaining work follows.
 3. **About** — engineering background and interests.
 4. **Skills** — technical areas and tools.
@@ -50,11 +50,12 @@ The application also includes responsive navigation and a scroll-aware robot com
 
 ### Recruiter-ready CV and homepage (P4)
 
+- **Classic identity preserved:** the skippable animated robot welcome, floating technology logos, round portrait, illustrated “Think. Build. Repeat.” motto and original full-image project cards are restored. PickBot, P6 Navigation and P2 Control Center remain the three first featured evidence cards; every other project remains visible in a full-size card with tags and a details button. Reduced-motion visitors and project deep links skip the welcome scene. All case studies, simulations, sections and the original uploaded CV remain accessible.
 - **Download:** [original uploaded 3-page CV](public/Yakhrevan_S_Resume.pdf), restored byte-for-byte and linked in the homepage hero. Its public URL remains unchanged.
 - **Editable Canva alternative:** https://www.canva.com/d/T6LC-1YO3Jk3vAN (separate 1-page design draft, not the currently published CV).
 - **Optional alternate CV draft:** `python3 scripts/generate_resume.py` (requires ReportLab) writes to `tmp/Yakhrevan_S_Resume_generated_draft.pdf` without overwriting the uploaded original. **Review current employer/title, dates, education completion, PickBot joint count and project claims before using either CV for applications**.
 - **Honest ownership:** the owner supplied PickBot arm CAD, project scope, feature requirements and review; the current portfolio simulations were developed with AI assistance. Source and test results are inspectable. No hardware-tested claim is made for these browser demos.
-- **Performance:** removed timed WebGL splash; optimized first-view portrait from JPG to WebP; deferred WebGL lab and scroll companion; lazily loads below-fold illustrations and skill icons. `npm run test:portfolio` checks key recruiter paths.
+- **Performance:** restored the requested classic welcome with a short timeout and Skip button; bypassed it for reduced-motion visitors and project deep links. The first-view portrait uses WebP instead of JPG; below-fold WebGL lab and scroll companion remain deferred. `npm run test:portfolio` checks the recruiter routes and restored original design elements.
 
 ## Interactive Robot System
 

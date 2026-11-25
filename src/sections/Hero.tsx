@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Download, Github, Linkedin, Mail, MapPin } from 'lucide-react';
 import { PERSONAL_INFO as P } from '../data/portfolioData';
+import { FloatingSkills } from '../components/FloatingSkills';
 
 const CAPABILITIES = ['Robot motion & IK', 'Autonomous navigation', 'Embedded control', 'Operator interfaces'];
 
@@ -10,7 +11,7 @@ export function Hero() {
       <div className="absolute inset-0 grid-dots opacity-30 [mask-image:radial-gradient(65%_65%_at_75%_45%,#000,transparent)] pointer-events-none" />
       <div className="absolute top-24 right-0 w-96 h-96 bg-brand-sky/15 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="container-x relative z-10 grid items-center gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,.8fr)] lg:gap-14">
+      <div className="container-x relative z-10 grid items-center gap-12 lg:grid-cols-[minmax(0,1.14fr)_minmax(440px,.86fr)] lg:gap-10 xl:gap-14">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -29,6 +30,10 @@ export function Hero() {
             I build robotics systems
             <span className="block text-brand-blue">you can explore and test.</span>
           </h1>
+
+          <p className="mt-5 max-w-xl text-base font-extrabold tracking-tight text-brand-navy/85 sm:text-lg">
+            A small engineer, bigger tomorrow.
+          </p>
 
           <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-brand-slate">
             I work across mechanical design, embedded control and autonomous software. Explore three independent, interactive engineering demos with public source, case studies and clearly stated simulation limits.
@@ -69,22 +74,37 @@ export function Hero() {
           initial={{ opacity: 0, scale: .96, y: 14 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: .65, delay: .1 }}
-          className="mx-auto w-full max-w-md lg:max-w-none"
+          className="mx-auto w-full max-w-[520px] lg:max-w-none"
         >
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-gradient-to-br from-sky-50 to-blue-100/50 p-4 sm:p-6 shadow-[0_24px_90px_-40px_rgba(15,42,94,.28)]">
-            <div className="absolute -top-24 -right-20 h-72 w-72 rounded-full border border-brand-blue/10" aria-hidden="true" />
-            <div className="relative aspect-[4/4.2] overflow-hidden rounded-[1.5rem] bg-white">
-              <img
-                src={`${import.meta.env.BASE_URL}profile.webp`}
-                alt="Portrait of Yakhrevan S"
-                width="880"
-                height="924"
-                fetchPriority="high"
-                decoding="async"
-                className="h-full w-full object-cover"
-              />
+          <div className="relative rounded-[2rem] border border-blue-100/70 bg-gradient-to-br from-sky-50/80 to-white p-4 shadow-[0_24px_90px_-40px_rgba(15,42,94,.24)] sm:p-6">
+            <div className="relative mx-auto flex h-[280px] max-w-[470px] items-center justify-center sm:h-[390px] lg:h-[430px]">
+              <div className="absolute inset-x-[12%] top-[8%] aspect-square rounded-full bg-brand-sky/20 blur-3xl" aria-hidden="true" />
+              <div className="relative z-10 aspect-square w-[70%] max-w-[345px] overflow-hidden rounded-full border-4 border-white bg-white shadow-[0_20px_60px_-24px_rgba(15,42,94,.4)] ring-4 ring-brand-blue/10">
+                <img
+                  src={`${import.meta.env.BASE_URL}profile.webp`}
+                  alt="Portrait of Yakhrevan S"
+                  width="880"
+                  height="924"
+                  fetchPriority="high"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <FloatingSkills mode="desktop" />
             </div>
-            <div className="relative mt-4 flex items-center justify-between gap-3 rounded-xl border border-blue-100/60 bg-white/90 px-4 py-3">
+            <FloatingSkills mode="mobile" />
+            <div className="relative mt-4 flex items-center gap-4 rounded-xl border border-blue-100/70 bg-white/90 p-3 sm:p-4">
+              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-brand-blue/10 bg-brand-bg sm:h-20 sm:w-20">
+                <img src={`${import.meta.env.BASE_URL}brand/hero-robot-reading.png`} alt="Illustration of a friendly robot reading" loading="lazy" decoding="async" className="h-full w-full object-cover" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[.16em] text-brand-blue">My engineering motto</p>
+                <p className="mt-1 text-base font-extrabold leading-tight text-brand-navy sm:text-lg">
+                  <span className="text-brand-blue">Think.</span> <span className="text-brand-orange">Build.</span> <span className="text-brand-blue">Repeat.</span>
+                </p>
+              </div>
+            </div>
+            <div className="relative mt-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-blue-100/60 bg-white/90 px-4 py-3">
               <div>
                 <p className="text-[10px] font-mono font-bold uppercase tracking-[.18em] text-brand-blue">Portfolio focus</p>
                 <p className="mt-1 text-sm font-extrabold text-brand-navy">Robotics · Controls · Autonomy</p>
