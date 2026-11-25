@@ -50,9 +50,9 @@ The application also includes responsive navigation and a scroll-aware robot com
 
 ### Recruiter-ready CV and homepage (P4)
 
-- **Download:** [one-page public PDF CV](public/Yakhrevan_S_Resume.pdf), also linked in the homepage hero.
-- **Editable Canva CV:** https://www.canva.com/d/T6LC-1YO3Jk3vAN (1-page editable import of the same PDF; verify text after edits).
-- **Rebuild the CV:** `python3 scripts/generate_resume.py` (requires ReportLab). It is based on previously published portfolio facts; **verify current employer/title, dates, education completion and wording before using for applications**.
+- **Download:** [original uploaded 3-page CV](public/Yakhrevan_S_Resume.pdf), restored byte-for-byte and linked in the homepage hero. Its public URL remains unchanged.
+- **Editable Canva alternative:** https://www.canva.com/d/T6LC-1YO3Jk3vAN (separate 1-page design draft, not the currently published CV).
+- **Optional alternate CV draft:** `python3 scripts/generate_resume.py` (requires ReportLab) writes to `tmp/Yakhrevan_S_Resume_generated_draft.pdf` without overwriting the uploaded original. **Review current employer/title, dates, education completion, PickBot joint count and project claims before using either CV for applications**.
 - **Honest ownership:** the owner supplied PickBot arm CAD, project scope, feature requirements and review; the current portfolio simulations were developed with AI assistance. Source and test results are inspectable. No hardware-tested claim is made for these browser demos.
 - **Performance:** removed timed WebGL splash; optimized first-view portrait from JPG to WebP; deferred WebGL lab and scroll companion; lazily loads below-fold illustrations and skill icons. `npm run test:portfolio` checks key recruiter paths.
 

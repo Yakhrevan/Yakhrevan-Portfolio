@@ -1,8 +1,9 @@
-"""Generate the portfolio's one-page public CV from previously published facts.
+"""Generate an optional one-page alternate CV draft from portfolio facts.
 
 Run: python3 scripts/generate_resume.py
-Always confirm degree dates, role wording and project attribution before using
-this draft for applications. No private employer material is included.
+The public portfolio serves the owner's original uploaded three-page CV.
+This script intentionally does not overwrite that original. Always confirm
+degree dates, role wording and project attribution before using this draft.
 """
 
 from pathlib import Path
@@ -17,7 +18,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import HRFlowable, KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 
-DEST = Path(__file__).resolve().parents[1] / "public" / "Yakhrevan_S_Resume.pdf"
+DEST = Path(__file__).resolve().parents[1] / "tmp" / "Yakhrevan_S_Resume_generated_draft.pdf"
 FONT_DIR = Path("/usr/share/fonts/truetype/dejavu")
 pdfmetrics.registerFont(TTFont("DejaVu", str(FONT_DIR / "DejaVuSans.ttf")))
 pdfmetrics.registerFont(TTFont("DejaVuBold", str(FONT_DIR / "DejaVuSans-Bold.ttf")))
@@ -82,6 +83,7 @@ def add_footer(canvas, document):
 
 
 def build():
+    DEST.parent.mkdir(parents=True, exist_ok=True)
     doc = SimpleDocTemplate(
         str(DEST), pagesize=A4, leftMargin=42, rightMargin=42,
         topMargin=35, bottomMargin=49, title="Yakhrevan S - Robotics Engineering CV",
