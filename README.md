@@ -71,6 +71,15 @@ The portfolio emphasizes robotics and mechatronics, with software projects prese
 
 The portfolio's project data includes the following engineering themes:
 
+### P2 — Robot Control Center (Interactive Browser Simulation)
+An independent AMR-operations teaching demo: dispatch jobs and watch a virtual robot traverse a schematic warehouse while battery estimates, pose, velocity, progress and event log update from one deterministic TypeScript state machine. Test task failures, operator pauses, synthetic encoder faults and a latched E-stop (manual release never resumes motion automatically). Export the resulting run as JSON.
+
+- **Live project:** https://yakhrevan.github.io/Yakhrevan-Portfolio/?project=robot-control-center
+- **Editable Canva concept:** https://canva.link/4c0ha93p9ss414j
+- **Source:** [`src/components/ControlCenter/`](src/components/ControlCenter/)
+- **Verification:** `npm run test:control` exercises task completion, dispatch order, E-stop/fault interlocks and export evidence. Requires Node.js 22.6+ for type stripping.
+- **Scope:** synthetic browser-local data only. There is no ROS 2 backend, physical emergency-stop circuit, sensor stream, obstacle avoidance/collision guarantee or hardware-tested battery estimate.
+
 ### P6 — Autonomous Navigation Lab (Interactive Browser Simulation)
 A standalone, **executing** TypeScript navigation experiment with a clickable occupancy grid, a 2.5D/isometric virtual warehouse, footprint-aware 8-connected A*, differential-drive control, simulated 360° LiDAR raycasting, route replanning, simulated topic telemetry, and browser-local emergency stop.
 
@@ -166,6 +175,7 @@ Vite prints the local development URL in the terminal.
 
     npm run lint
     npm run test:nav
+    npm run test:control
     npm run test:pickbot
     npm run test:pickbot-v6
     npm run build
@@ -174,6 +184,7 @@ Vite prints the local development URL in the terminal.
 - **npm run lint** runs TypeScript's no-emit check.
 - **npm run build** runs the TypeScript check and creates the production build.
 - **npm run test:nav** requires Node.js 22.6+ for built-in TypeScript type stripping; the deployed website and `npm run build` remain compatible with the CI Node.js 20 runtime.
+- **npm run test:control** requires Node.js 22.6+ for built-in TypeScript type stripping.
 - **npm run test:pickbot-v6** requires Node.js 22.6+ for type stripping (Node 24 recommended).
 - **npm run preview** serves the built output locally for inspection.
 

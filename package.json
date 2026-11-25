@@ -10,6 +10,7 @@
     "test:pickbot": "node --test tests/pickbot-motion.test.mjs",
     "test:pickbot-v6": "node --experimental-strip-types --test tests/pickbot-v6.test.mjs",
     "test:nav": "node --experimental-strip-types --test tests/navigationCore.test.mjs",
+    "test:control": "node --experimental-strip-types --test tests/controlCore.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

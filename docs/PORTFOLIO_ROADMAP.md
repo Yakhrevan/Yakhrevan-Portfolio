@@ -5,7 +5,7 @@ Last updated: 2026-11-26. This document distinguishes published browser simulati
 | Priority | Workstream | Current verified deliverable | Next acceptance milestone |
 | --- | --- | --- | --- |
 | P1 | Autonomous Navigation Simulation | P6 live A*, LiDAR, differential drive, editable maps, 2.5D world projection, ROS-topic analogues, JSON mission outcomes, deterministic tests | Independent ROS 2 Humble + Gazebo Fortress runtime validation with recorded launch, odom, scan, goal and collision result evidence. Do not claim Nav2/SLAM until integrated and tested. |
-| P2 | Robot Control Center Dashboard | Planned, not implemented | Local simulated battery, robot state, telemetry, task queue, emergency stop, error log and visible offline/simulation badges; backend adapter only after secure ROS 2 bridge exists. |
+| P2 | Robot Control Center Dashboard | Browser-local interactive demo: AMR waypoint travel, simulated battery/odometry, task queue, E-stop latch, fault logs, run export, reducer tests; Canva editable design | Define and test an authenticated, rate-limited ROS 2 telemetry/control bridge on an isolated simulation before considering real hardware. The public demo currently has no backend. |
 | P3 | Professional Engineering Case Studies | PickBot engineering case study exists; P6 has tests and run evidence | Consistent Problem → Architecture → Implementation → Testing → Results for top projects. Mark each claim Concept, Simulation-tested or Hardware-tested and use screenshots/diagrams as evidence. |
 | P4 | Recruiter-Ready Portfolio | Existing featured projects, bio, contact and CV navigation | Review three featured engineering projects, individual contributions, direct CV download, contact CTA, responsive performance and image load. No invented metrics or employer results. |
 | P5 | Fleet Management Case Study | Planned, not implemented | Independent synthetic multi-robot allocation/recovery simulator and interactive architecture; no private company repositories, job information, protocols or secrets copied into public GitHub. |
@@ -15,6 +15,12 @@ Last updated: 2026-11-26. This document distinguishes published browser simulati
 - **Concept:** architecture, mockups or unverified specifications only.
 - **Simulation-tested:** reproducible browser or ROS/Gazebo execution with tests/screenshots and explicit assumptions.
 - **Hardware-tested:** actual robot measurements or recordings with setup and conditions documented. Never infer this from a simulation.
+
+## P2 Robot Control Center demo
+
+The Control Center is an independent one-robot operator-interface simulation. `controlCore.ts` owns the dispatch queue, discrete waypoints, battery estimates, simulated odometry, fault log and safety state. In-browser controls can enqueue tasks, start/pause/resume, inject and acknowledge a synthetic encoder timeout, mark a job failed, latch and manually reset E-stop, reset the session, and export a JSON result. `npm run test:control` verifies these transitions. The schematic warehouse has no physical collision model and the derived velocity/battery values are not calibrated measurements. All ROS-style topic names are interface proposals, not an operational ROS 2 network. Editable Canva design: https://canva.link/4c0ha93p9ss414j.
+
+**P2 review checklist:** task completes with movement; E-stop and fault immediately inhibit motion; release never auto-resumes; queue order is preserved; test suite and production build pass; deployed page is accessible on mobile and desktop.
 
 ## P6 web simulator specification
 

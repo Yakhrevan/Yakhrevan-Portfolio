@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">P2 Robot Control Center dashboard preview</title>
+  <desc id="desc">Illustrative dark industrial operations dashboard featuring a schematic AMR warehouse map, a telemetry graph, task dispatch and a simulated emergency-stop control.</desc>
+  <defs>
+    <linearGradient id="back" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b2434"/><stop offset="1" stop-color="#06131d"/></linearGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="#2b4d5d"/></pattern>
+    <linearGradient id="velocity" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#5ee2e8" stop-opacity=".28"/><stop offset="1" stop-color="#5ee2e8" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="url(#back)"/>
+  <rect x="29" y="29" width="1142" height="662" rx="19" fill="#0c1e2a" stroke="#355062" stroke-width="2"/>
+  <path d="M29 104H1171" stroke="#31495b" stroke-width="2"/>
+  <rect x="57" y="53" width="42" height="40" rx="8" fill="#143747" stroke="#5ac6d4"/>
+  <text x="78" y="79" text-anchor="middle" font-size="21" font-weight="bold" font-family="monospace" fill="#8bf4f2">Y/</text>
+  <text x="120" y="60" font-family="monospace" font-size="12" letter-spacing="2" fill="#89aab7">YAKHREVAN / ENGINEERING LABS</text>
+  <text x="120" y="87" font-family="Arial,sans-serif" font-size="25" font-weight="900" fill="#ecf8fb">ROBOT CONTROL CENTER <tspan fill="#6fe5e9">/</tspan></text>
+  <rect x="881" y="59" width="139" height="28" rx="5" fill="#513c26" stroke="#c49553"/>
+  <circle cx="898" cy="73" r="4" fill="#ffd36e"/>
+  <text x="911" y="78" font-family="monospace" font-size="11" font-weight="bold" fill="#ffdfaa">SIMULATION</text>
+  <rect x="1029" y="59" width="115" height="28" rx="5" fill="#173d40" stroke="#347a72"/>
+  <circle cx="1046" cy="73" r="4" fill="#7ceabf"/>
+  <text x="1058" y="78" font-family="monospace" font-size="10" font-weight="bold" fill="#a4efd5">JOB ACTIVE</text>
+  <g font-family="monospace">
+    <rect x="57" y="120" width="260" height="94" rx="10" fill="#132b39" stroke="#2a4555"/>
+    <rect x="330" y="120" width="260" height="94" rx="10" fill="#132b39" stroke="#2a4555"/>
+    <rect x="603" y="120" width="260" height="94" rx="10" fill="#132b39" stroke="#2a4555"/>
+    <rect x="876" y="120" width="268" height="94" rx="10" fill="#132b39" stroke="#2a4555"/>
+    <text x="76" y="148" font-size="11" letter-spacing="1.8" fill="#8fa9b8">BATTERY SOC</text>
+    <text x="76" y="193" font-size="36" font-weight="bold" fill="#a5f2f1">82.0<tspan font-size="14" fill="#7e9aa8">%</tspan></text>
+    <text x="350" y="148" font-size="11" letter-spacing="1.8" fill="#8fa9b8">GROUND SPEED</text>
+    <text x="350" y="193" font-size="36" font-weight="bold" fill="#f1fbff">0.90<tspan font-size="14" fill="#7e9aa8">m/s</tspan></text>
+    <text x="624" y="148" font-size="11" letter-spacing="1.8" fill="#8fa9b8">QUEUED JOBS</text>
+    <text x="624" y="193" font-size="36" font-weight="bold" fill="#f1fbff">02</text>
+    <text x="895" y="148" font-size="11" letter-spacing="1.8" fill="#8fa9b8">DISTANCE RUN</text>
+    <text x="895" y="193" font-size="36" font-weight="bold" fill="#f1fbff">12.4<tspan font-size="14" fill="#7e9aa8">m</tspan></text>
+  </g>
+  <rect x="57" y="230" width="717" height="293" rx="12" fill="#102532" stroke="#355063"/>
+  <text x="76" y="255" font-family="monospace" font-size="12" font-weight="bold" letter-spacing="1" fill="#e7faff">WAREHOUSE / DIGITAL TWIN</text>
+  <rect x="72" y="270" width="686" height="240" rx="7" fill="#0b1d29" stroke="#274354"/>
+  <rect x="72" y="270" width="686" height="240" rx="7" fill="url(#dots)"/>
+  <g fill="#2b4656" stroke="#567386" stroke-width="1.5">
+    <rect x="206" y="289" width="100" height="32" rx="4"/><rect x="344" y="289" width="100" height="32" rx="4"/><rect x="482" y="289" width="100" height="32" rx="4"/>
+    <rect x="206" y="375" width="100" height="42" rx="4"/><rect x="482" y="375" width="100" height="42" rx="4"/>
+    <rect x="206" y="465" width="100" height="29" rx="4"/><rect x="482" y="465" width="100" height="29" rx="4"/>
+  </g>
+  <path d="M145 472V443V346H364V346H652V319" stroke="#60e4e9" stroke-width="11" opacity=".13" fill="none"/>
+  <path d="M145 472V443V346H364V346H652V319" stroke="#76eaf0" stroke-width="3.5" stroke-dasharray="13 9" fill="none" stroke-linecap="round"/>
+  <g fill="#62dfe7" stroke="#a8fbff"><circle cx="145" cy="472" r="7"/><circle cx="652" cy="319" r="7"/></g>
+  <circle cx="364" cy="346" r="29" fill="#56e8eb" opacity=".12"/>
+  <g transform="translate(364 346)"><rect x="-18" y="-14" width="36" height="28" rx="5" fill="#d5ffff" stroke="#36cbd9" stroke-width="2"/><rect x="-9" y="-8" width="18" height="16" rx="2" fill="#1a5569"/><path d="M10 0H27M21 -5L27 0L21 5" stroke="#071e2d" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+  <rect x="789" y="230" width="355" height="293" rx="12" fill="#102532" stroke="#355063"/>
+  <text x="809" y="255" font-family="monospace" font-size="12" font-weight="bold" letter-spacing="1" fill="#e7faff">LIVE TELEMETRY</text>
+  <text x="810" y="292" font-family="monospace" font-size="11" fill="#8ba6b5">VELOCITY / ODOMETRY</text>
+  <text x="1107" y="292" text-anchor="end" font-family="monospace" font-size="19" fill="#a6fcff">0.90</text>
+  <rect x="809" y="307" width="315" height="120" rx="6" fill="#0a1c29"/>
+  <g stroke="#344b5c" stroke-width="1" stroke-dasharray="4 6"><path d="M809 337H1124M809 367H1124M809 397H1124"/></g>
+  <path d="M809 397L838 382L858 397L881 350L911 344L938 348L966 335L990 337L1016 321L1045 335L1073 325L1100 322L1124 325V427H809Z" fill="url(#velocity)"/>
+  <path d="M809 397L838 382L858 397L881 350L911 344L938 348L966 335L990 337L1016 321L1045 335L1073 325L1100 322L1124 325" stroke="#73eef2" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="810" y="458" font-family="monospace" font-size="11" fill="#90a9b8">/CMD_VEL  0.90 / 0.00 / 0.00</text>
+  <text x="810" y="485" font-family="monospace" font-size="11" fill="#90a9b8">/ODOM  X 5.40  Y 4.20</text>
+  <rect x="57" y="538" width="545" height="130" rx="11" fill="#102532" stroke="#355063"/>
+  <text x="77" y="563" font-family="monospace" font-size="12" font-weight="bold" letter-spacing="1" fill="#f3fcff">TASK DISPATCH</text>
+  <rect x="76" y="575" width="506" height="35" rx="6" fill="#173a43" stroke="#45898f"/>
+  <text x="91" y="598" font-family="monospace" font-size="13" fill="#adf6f7">JOB-101</text>
+  <text x="184" y="598" font-family="Arial,sans-serif" font-size="13" fill="#e0eff4">Inbound tote → Quality inspection</text>
+  <rect x="76" y="621" width="438" height="4" rx="2" fill="#294352"/>
+  <rect x="76" y="621" width="300" height="4" rx="2" fill="#7debf0"/>
+  <text x="77" y="649" font-family="monospace" font-size="11" fill="#8db4bd">QUEUED  JOB-102 / DISPATCH STATION</text>
+  <rect x="616" y="538" width="242" height="130" rx="11" fill="#102532" stroke="#355063"/>
+  <text x="636" y="562" font-family="monospace" font-size="12" font-weight="bold" fill="#f3fcff">OPERATOR CONTROL</text>
+  <rect x="635" y="575" width="204" height="35" rx="7" fill="#a4f2f0"/>
+  <text x="737" y="598" text-anchor="middle" font-family="monospace" font-size="12" font-weight="bold" fill="#092c39">START / PAUSE</text>
+  <rect x="635" y="621" width="204" height="30" rx="7" fill="#ee686d"/>
+  <text x="737" y="640" text-anchor="middle" font-family="monospace" font-size="11" font-weight="bold" fill="#2b1218">EMERGENCY STOP</text>
+  <rect x="873" y="538" width="271" height="130" rx="11" fill="#102532" stroke="#355063"/>
+  <text x="892" y="562" font-family="monospace" font-size="12" font-weight="bold" fill="#f3fcff">EVENT LOG</text>
+  <text x="891" y="589" font-family="monospace" font-size="11" fill="#80e2c2">●  JOB-100 completed</text>
+  <text x="891" y="615" font-family="monospace" font-size="11" fill="#a7bbc8">●  JOB-101 running</text>
+  <text x="891" y="641" font-family="monospace" font-size="11" fill="#7e9dab">●  Simulated telemetry</text>
+</svg>

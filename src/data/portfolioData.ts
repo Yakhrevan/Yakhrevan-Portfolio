@@ -18,6 +18,35 @@ export const PERSONAL_INFO = {
 
 export const PROJECTS_DATA: Project[] = [
   {
+    id: 'robot-control-center',
+    title: 'P2 — Robot Control Center',
+    subtitle: 'Interactive AMR telemetry, task dispatch & safe-stop operations',
+    category: 'Robotics',
+    description: 'A live browser-local robotics operations console with a moving virtual AMR, task queue, telemetry, fault handling and emergency-stop interlock.',
+    longDescription: 'An independently implemented operator-console simulation that brings together a synthetic warehouse map, a deterministic waypoint-motion reducer, a job dispatch queue, battery and motion telemetry, event logs, fault injection and latched emergency stop. The interactive controls affect one shared simulated robot state, and the run can be downloaded as JSON evidence. This is a software demonstration only: it has no connection to ROS 2, an AMR, an employer system, physical sensors or a validated safety controller. An editable visual concept was also developed in Canva.',
+    tags: ['Robot Telemetry', 'Task Dispatch', 'E-Stop State Machine', 'TypeScript', 'Simulation Evidence'],
+    image: `${ASSET_BASE}projects/control-center.svg`,
+    highlights: [
+      'Functional task dispatch and waypoint-based virtual AMR movement',
+      'Live local battery, speed, odometry and mission-distance estimates',
+      'Pause, resume, fault injection and operator recovery states',
+      'Latched emergency stop that cannot silently auto-resume',
+      'Timestamped error log and downloadable simulation results',
+      'Deterministic reducer tests with explicit no-hardware evidence boundary',
+    ],
+    specs: [
+      { label: 'Status', value: 'Interactive Browser Simulation' },
+      { label: 'Control Model', value: 'Deterministic Task State Machine' },
+      { label: 'Visualization', value: 'Illustrative Warehouse / One AMR' },
+      { label: 'Telemetry', value: 'Simulated Battery, Pose, Velocity' },
+      { label: 'ROS 2 / Hardware', value: 'Not Connected' },
+    ],
+    robotMood: 'Focused',
+    robotComment: 'Dispatch a job, monitor its telemetry and test the safety interlock in the browser.',
+    githubUrl: 'https://github.com/Yakhrevan/Yakhrevan-Portfolio/tree/main/src/components/ControlCenter',
+    featured: true,
+  },
+  {
     id: "navigation-lab",
     title: "P6 — Autonomous Navigation Lab",
     subtitle: "Live autonomous navigation, isometric world & simulated LiDAR",
