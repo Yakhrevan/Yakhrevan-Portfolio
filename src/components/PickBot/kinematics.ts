@@ -108,11 +108,21 @@ export function intersectsChassis(controls: PickBotControls): boolean {
   return false;
 }
 
+/** Axis-aligned virtual 70 mm payload vs floor and simplified rover deck. */
+export function objectIntersectsEnvironment(target: Position3): boolean {
+  if (![target.x, target.y, target.z].every(Number.isFinite)) return true;
+  const halfBlock = ARM.objectSize / 2;
+  if (target.y - halfBlock < 0) return true;
+  return target.y - halfBlock < 0.25 && target.y + halfBlock > 0.12 &&
+    Math.abs(target.x) < 0.215 + halfBlock && Math.abs(target.z) < 0.175 + halfBlock;
+}
+
 /** Analytic yaw + two-link IK, sweeping tool pitch to satisfy J2-J4 limits. */
 export function solveIK(target: Position3, previous?: PickBotControls): IKResult {
   if (![target.x, target.y, target.z].every(Number.isFinite)) return { ok: false, reason: 'Invalid target coordinates.' };
-  if (target.y < 0.055) return { ok: false, reason: 'Target intersects the ground plane.' };
+  if (target.y - ARM.objectSize / 2 < 0) return { ok: false, reason: 'Target block intersects the ground plane.' };
   if (target.y > 0.95) return { ok: false, reason: 'Target is above the simulated arm workspace.' };
+  if (objectIntersectsEnvironment(target)) return { ok: false, reason: 'Collision: virtual block overlaps the rover chassis envelope.' };
   const dx = target.x - ARM.baseX;
   const radius = Math.hypot(dx, target.z);
   if (radius < 0.09) return { ok: false, reason: 'Target overlaps the arm pedestal / rover body.' };

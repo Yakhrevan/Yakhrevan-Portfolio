@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
   ARM, MECANUM, armPoints, distance3, graspContact, integrateMecanum,
-  intersectsChassis, mecanumWheelRadPerSec, mecanumWheelRpm,
+  intersectsChassis, objectIntersectsEnvironment, mecanumWheelRadPerSec, mecanumWheelRpm,
   solveIK, toolTip, withinJointLimits,
 } from '../src/components/PickBot/kinematics.ts';
 import { DRIVE_PATTERNS, DROP_POINT, PICKUP_POINT } from '../src/components/PickBot/demo.ts';
@@ -33,9 +33,17 @@ test('IK rejects NaN, ground collision, chassis/arm overlap and out-of-reach tar
     { x: NaN, y: 0.284, z: 0 },
     { x: 0.5, y: 0.01, z: 0 },
     { x: 0, y: 0.284, z: 0 },
+    { x: 0.22, y: 0.284, z: 0 },
     { x: 1.1, y: 0.284, z: 0 },
     { x: -0.5, y: 0.284, z: 0 },
   ]) assert.equal(solveIK(target).ok, false, JSON.stringify(target));
+});
+
+test('70 mm payload AABB detects floor and rover-deck overlap, but allows lifted cargo', () => {
+  assert.equal(objectIntersectsEnvironment({ x: 0.22, y: 0.284, z: 0 }), true);
+  assert.equal(objectIntersectsEnvironment({ x: 0.22, y: 0.404, z: 0 }), false);
+  assert.equal(objectIntersectsEnvironment({ x: 0.5, y: 0.284, z: 0 }), false);
+  assert.equal(objectIntersectsEnvironment({ x: 0.5, y: 0.02, z: 0 }), true);
 });
 
 test('pickup is blocked for open gripper, distant object and limit violations', () => {

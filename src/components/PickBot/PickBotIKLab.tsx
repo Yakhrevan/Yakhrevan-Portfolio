@@ -105,7 +105,7 @@ export function PickBotIKLab({ target, controls, solution, attached, notice, onT
         <button type="button" disabled={!attached} onClick={onLower} className="col-span-2 rounded-xl border border-slate-200 bg-white px-3 py-3 text-xs font-bold text-brand-slate disabled:cursor-not-allowed disabled:opacity-40">Lower onto support plane</button>
       </div>
       <p className="min-h-9 text-xs leading-relaxed text-brand-slate" aria-live="polite">{notice}</p>
-      <p className="text-[11px] leading-relaxed text-slate-500">Simulation uses exact V3 GLB joint origins; limits and chassis envelope are illustrative. Dragging tests reachability; attachment happens only after the virtual fingers close *and* the tool contacts the target.</p>
+      <p className="text-[11px] leading-relaxed text-slate-500">Simulation uses V3 GLB joint origins plus simplified block/deck collision volumes and illustrative joint limits. Attachment happens only after virtual fingers close and the tool contacts the target. No rigid-body physics engine runs here.</p>
     </div>
   );
 }

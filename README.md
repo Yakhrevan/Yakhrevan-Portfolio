@@ -94,7 +94,7 @@ A mobile manipulation concept combining a mecanum-wheel base, a multi-degree-of-
 - Drag-to-target analytic IK for four arm joints, automatic reach/limit checks, a simplified chassis collision envelope, and a virtual grasp that attaches only after gripper closure and tool-target contact.
 - Two-axis mecanum joystick plus `linear.x`, `linear.y`, `angular.z` inputs; computed FL/FR/RL/RR wheel RPM from a 91 mm concept wheel radius and a plotted open-loop trajectory.
 - An initial ROS 2 Humble `pickbot_description` package with simplified URDF/Xacro, RViz display launch, controller YAML template, and MoveIt 2 SRDF arm-group starting point.
-- Seven additional mathematical regression tests. The original V5 calibrated playback remains available in its own studio tab.
+- Eight additional mathematical regression tests. The original V5 calibrated playback remains available in its own studio tab.
 
 **Try it:** https://yakhrevan.github.io/Yakhrevan-Portfolio/?project=pickbot
 
