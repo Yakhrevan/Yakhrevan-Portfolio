@@ -72,13 +72,15 @@ The portfolio emphasizes robotics and mechatronics, with software projects prese
 The portfolio's project data includes the following engineering themes:
 
 ### P6 — Autonomous Navigation Lab (Interactive Browser Simulation)
-A standalone TypeScript navigation experiment with a clickable occupancy grid, footprint-aware 8-connected A*, differential-drive control, simulated 360° LiDAR raycasting, route replanning, simulated topic telemetry, and browser-local emergency stop.
+A standalone, **executing** TypeScript navigation experiment with a clickable occupancy grid, a 2.5D/isometric virtual warehouse, footprint-aware 8-connected A*, differential-drive control, simulated 360° LiDAR raycasting, route replanning, simulated topic telemetry, and browser-local emergency stop.
 
 - **Live project:** https://yakhrevan.github.io/Yakhrevan-Portfolio/?project=navigation-lab
 - **Source:** [`src/components/NavLab/`](src/components/NavLab/)
-- **Try:** choose a map, select **Run mission**, click an alternate goal, or select **Obstacles** and change the map to force replanning.
-- **Verification:** `npm run test:nav` checks pathfinding, no-collision goal arrivals across three maps, map edits, simulated range readings, goal rejection, and emergency stop behavior. This test command requires Node.js 22.6+ (Node 24 recommended).
+- **Try:** choose a map, select **Run mission**, use 5× or 10× speed to reach the goal faster, switch **World view / 2D map**, add an obstacle to force replanning, and **Download run JSON** to inspect achieved distance, final pose, goal error, and trajectory.
+- **Verification:** `npm run test:nav` checks pathfinding, no-collision goal arrivals across three maps, map edits, range readings, goal rejection, emergency-stop behavior, mission-report evidence, trajectory reset and acceleration determinism. This test command requires Node.js 22.6+ (Node 24 recommended).
 - **Scope:** the lab uses a deterministic browser-side simulator and ROS 2-inspired topic labels. It does **not** execute ROS 2, Nav2, SLAM Toolbox, Gazebo, or physical robot hardware. These remain possible future integration stages.
+
+See [`docs/PORTFOLIO_ROADMAP.md`](docs/PORTFOLIO_ROADMAP.md) for the next workstream priorities: ROS 2/Gazebo integration, robot control dashboard, evidence-led case studies, recruiter-focused polish, and an independent fleet demo.
 
 ### Morphobot — Hybrid Rover/Drone Concept
 A transformable robotics concept exploring ground and aerial mobility, ROS 2-based autonomy, embedded-controller integration, and simulation/perception/navigation technologies.

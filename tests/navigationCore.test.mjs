@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   GRID_HEIGHT, GRID_WIDTH, LIDAR_BEAMS, LIDAR_MAX_RANGE,
   collides, createInitialState, createObstacles, distance, findPath,
-  navigationReducer, pointKey, simulateScan,
+  navigationReducer, pointKey, simulateScan, summarizeMission,
 } from '../src/components/NavLab/navigationCore.ts';
 
 function runUntilTerminal(initial, maxTicks = 1200) {
@@ -94,4 +94,47 @@ test('boundary walls and footprint prevent invalid motion', () => {
   assert.ok(state.obstacles.has(pointKey(GRID_WIDTH - 1, GRID_HEIGHT - 1)));
   assert.equal(collides({ x: 0.1, y: 8 }, state.obstacles), true);
   assert.equal(collides(state.robot, state.obstacles), false);
+});
+
+test('mission report contains real simulated route and repeatable outcome evidence', () => {
+  const outcome = runUntilTerminal(createInitialState('warehouse'));
+  const report = summarizeMission(outcome);
+  assert.equal(report.status, 'reached');
+  assert.equal(report.scenario, 'warehouse');
+  assert.match(report.engine, /not ROS 2 or Gazebo/);
+  assert.equal(report.collisionFree, true);
+  assert.ok(report.trajectory.length > 10);
+  assert.ok(report.averageSpeedMps > 0 && report.averageSpeedMps < 0.85);
+  assert.ok(report.goalErrorMeters <= 0.32);
+  assert.equal(report.distanceMeters, outcome.distanceTraveled);
+  assert.equal(report.simulatedSeconds, outcome.simulationTime);
+  assert.equal(report.replans, 0);
+  assert.deepEqual(report.finalPose, outcome.robot);
+  assert.deepEqual(report.trajectory[0], createInitialState().robot);
+});
+
+test('trajectory resets with scenario and remains frozen during emergency stop', () => {
+  let state = navigationReducer(createInitialState(), { type: 'start' });
+  for (let i = 0; i < 44; i++) state = navigationReducer(state, { type: 'tick' });
+  assert.ok(state.trajectory.length > 1);
+  const frozen = navigationReducer(state, { type: 'emergency-stop' });
+  assert.deepEqual(navigationReducer(frozen, { type: 'tick' }).trajectory, frozen.trajectory);
+  assert.equal(summarizeMission(frozen).status, 'estop');
+  const reset = navigationReducer(frozen, { type: 'set-scenario', scenario: 'open' });
+  assert.equal(reset.simulationTime, 0);
+  assert.equal(reset.trajectory.length, 1);
+  assert.equal(reset.routeRevisions, 1);
+});
+
+test('multiple accelerated ticks produce the same deterministic result as real-time ticks', () => {
+  const initial = navigationReducer(createInitialState('aisles'), { type: 'start' });
+  let normal = initial;
+  let accelerated = initial;
+  for (let t = 0; t < 200; t++) normal = navigationReducer(normal, { type: 'tick' });
+  for (let chunk = 0; chunk < 20; chunk++) {
+    for (let t = 0; t < 10; t++) accelerated = navigationReducer(accelerated, { type: 'tick' });
+  }
+  assert.deepEqual(accelerated.robot, normal.robot);
+  assert.deepEqual(accelerated.trajectory, normal.trajectory);
+  assert.equal(accelerated.simulationTime, normal.simulationTime);
 });

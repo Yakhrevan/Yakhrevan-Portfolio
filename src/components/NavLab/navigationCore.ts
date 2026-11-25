@@ -33,6 +33,23 @@ export type LabState = {
   simulationTime: number;
   distanceTraveled: number;
   routeRevisions: number;
+  trajectory: Pose[];
+  events: string[];
+};
+
+export type MissionReport = {
+  engine: 'Browser-local TypeScript kinematics (not ROS 2 or Gazebo)';
+  scenario: Scenario;
+  status: LabStatus;
+  simulatedSeconds: number;
+  distanceMeters: number;
+  goalErrorMeters: number;
+  averageSpeedMps: number;
+  replans: number;
+  collisionFree: boolean;
+  finalPose: Pose;
+  goal: Point;
+  trajectory: Pose[];
   events: string[];
 };
 
@@ -173,6 +190,25 @@ export function routeLength(pose: Point, route: Point[]): number {
   return total;
 }
 
+/** Reproducible, browser-local run evidence; no claimed hardware telemetry. */
+export function summarizeMission(state: LabState): MissionReport {
+  return {
+    engine: 'Browser-local TypeScript kinematics (not ROS 2 or Gazebo)',
+    scenario: state.scenario,
+    status: state.status,
+    simulatedSeconds: state.simulationTime,
+    distanceMeters: state.distanceTraveled,
+    goalErrorMeters: distance(state.robot, state.goal),
+    averageSpeedMps: state.simulationTime > 0 ? state.distanceTraveled / state.simulationTime : 0,
+    replans: Math.max(0, state.routeRevisions - 1),
+    collisionFree: !collides(state.robot, state.obstacles),
+    finalPose: { ...state.robot },
+    goal: { ...state.goal },
+    trajectory: state.trajectory.map((pose) => ({ ...pose })),
+    events: [...state.events],
+  };
+}
+
 /** Discrete, collision-aware 360° range scan in metre units. */
 export function simulateScan(robot: Pose, obstacles: Set<string>): ScanBeam[] {
   return Array.from({ length: LIDAR_BEAMS }, (_, index) => {
@@ -234,6 +270,7 @@ export function createInitialState(scenario: Scenario = 'warehouse'): LabState {
     simulationTime: 0,
     distanceTraveled: 0,
     routeRevisions: 1,
+    trajectory: [{ ...robot }],
     events: ['Local simulation initialized.', `${route.length} waypoints planned.`, 'Select Run mission to start.'],
   };
 }
@@ -298,13 +335,16 @@ export function navigationReducer(state: LabState, action: LabAction): LabState 
       if (collides(next, state.obstacles)) {
         return { ...state, status: 'blocked', command: { linear: 0, angular: 0 }, events: note(state, 'Safety stop: footprint collision predicted.') };
       }
+      const nextTime = state.simulationTime + STEP_SECONDS;
+      const sample = Math.floor(nextTime / (STEP_SECONDS * 4)) > Math.floor(state.simulationTime / (STEP_SECONDS * 4));
       return {
         ...state,
         robot: next,
         route,
         command: { linear, angular },
-        simulationTime: state.simulationTime + STEP_SECONDS,
+        simulationTime: nextTime,
         distanceTraveled: state.distanceTraveled + distance(state.robot, next),
+        trajectory: sample ? [...state.trajectory.slice(-1498), next] : state.trajectory,
       };
     }
   }

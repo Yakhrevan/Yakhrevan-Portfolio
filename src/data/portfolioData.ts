@@ -20,18 +20,20 @@ export const PROJECTS_DATA: Project[] = [
   {
     id: "navigation-lab",
     title: "P6 — Autonomous Navigation Lab",
-    subtitle: "Interactive A* planning, differential drive & simulated LiDAR",
+    subtitle: "Live autonomous navigation, isometric world & simulated LiDAR",
     category: "Robotics",
-    description: "A testable browser-local robot navigation simulator with collision-aware A*, differential-drive motion and range sensing.",
-    longDescription: "P6 is an interactive, deterministic navigation engineering demo built for this portfolio. The user can set destinations, edit an occupancy grid, trigger path replanning, observe simulated LiDAR returns, and inspect velocity/odometry telemetry. The browser controller uses A* search and differential-drive kinematics. ROS 2 topic names are shown as learning analogues: this version is not connected to ROS 2, Nav2, Gazebo or physical hardware.",
-    tags: ["A* Path Planning", "Differential Drive", "Simulated LiDAR", "TypeScript", "ROS 2 Concepts"],
+    description: "An executable browser-local navigation lab with isometric warehouse view, live LiDAR, collision-aware A*, autonomous movement and downloadable mission results.",
+    longDescription: "P6 is an interactive, deterministic navigation engineering demo built for this portfolio. Users can set goals, edit an occupancy grid, trigger path replanning, visualize the robot in a Gazebo-inspired but non-physical isometric warehouse, inspect simulated LiDAR and odometry/velocity telemetry, accelerate actual simulation steps, and download a mission result report. The controller uses A* search with differential-drive kinematics and collision checks; it is not prerecorded. ROS 2 topic names are learning analogues: this build does not execute ROS 2, Nav2, Gazebo dynamics or physical robot hardware.",
+    tags: ["A* Path Planning", "Isometric World", "Simulated LiDAR", "TypeScript", "Run Evidence"],
     image: `${ASSET_BASE}projects/navigation-lab.svg`,
     highlights: [
       "Click-to-set goals with footprint-aware A* path planning",
       "Differential-drive controller integrates real simulated robot motion",
       "360° raycast LiDAR returns with 60 range beams",
       "Dynamic obstacle editing, replanning and collision checks",
-      "Browser-local emergency stop and simulated ROS topic telemetry"
+      "Browser-local emergency stop and simulated ROS topic telemetry",
+      "Isometric virtual warehouse with live robot path and goal",
+      "1×, 5× and 10× simulation speed plus downloadable mission-result JSON"
     ],
     specs: [
       { label: "Status", value: "Interactive Browser Simulation" },

@@ -1,13 +1,14 @@
-import { useEffect, useMemo, useReducer, type MouseEvent } from 'react';
+import { useEffect, useMemo, useReducer, useState, type MouseEvent } from 'react';
 import {
   Activity, AlertTriangle, CheckCircle2, CircleDot, Crosshair, Gauge, MapPin,
-  MousePointer2, Pause, Play, Radar, RotateCcw, Route, ShieldAlert, Terminal,
+  Download, Layers3, MousePointer2, Pause, Play, Radar, RotateCcw, Route, ShieldAlert, Terminal,
 } from 'lucide-react';
 import {
   GRID_HEIGHT, GRID_WIDTH, LIDAR_BEAMS, LIDAR_MAX_RANGE, STEP_SECONDS,
   WHEEL_BASE, WHEEL_RADIUS, createInitialState, distance, navigationReducer,
-  routeLength, simulateScan, type LabStatus, type Scenario,
+  routeLength, simulateScan, summarizeMission, type LabStatus, type Scenario,
 } from './navigationCore';
+import { NavWorldView } from './NavWorldView';
 
 const CELL = 40;
 const px = (coordinate: number) => coordinate * CELL;
@@ -52,12 +53,17 @@ function SmallStat({ label, value, unit, highlight = false }: {
 
 export function NavLab() {
   const [state, dispatch] = useReducer(navigationReducer, undefined, () => createInitialState());
+  const [view, setView] = useState<'map' | 'world'>('world');
+  const [speed, setSpeed] = useState<1 | 5 | 10>(5);
 
   useEffect(() => {
     if (state.status !== 'navigating') return;
-    const timer = window.setInterval(() => dispatch({ type: 'tick' }), STEP_SECONDS * 1000);
+    const timer = window.setInterval(() => {
+      // Each dispatch is a real physics/decision step, never a precomputed animation.
+      for (let step = 0; step < speed; step++) dispatch({ type: 'tick' });
+    }, STEP_SECONDS * 1000);
     return () => window.clearInterval(timer);
-  }, [state.status]);
+  }, [state.status, speed]);
 
   const scan = useMemo(() => simulateScan(state.robot, state.obstacles), [state.robot, state.obstacles]);
   const remaining = distance(state.robot, state.goal);
@@ -69,6 +75,19 @@ export function NavLab() {
     .map((point) => `${px(point.x)},${px(point.y)}`).join(' ');
   const isRunning = state.status === 'navigating';
   const canStart = state.status === 'ready' || state.status === 'paused';
+  const report = useMemo(() => summarizeMission(state), [state]);
+
+  function downloadReport() {
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `navigation-${state.scenario}-${state.status}-report.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  }
 
   function handleMapClick(event: MouseEvent<SVGSVGElement>) {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -85,13 +104,13 @@ export function NavLab() {
           <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2 items-center">
-                <span className="rounded-md bg-orange-400/15 px-2.5 py-1 text-[10px] font-extrabold tracking-[0.18em] uppercase text-orange-300">P6 / Simulation</span>
+                <span className="rounded-md bg-orange-400/15 px-2.5 py-1 text-[10px] font-extrabold tracking-[0.18em] uppercase text-orange-300">P6 · Live Simulation</span>
                 <span className="rounded-md border border-white/10 px-2.5 py-1 text-[10px] tracking-[0.1em] uppercase text-slate-400">No physical robot connection</span>
               </div>
               <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">Autonomous Navigation Lab</h2>
               <p className="max-w-xl text-sm leading-relaxed text-slate-400">
-                Plan a goal, drive a differential robot, inspect 360° LiDAR, and intervene when an obstacle appears.
-                Every movement is produced by a collision-aware controller — not a prerecorded animation.
+                Run a collision-aware differential robot through a virtual warehouse. Switch between a live 2D map and an isometric world,
+                inspect 360° LiDAR and ROS-style telemetry, then export the real simulation run results.
               </p>
             </div>
             <div className={`self-start rounded-full border px-3 py-2 flex items-center gap-2 text-[11px] font-bold tracking-wide ${statusColor[state.status]}`} role="status" aria-live="polite">
@@ -105,17 +124,19 @@ export function NavLab() {
           <div className="min-w-0 border-b border-white/10 lg:border-b-0 lg:border-r">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-3 md:px-6">
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                <Radar className="h-4 w-4 text-cyan-300" /> LIVE LOCAL MAP
-                <span className="text-[10px] font-mono text-slate-500">24 × 16 m</span>
+                <Radar className="h-4 w-4 text-cyan-300" /> LIVE NAVIGATION
+                <span className="text-[10px] font-mono text-slate-500">24 × 16 m environment</span>
               </div>
-              <div className="flex items-center gap-3 text-[10px] text-slate-400">
-                <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-full bg-cyan-400" /> Route</span>
-                <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-full bg-orange-400" /> Robot</span>
-                <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-full bg-emerald-400" /> Goal</span>
+              <div role="tablist" aria-label="Navigation visualization" className="flex gap-1 rounded-xl border border-white/10 bg-[#0a1728] p-1">
+                <button type="button" role="tab" aria-selected={view === 'world'} onClick={() => setView('world')} className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-[11px] font-bold ${view === 'world' ? 'bg-cyan-400 text-[#092034]' : 'text-slate-300 hover:bg-white/10'}`}><Layers3 className="h-3.5 w-3.5" /> World view</button>
+                <button type="button" role="tab" aria-selected={view === 'map'} onClick={() => setView('map')} className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-[11px] font-bold ${view === 'map' ? 'bg-cyan-400 text-[#092034]' : 'text-slate-300 hover:bg-white/10'}`}><Radar className="h-3.5 w-3.5" /> 2D map</button>
               </div>
             </div>
             <div className="relative bg-[#0a1728] p-2 sm:p-4">
               <div className="relative overflow-hidden rounded-xl border border-[#254057]">
+                {view === 'world' ? (
+                  <NavWorldView obstacles={state.obstacles} robot={state.robot} goal={state.goal} route={state.route} trajectory={state.trajectory} scan={scan} />
+                ) : (
                 <svg
                   viewBox={`0 0 ${px(GRID_WIDTH)} ${px(GRID_HEIGHT)}`}
                   className="aspect-[3/2] w-full cursor-crosshair select-none touch-manipulation"
@@ -135,6 +156,7 @@ export function NavLab() {
                     <polyline points={linePath} fill="none" stroke="#33d9f6" strokeWidth="3.3" strokeOpacity="0.9" strokeDasharray="11 9" strokeLinejoin="round" strokeLinecap="round" />
                     {state.route.map((point, index) => index % 3 === 0 && <circle key={`waypoint-${index}`} cx={px(point.x)} cy={px(point.y)} r="3" fill="#9ceef9" />)}
                   </>}
+                  {state.trajectory.length > 1 && <polyline points={state.trajectory.map((point) => `${px(point.x)},${px(point.y)}`).join(' ')} fill="none" stroke="#fb923c" strokeWidth="3.5" strokeOpacity="0.85" strokeLinecap="round" strokeLinejoin="round" />}
                   {scan.map((beam, index) => <line key={`ray-${index}`} x1={px(state.robot.x)} y1={px(state.robot.y)} x2={px(beam.x)} y2={px(beam.y)} stroke="#5de3dc" strokeOpacity="0.16" strokeWidth="1.4" />)}
                   {scan.filter((beam) => beam.hit).map((beam, index) => <circle key={`return-${index}`} cx={px(beam.x)} cy={px(beam.y)} r="2" fill="#64e9ce" opacity="0.76" />)}
                   <circle cx={px(state.goal.x)} cy={px(state.goal.y)} r="14" fill="#10b981" fillOpacity="0.2" stroke="#34d399" strokeWidth="2" />
@@ -149,8 +171,9 @@ export function NavLab() {
                   </g>
                   {Array.from({ length: GRID_WIDTH }, (_, x) => x % 4 === 2 && <text key={`x-${x}`} x={px(x + 0.5)} y={px(GRID_HEIGHT) - 9} fontSize="10" textAnchor="middle" fill="#7c9bb0">{x}m</text>)}
                 </svg>
+                )}
                 <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded-lg bg-[#091624]/90 px-3 py-1.5 text-[10px] font-mono text-cyan-300 border border-cyan-300/20 pointer-events-none">
-                  <Crosshair className="h-3 w-3" /> {state.interactionMode === 'goal' ? 'CLICK TO SET GOAL' : 'CLICK TO EDIT OBSTACLES'}
+                  <Crosshair className="h-3 w-3" /> {view === 'world' ? 'SWITCH TO 2D MAP TO EDIT' : state.interactionMode === 'goal' ? 'CLICK TO SET GOAL' : 'CLICK TO EDIT OBSTACLES'}
                 </div>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-[10px]">
@@ -169,7 +192,7 @@ export function NavLab() {
                   className="rounded-full border border-cyan-300/25 bg-cyan-300/5 px-3 py-1.5 font-semibold text-cyan-200 hover:bg-cyan-300/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300"
                 >{preset.label}</button>)}
               </div>
-              <p className="mt-3 text-[11px] text-slate-500">Grid: 1 m / cell · LiDAR: {LIDAR_BEAMS} beams, {format(LIDAR_MAX_RANGE, 1)} m max · Footprint-aware A* · Differential-drive kinematics</p>
+              <p className="mt-3 text-[11px] text-slate-500">Grid: 1 m/cell · LiDAR: {LIDAR_BEAMS} beams, {format(LIDAR_MAX_RANGE, 1)} m · Footprint-aware A* · World view is an isometric visualization, not a Gazebo physics renderer</p>
             </div>
             <div className="grid grid-cols-2 gap-2 border-t border-white/10 p-4 sm:grid-cols-4 md:p-5">
               <SmallStat label="Goal distance" value={format(remaining)} unit="m" highlight />
@@ -215,6 +238,15 @@ export function NavLab() {
               </div>
               <p className="mt-2 flex gap-1.5 text-[11px] leading-relaxed text-slate-500"><AlertTriangle className="h-3.5 w-3.5 shrink-0" /> E-stop here only affects this browser simulation.</p>
             </div>
+            <div>
+              <label htmlFor="nav-speed" className="text-[10px] uppercase font-bold tracking-[0.16em] text-slate-400">Simulation speed</label>
+              <select id="nav-speed" value={speed} onChange={(event) => setSpeed(Number(event.target.value) as 1 | 5 | 10)} className="mt-2 w-full rounded-xl border border-slate-600 bg-[#192a40] px-3 py-2.5 text-sm font-semibold text-white outline-none focus:border-cyan-300">
+                <option value={1}>1× · Real-time</option>
+                <option value={5}>5× · Fast</option>
+                <option value={10}>10× · Demo run</option>
+              </select>
+              <p className="mt-2 text-[11px] text-slate-500">Accelerates real simulation steps to reach and inspect mission results sooner.</p>
+            </div>
             <div className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 space-y-2.5">
               <p className="flex items-center gap-2 text-[10px] uppercase font-bold tracking-[0.16em] text-slate-400"><Gauge className="h-4 w-4 text-cyan-300" /> Drive telemetry</p>
               <div className="flex justify-between text-xs"><span className="text-slate-400">Linear</span><span className="font-mono text-white">{format(state.command.linear)} m/s</span></div>
@@ -223,6 +255,23 @@ export function NavLab() {
               <div className="flex justify-between text-xs"><span className="text-slate-400">Route revisions</span><span className="font-mono text-white">{state.routeRevisions}</span></div>
             </div>
           </aside>
+        </div>
+
+        <div className="border-t border-white/10 bg-[#0c192a] px-5 py-5 md:px-7">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-orange-300">Mission result · reproducible run evidence</p>
+              <h3 className="mt-1 text-lg font-extrabold text-white">{state.status === 'reached' ? 'Mission completed successfully' : state.status === 'blocked' ? 'Mission blocked — review the route' : state.status === 'estop' ? 'Mission stopped by operator' : isRunning ? 'Simulation running…' : 'Ready to simulate'}</h3>
+            </div>
+            <button type="button" onClick={downloadReport} className="inline-flex items-center gap-2 rounded-xl border border-cyan-300/30 bg-cyan-300/10 px-4 py-2.5 text-xs font-bold text-cyan-200 hover:bg-cyan-300/20"><Download className="h-4 w-4" /> Download run JSON</button>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <SmallStat label="Goal error" value={format(report.goalErrorMeters, 2)} unit="m" highlight />
+            <SmallStat label="Avg. velocity" value={format(report.averageSpeedMps, 2)} unit="m/s" />
+            <SmallStat label="Replans" value={String(report.replans)} />
+            <SmallStat label="Samples" value={String(report.trajectory.length)} />
+          </div>
+          <p className="mt-3 text-[11px] text-slate-500">Status {report.status.toUpperCase()} · distance {format(report.distanceMeters, 2)} m · simulated {format(report.simulatedSeconds, 1)} s · {report.collisionFree ? 'current footprint clear' : 'footprint collision detected'}. Results are browser-generated, not ROS/Gazebo or hardware measurements.</p>
         </div>
 
         <div className="grid gap-0 border-t border-white/10 lg:grid-cols-2">
@@ -260,7 +309,7 @@ export function NavLab() {
         </article>
       </section>
       <div className="rounded-2xl bg-sky-50 border border-sky-200 px-5 py-4 text-xs leading-relaxed text-slate-600">
-        <strong className="text-brand-navy">Engineering scope:</strong> This is a standalone, deterministic TypeScript simulation illustrating ROS 2 concepts. It does not run ROS 2, Nav2, SLAM Toolbox, Gazebo, or a real LiDAR device. It uses a pre-defined occupancy map, simulated range returns, A* planning and a local differential-drive controller; hardware and ROS 2 integration are future validation steps.
+        <strong className="text-brand-navy">Engineering scope:</strong> This is an executable, deterministic browser-side TypeScript simulator with a 2.5D world view and downloadable mission results. It does not execute ROS 2, Nav2, SLAM Toolbox, Gazebo dynamics, or a real LiDAR sensor. Occupancy maps, range returns, A* planning and differential-drive motion are simulated; ROS 2/Gazebo integration remains a future validation stage.
       </div>
     </div>
   );
