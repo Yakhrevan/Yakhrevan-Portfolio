@@ -14,15 +14,20 @@ import type { DriveMode, PickBotControls } from './demo';
 
 const PickBotCanvas = lazy(() => import('./PickBotCanvas'));
 const IMAGE_URL = `${import.meta.env.BASE_URL}projects/pickbot-v3.webp`;
+const STAGE_IMAGE = (frame: string) => `${import.meta.env.BASE_URL}projects/pickbot-sim-${frame}.webp`;
+const STAGE_FRAMES: Record<string, string> = {
+  Ready: 'ready', Approach: 'approach', Align: 'align', Grasp: 'pick',
+  Lift: 'lift', Transfer: 'transfer', Place: 'place', Release: 'release', Complete: 'complete',
+};
 
 type Joint = keyof PickBotControls;
 type StudioTab = 'joints' | 'drive' | 'demo';
 
 const SLIDERS: { key: Joint; label: string; min: number; max: number; unit: string }[] = [
   { key: 'base', label: 'J1 · Base yaw', min: -140, max: 140, unit: '°' },
-  { key: 'shoulder', label: 'J2 · Shoulder pitch', min: -45, max: 45, unit: '°' },
-  { key: 'elbow', label: 'J3 · Elbow pitch', min: -45, max: 45, unit: '°' },
-  { key: 'wrist', label: 'J4 · Wrist pitch', min: -50, max: 50, unit: '°' },
+  { key: 'shoulder', label: 'J2 · Shoulder pitch', min: -35, max: 100, unit: '°' },
+  { key: 'elbow', label: 'J3 · Elbow pitch', min: -90, max: 90, unit: '°' },
+  { key: 'wrist', label: 'J4 · Wrist pitch', min: -90, max: 90, unit: '°' },
   { key: 'grip', label: 'Gripper opening', min: 0, max: 100, unit: '%' },
 ];
 
@@ -74,6 +79,10 @@ export function PickBotStudio() {
   const demo = useMemo(() => samplePickPlace(elapsedMs), [elapsedMs]);
   const displayedControls = tab === 'demo' ? demo.controls : manualControls;
   const activeDriveMode = tab === 'drive' ? driveMode : 'stop';
+  // When WebGL is disabled, advance real CAD renders with the timeline instead
+  // of leaving the robot frozen on the old product thumbnail.
+  const stillFrame = STAGE_FRAMES[demo.step.label] ?? 'ready';
+  const stillImage = tab === 'demo' ? STAGE_IMAGE(stillFrame) : IMAGE_URL;
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -179,8 +188,8 @@ export function PickBotStudio() {
             </ViewerErrorBoundary>
           ) : (
             <div className="relative flex h-full min-h-[340px] flex-col items-center justify-center px-6 py-12 text-center sm:min-h-[500px]">
-              <img src={IMAGE_URL} alt="Concept render of PickBot's four mecanum wheels and four-joint arm" className="absolute inset-0 h-full w-full object-contain opacity-75" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#101d2b]/95 via-[#101d2b]/25 to-[#101d2b]/25" />
+              <img src={stillImage} alt={tab === 'demo' ? `CAD-rendered ${demo.step.label.toLowerCase()} simulation stage` : "Concept render of PickBot's four mecanum wheels and four-joint arm"} className={`absolute inset-0 h-full w-full object-contain ${tab === 'demo' ? 'opacity-95' : 'opacity-75'}`} />
+              <div className={`absolute inset-0 bg-gradient-to-t ${tab === 'demo' ? 'from-[#101d2b]/75 via-transparent to-transparent' : 'from-[#101d2b]/95 via-[#101d2b]/25 to-[#101d2b]/25'}`} />
               <div className="relative z-10 mt-auto flex flex-col items-center gap-3">
                 <button type="button" onClick={launchViewer} className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-brand-navy shadow-lg transition-colors hover:bg-brand-sky-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
                   <Box className="h-4 w-4" aria-hidden="true" /> Launch interactive 3D
@@ -188,6 +197,7 @@ export function PickBotStudio() {
                 <p className="text-xs text-white/70">Loads on demand · Drag to orbit · Scroll to zoom</p>
               </div>
               {unsupported && <p role="alert" className="relative z-10 mt-4 max-w-sm rounded-xl bg-brand-navy/90 p-3 text-sm text-white">WebGL is unavailable in this browser. The static preview and simulation timeline remain accessible.</p>}
+              {tab === 'demo' && <span className="absolute right-4 top-4 z-10 rounded-full bg-brand-navy/80 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-white/90">CAD stage preview</span>}
             </div>
           )}
           {enabled && (
@@ -257,7 +267,7 @@ export function PickBotStudio() {
             <div id="pickbot-panel-drive" role="tabpanel" aria-labelledby="pickbot-tab-drive" className="flex flex-1 flex-col p-5 sm:p-6">
               <div className="mb-5">
                 <h3 className="font-bold text-brand-navy">Mecanum drive lab</h3>
-                <p className="mt-2 text-xs leading-relaxed text-brand-slate">Preview signed wheel rotation patterns for an illustrative X-roller layout.</p>
+                <p className="mt-2 text-xs leading-relaxed text-brand-slate">Robot frame: +X forward, +Y left (−Z in the viewer). Wheel locations and roller handedness follow the actual concept GLB.</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {DRIVE_CHOICES.map(({ mode, label }) => (
@@ -267,18 +277,19 @@ export function PickBotStudio() {
                 ))}
               </div>
               <div className="mt-5 rounded-xl border border-slate-200 bg-white p-4">
-                <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400">Wheel direction preview</p>
-                <div className="mt-3 grid grid-cols-4 gap-2 text-center">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400">Robot top view · front ↑</p>
+                <div className="mx-auto mt-3 grid max-w-[230px] grid-cols-2 gap-2 text-center">
                   {DRIVE_PATTERNS[driveMode].map((direction, index) => (
-                    <div key={index} className="rounded-lg bg-brand-sky-light p-2">
+                    <div key={index} className="rounded-lg bg-brand-sky-light p-2" aria-label={`${['Front left', 'Front right', 'Rear left', 'Rear right'][index]} wheel ${direction === 1 ? 'forward' : direction === -1 ? 'reverse' : 'stopped'}`}>
                       <span className="block font-mono text-[10px] font-bold text-brand-slate">{['FL', 'FR', 'RL', 'RR'][index]}</span>
                       <span className="mt-1 block font-mono text-lg font-black text-brand-blue">{direction === 1 ? '+' : direction === -1 ? '−' : '·'}</span>
                     </div>
                   ))}
                 </div>
+                <p className="mt-3 text-center text-[10px] leading-relaxed text-slate-500">+ forward-equivalent spin · − reverse · · stopped</p>
               </div>
               <button type="button" onClick={() => setDriveMode('stop')} className="mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-navy px-3 py-2.5 text-xs font-bold text-white hover:bg-brand-blue"><Pause className="h-4 w-4" aria-hidden="true" /> Stop wheels</button>
-              <p className="mt-4 text-[11px] leading-relaxed text-slate-500">Wheel directions are illustrative. Confirm motor polarity and roller orientation on hardware before using the mapping in a real controller.</p>
+              <p className="mt-4 text-[11px] leading-relaxed text-slate-500">The 3D rover makes a short, bounded direction preview. This is kinematic illustration only: verify actual motor polarity, wheel order and roller orientation before applying commands to hardware.</p>
             </div>
           )}
 
@@ -313,7 +324,7 @@ export function PickBotStudio() {
                   </button>
                 ))}
               </div>
-              <p className="mt-5 text-[11px] leading-relaxed text-slate-500">Virtual payload attachment and joint poses are illustrative. This is not a collision, dynamics or inverse-kinematics simulation, nor recorded hardware footage.</p>
+              <p className="mt-5 text-[11px] leading-relaxed text-slate-500">The pickup/drop stations and contact poses are aligned to the concept GLB. This is a calibrated visual sequence, not a collision, dynamics or inverse-kinematics simulation, nor recorded hardware footage.</p>
             </div>
           )}
         </div>

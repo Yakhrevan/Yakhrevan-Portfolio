@@ -4,15 +4,17 @@ import { ContactShadows, Html, OrbitControls } from '@react-three/drei';
 import { Mesh, Object3D, Quaternion, Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { DRIVE_PATTERNS } from './demo';
+import { DRIVE_PATTERNS, DRIVE_PREVIEW_POSES, DROP_POINT, GLTF_AXLE_SPIN_SIGN, PHYSICAL_WHEEL_NODES, PICKUP_POINT, TOOL_TIP_OFFSET } from './demo';
 import type { DriveMode, PayloadState, PickBotControls } from './demo';
 
 const MODEL_URL = `${import.meta.env.BASE_URL}models/pickbot-v3.glb.gz`;
 const Y_AXIS = new Vector3(0, 1, 0);
 const Z_AXIS = new Vector3(0, 0, 1);
-const SOURCE_POSITION = new Vector3(0.58, 0.035, 0.12);
-const DESTINATION_POSITION = new Vector3(0.08, 0.035, -0.58);
-const TOOL_OFFSET = new Vector3(0.065, 0, 0);
+// Calibrated against the actual V3 GLB hierarchy, including a 65 mm tool-tip offset.
+// The 60° shoulder pose touches the pickup station; +85° base yaw touches the drop.
+const SOURCE_POSITION = new Vector3(...PICKUP_POINT);
+const DESTINATION_POSITION = new Vector3(...DROP_POINT);
+const TOOL_OFFSET = new Vector3(...TOOL_TIP_OFFSET);
 
 type JointKey = 'base' | 'shoulder' | 'elbow' | 'wrist';
 
@@ -84,12 +86,14 @@ function RobotAssembly({ controls, driveMode, payloadState }: AssemblyProps) {
 function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyProps & { original: Object3D }) {
   const scene = useMemo(() => original.clone(true), [original]);
   const wheelPhase = useRef([0, 0, 0, 0]);
+  const rollerPhase = useRef([0, 0, 0, 0]);
   const motionPhase = useRef(0);
   const payloadRef = useRef<Mesh>(null);
   const payloadPosition = useMemo(() => new Vector3(), []);
   const payloadRotation = useMemo(() => new Quaternion(), []);
   const toolOffset = useMemo(() => new Vector3(), []);
   const wheelRotation = useMemo(() => new Quaternion(), []);
+  const rollerRotation = useMemo(() => new Quaternion(), []);
 
   const parts = useMemo(() => {
     const joints = Object.fromEntries(
@@ -99,9 +103,18 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
       ]),
     ) as Record<JointKey, Object3D | undefined>;
 
-    const wheels = ['FRONT_L', 'FRONT_R', 'REAR_L', 'REAR_R']
+    // The authored asset's L/R suffixes are reversed relative to robot +Y-left.
+    // Convert to physical FL, FR, RL, RR so the X-roller drive matrix is correct.
+    const wheels = PHYSICAL_WHEEL_NODES
       .map((position) => getNamedNode(scene, `DRIVE_WHEEL_${position}`))
       .filter((node): node is Object3D => Boolean(node));
+    const rollers = wheels.map((wheel) => {
+      const items: Object3D[] = [];
+      wheel.traverse((node) => {
+        if (node.name.includes('MECANUM_45deg_roller_')) items.push(node);
+      });
+      return items;
+    });
 
     const leftFinger = getNamedNode(scene, 'GRIPPER_FINGER_L');
     const rightFinger = getNamedNode(scene, 'GRIPPER_FINGER_R');
@@ -125,6 +138,8 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
       jointRest,
       wheels,
       wheelRest: wheels.map((wheel) => wheel.quaternion.clone()),
+      rollers,
+      rollerRest: rollers.map((wheelRollers) => wheelRollers.map((roller) => roller.quaternion.clone())),
       leftFinger,
       rightFinger,
       gripperMount,
@@ -139,11 +154,12 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
       const rest = parts.jointRest[joint];
       if (!node || !rest) return;
 
-      // Blender's Z-up axes are remapped by glTF's Y-up export.
-      // In the exported GLB: J1 yaw is local Y, J2-J4 pitch are local Z.
+      // Blender Z-up -> glTF Y-up: base +Z becomes +Y, but pitch +Y becomes -Z.
+      // Negating J2–J4 is essential: otherwise positive shoulder values lift
+      // the tool instead of lowering it toward the pickup station.
       const axis = joint === 'base' ? Y_AXIS : Z_AXIS;
       node.quaternion.copy(rest).multiply(
-        new Quaternion().setFromAxisAngle(axis, (controls[joint] * Math.PI) / 180),
+        new Quaternion().setFromAxisAngle(axis, ((joint === 'base' ? 1 : -1) * controls[joint] * Math.PI) / 180),
       );
     });
   }, [controls, parts]);
@@ -159,25 +175,37 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
     const dt = Math.min(delta, 0.05);
     const pattern = DRIVE_PATTERNS[driveMode];
     parts.wheels.forEach((wheel, index) => {
-      wheelPhase.current[index] += dt * 4 * pattern[index];
-      // Signed wheel patterns illustrate commands, not calibrated odometry.
+      // Blender's +local-Y axle becomes -local-Z under the glTF Y-up export.
+      wheelPhase.current[index] += GLTF_AXLE_SPIN_SIGN * dt * 4 * pattern[index];
+      // Signed wheel patterns illustrate kinematics, not calibrated odometry.
       wheel.quaternion.copy(parts.wheelRest[index]).multiply(
         wheelRotation.setFromAxisAngle(Z_AXIS, wheelPhase.current[index]),
       );
     });
 
-    motionPhase.current += dt * 1.8;
-    const preview = Math.sin(motionPhase.current);
-    const translation = driveMode === 'forward' ? [0.065 * preview, 0] :
-      driveMode === 'reverse' ? [-0.065 * preview, 0] :
-      driveMode === 'strafe-left' ? [0, 0.065 * preview] :
-      driveMode === 'strafe-right' ? [0, -0.065 * preview] : [0, 0];
-    const rotation = driveMode === 'rotate-left' ? 0.16 * preview :
-      driveMode === 'rotate-right' ? -0.16 * preview : 0;
-    const blend = Math.min(1, dt * 5);
-    scene.position.x += (translation[0] - scene.position.x) * blend;
-    scene.position.z += (translation[1] - scene.position.z) * blend;
-    scene.rotation.y += (rotation - scene.rotation.y) * blend;
+    // Free-running diagonal rollers are what allow sideways motion. At the
+    // contact patch their rolling speed follows lateral chassis velocity:
+    // v_y + yaw_rate * wheel_x (front +, rear -). Only a visual approximation.
+    const lateral = driveMode === 'strafe-left' ? 1 : driveMode === 'strafe-right' ? -1 : 0;
+    const yaw = driveMode === 'rotate-left' ? 1 : driveMode === 'rotate-right' ? -1 : 0;
+    parts.rollers.forEach((wheelRollers, index) => {
+      rollerPhase.current[index] += dt * 8 * (lateral + yaw * (index < 2 ? 1 : -1));
+      wheelRollers.forEach((roller, rollerIndex) => {
+        roller.quaternion.copy(parts.rollerRest[index][rollerIndex]).multiply(
+          rollerRotation.setFromAxisAngle(Y_AXIS, rollerPhase.current[index]),
+        );
+      });
+    });
+
+    // A bounded one-direction maneuver, never a sinusoidal reversal of the command.
+    motionPhase.current = driveMode === 'stop' ? 0 : Math.min(1, motionPhase.current + dt * 0.9);
+    const preview = motionPhase.current * motionPhase.current * (3 - 2 * motionPhase.current);
+    // glTF X is forward and -Z is robot-left.
+    const [dx, dz, yawOffset] = DRIVE_PREVIEW_POSES[driveMode];
+    const blend = Math.min(1, dt * 7);
+    scene.position.x += (dx * preview - scene.position.x) * blend;
+    scene.position.z += (dz * preview - scene.position.z) * blend;
+    scene.rotation.y += (yawOffset * preview - scene.rotation.y) * blend;
 
     if (payloadRef.current && payloadState !== 'hidden') {
       if (payloadState === 'attached' && parts.gripperMount) {
@@ -186,7 +214,8 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
         parts.gripperMount.getWorldQuaternion(payloadRotation);
         payloadPosition.add(toolOffset.copy(TOOL_OFFSET).applyQuaternion(payloadRotation));
         payloadRef.current.position.copy(payloadPosition);
-        payloadRef.current.quaternion.copy(payloadRotation);
+        // Keep the display payload upright during transport: no simulated object tumbling.
+        payloadRef.current.quaternion.identity();
       } else {
         payloadRef.current.position.copy(payloadState === 'destination' ? DESTINATION_POSITION : SOURCE_POSITION);
         payloadRef.current.quaternion.identity();
@@ -199,14 +228,18 @@ function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyPr
       <primitive object={scene} />
       {payloadState !== 'hidden' && (
         <>
-          <mesh position={[SOURCE_POSITION.x, 0.001, SOURCE_POSITION.z]} rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[0.072, 0.084, 36]} />
-            <meshBasicMaterial color="#60a5fa" side={2} />
-          </mesh>
-          <mesh position={[DESTINATION_POSITION.x, 0.001, DESTINATION_POSITION.z]} rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[0.072, 0.084, 36]} />
-            <meshBasicMaterial color="#fb923c" side={2} />
-          </mesh>
+          {[SOURCE_POSITION, DESTINATION_POSITION].map((position, index) => (
+            <group key={index} position={[position.x, 0, position.z]}>
+              <mesh position={[0, 0.112, 0]} castShadow receiveShadow>
+                <cylinderGeometry args={[0.075, 0.10, 0.224, 32]} />
+                <meshStandardMaterial color={index === 0 ? '#3b6687' : '#836442'} metalness={0.55} roughness={0.36} />
+              </mesh>
+              <mesh position={[0, 0.237, 0]} castShadow receiveShadow>
+                <cylinderGeometry args={[0.125, 0.125, 0.026, 32]} />
+                <meshStandardMaterial color={index === 0 ? '#60a5fa' : '#fb923c'} metalness={0.35} roughness={0.4} />
+              </mesh>
+            </group>
+          ))}
           <mesh ref={payloadRef} position={SOURCE_POSITION.toArray()} castShadow>
             <boxGeometry args={[0.07, 0.07, 0.07]} />
             <meshStandardMaterial color="#fb923c" metalness={0.12} roughness={0.48} />

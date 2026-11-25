@@ -14,9 +14,9 @@ const evidence = [
     confirmed: false,
   },
   {
-    title: 'Joint control',
-    status: 'Interactive simulation',
-    detail: 'Four rotational joints plus a separate gripper can be commanded in the browser.',
+    title: 'Tool path & grasp',
+    status: 'CAD-aligned visual demo',
+    detail: 'The virtual block and two raised stations align with forward-kinematic tool-tip positions calculated from the concept GLB. Four joints and the gripper remain user-controllable.',
     confirmed: true,
   },
   {
@@ -95,14 +95,14 @@ export function PickBotCaseStudy() {
         <div className="grid gap-3 lg:grid-cols-[1fr_32px_1fr_32px_1fr] lg:items-center">
           <DiagramCard icon={Move3D} eyebrow="01 · Input" heading="Operator interface" detail="Manual J1–J4 sliders, gripper opening, drive mode selection and a timed demo." />
           <ArrowUpRight className="mx-auto hidden h-5 w-5 rotate-45 text-brand-blue lg:block" aria-hidden="true" />
-          <DiagramCard icon={Cpu} eyebrow="02 · Simulation" heading="Pose & wheel commands" detail="Interpolated display poses and signed wheel rotation patterns; no physics solver or IK." dark />
+          <DiagramCard icon={Cpu} eyebrow="02 · Simulation" heading="Pose & wheel commands" detail="Interpolated poses with GLB-aligned pickup/drop contact points and an X-roller wheel matrix; no physics solver or IK." dark />
           <ArrowUpRight className="mx-auto hidden h-5 w-5 rotate-45 text-brand-blue lg:block" aria-hidden="true" />
           <div className="grid gap-3">
             <DiagramCard icon={Route} eyebrow="03a · Locomotion" heading="FL · FR · RL · RR" detail="Four independent mecanum wheel pivots." />
             <DiagramCard icon={Wrench} eyebrow="03b · Manipulator" heading="J1 · J2 · J3 · J4" detail="Four arm joints and a separate gripper." />
           </div>
         </div>
-        <p className="mt-3 text-xs leading-relaxed text-slate-500">The real embedded controller, actuator interfaces, wiring, calibration and feedback loop remain outside this browser model and require hardware evidence.</p>
+        <p className="mt-3 text-xs leading-relaxed text-slate-500">The display arm cannot reach a floor-level object outside its base at the modeled dimensions, so this demo uses raised pickup/drop stations. The real embedded controller, actuator interfaces, wiring, joint limits, calibration and feedback loop remain outside this browser model and require hardware evidence.</p>
       </div>
 
       <div>
