@@ -4,11 +4,15 @@ import { ContactShadows, Html, OrbitControls } from '@react-three/drei';
 import { Mesh, Object3D, Quaternion, Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import type { PickBotControls } from './PickBotInteractive';
+import { DRIVE_PATTERNS } from './demo';
+import type { DriveMode, PayloadState, PickBotControls } from './demo';
 
 const MODEL_URL = `${import.meta.env.BASE_URL}models/pickbot-v3.glb.gz`;
 const Y_AXIS = new Vector3(0, 1, 0);
 const Z_AXIS = new Vector3(0, 0, 1);
+const SOURCE_POSITION = new Vector3(0.58, 0.035, 0.12);
+const DESTINATION_POSITION = new Vector3(0.08, 0.035, -0.58);
+const TOOL_OFFSET = new Vector3(0.065, 0, 0);
 
 type JointKey = 'base' | 'shoulder' | 'elbow' | 'wrist';
 
@@ -63,17 +67,29 @@ function useCompressedModel(): Object3D | null {
   return scene;
 }
 
-function RobotAssembly({ controls, spinning }: { controls: PickBotControls; spinning: boolean }) {
+interface AssemblyProps {
+  controls: PickBotControls;
+  driveMode: DriveMode;
+  payloadState: PayloadState;
+}
+
+function RobotAssembly({ controls, driveMode, payloadState }: AssemblyProps) {
   const original = useCompressedModel();
   if (!original) {
     return <Html center><div className="whitespace-nowrap rounded-full bg-brand-navy/90 px-4 py-2 text-sm font-semibold text-white shadow-lg">Loading PickBot model…</div></Html>;
   }
-  return <LoadedRobot original={original} controls={controls} spinning={spinning} />;
+  return <LoadedRobot original={original} controls={controls} driveMode={driveMode} payloadState={payloadState} />;
 }
 
-function LoadedRobot({ original, controls, spinning }: { original: Object3D; controls: PickBotControls; spinning: boolean }) {
+function LoadedRobot({ original, controls, driveMode, payloadState }: AssemblyProps & { original: Object3D }) {
   const scene = useMemo(() => original.clone(true), [original]);
-  const wheelPhase = useRef(0);
+  const wheelPhase = useRef([0, 0, 0, 0]);
+  const motionPhase = useRef(0);
+  const payloadRef = useRef<Mesh>(null);
+  const payloadPosition = useMemo(() => new Vector3(), []);
+  const payloadRotation = useMemo(() => new Quaternion(), []);
+  const toolOffset = useMemo(() => new Vector3(), []);
+  const wheelRotation = useMemo(() => new Quaternion(), []);
 
   const parts = useMemo(() => {
     const joints = Object.fromEntries(
@@ -89,6 +105,7 @@ function LoadedRobot({ original, controls, spinning }: { original: Object3D; con
 
     const leftFinger = getNamedNode(scene, 'GRIPPER_FINGER_L');
     const rightFinger = getNamedNode(scene, 'GRIPPER_FINGER_R');
+    const gripperMount = getNamedNode(scene, 'GRIPPER_TOOL_MOUNT');
     const jointRest = Object.fromEntries(
       (Object.entries(joints) as [JointKey, Object3D | undefined][])
         .filter((entry): entry is [JointKey, Object3D] => Boolean(entry[1]))
@@ -110,6 +127,7 @@ function LoadedRobot({ original, controls, spinning }: { original: Object3D; con
       wheelRest: wheels.map((wheel) => wheel.quaternion.clone()),
       leftFinger,
       rightFinger,
+      gripperMount,
       leftFingerRest: leftFinger?.position.z ?? 0,
       rightFingerRest: rightFinger?.position.z ?? 0,
     };
@@ -138,26 +156,72 @@ function LoadedRobot({ original, controls, spinning }: { original: Object3D; con
   }, [controls.grip, parts]);
 
   useFrame((_state, delta) => {
-    if (spinning) wheelPhase.current += Math.min(delta, 0.05) * 3.2;
+    const dt = Math.min(delta, 0.05);
+    const pattern = DRIVE_PATTERNS[driveMode];
     parts.wheels.forEach((wheel, index) => {
-      // Wheel axle is local Z after the Blender -> glTF axis conversion.
+      wheelPhase.current[index] += dt * 4 * pattern[index];
+      // Signed wheel patterns illustrate commands, not calibrated odometry.
       wheel.quaternion.copy(parts.wheelRest[index]).multiply(
-        new Quaternion().setFromAxisAngle(Z_AXIS, wheelPhase.current),
+        wheelRotation.setFromAxisAngle(Z_AXIS, wheelPhase.current[index]),
       );
     });
+
+    motionPhase.current += dt * 1.8;
+    const preview = Math.sin(motionPhase.current);
+    const translation = driveMode === 'forward' ? [0.065 * preview, 0] :
+      driveMode === 'reverse' ? [-0.065 * preview, 0] :
+      driveMode === 'strafe-left' ? [0, 0.065 * preview] :
+      driveMode === 'strafe-right' ? [0, -0.065 * preview] : [0, 0];
+    const rotation = driveMode === 'rotate-left' ? 0.16 * preview :
+      driveMode === 'rotate-right' ? -0.16 * preview : 0;
+    const blend = Math.min(1, dt * 5);
+    scene.position.x += (translation[0] - scene.position.x) * blend;
+    scene.position.z += (translation[1] - scene.position.z) * blend;
+    scene.rotation.y += (rotation - scene.rotation.y) * blend;
+
+    if (payloadRef.current && payloadState !== 'hidden') {
+      if (payloadState === 'attached' && parts.gripperMount) {
+        scene.updateWorldMatrix(true, true);
+        parts.gripperMount.getWorldPosition(payloadPosition);
+        parts.gripperMount.getWorldQuaternion(payloadRotation);
+        payloadPosition.add(toolOffset.copy(TOOL_OFFSET).applyQuaternion(payloadRotation));
+        payloadRef.current.position.copy(payloadPosition);
+        payloadRef.current.quaternion.copy(payloadRotation);
+      } else {
+        payloadRef.current.position.copy(payloadState === 'destination' ? DESTINATION_POSITION : SOURCE_POSITION);
+        payloadRef.current.quaternion.identity();
+      }
+    }
   });
 
-  return <primitive object={scene} />;
+  return (
+    <>
+      <primitive object={scene} />
+      {payloadState !== 'hidden' && (
+        <>
+          <mesh position={[SOURCE_POSITION.x, 0.001, SOURCE_POSITION.z]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.072, 0.084, 36]} />
+            <meshBasicMaterial color="#60a5fa" side={2} />
+          </mesh>
+          <mesh position={[DESTINATION_POSITION.x, 0.001, DESTINATION_POSITION.z]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.072, 0.084, 36]} />
+            <meshBasicMaterial color="#fb923c" side={2} />
+          </mesh>
+          <mesh ref={payloadRef} position={SOURCE_POSITION.toArray()} castShadow>
+            <boxGeometry args={[0.07, 0.07, 0.07]} />
+            <meshStandardMaterial color="#fb923c" metalness={0.12} roughness={0.48} />
+          </mesh>
+        </>
+      )}
+    </>
+  );
 }
 
-export default function PickBotCanvas({ controls, spinning }: {
-  controls: PickBotControls;
-  spinning: boolean;
-}) {
+export default function PickBotCanvas({ controls, driveMode, payloadState }: AssemblyProps) {
   return (
     <Canvas
       shadows
-      dpr={[1, 1.6]}
+      dpr={[1, 1.4]}
       camera={{ position: [1.25, 0.98, 1.33], fov: 38, near: 0.01, far: 15 }}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
       style={{ width: '100%', height: '100%' }}
@@ -175,7 +239,7 @@ export default function PickBotCanvas({ controls, spinning }: {
       <gridHelper args={[2, 20, '#476078', '#24384d']} position={[0, -0.007, 0]} />
       <ContactShadows position={[0, -0.006, 0]} opacity={0.28} scale={2} blur={2.5} far={1.4} resolution={256} />
       <Suspense fallback={<Html center><div className="whitespace-nowrap rounded-full bg-brand-navy/90 px-4 py-2 text-sm font-semibold text-white shadow-lg">Loading PickBot model…</div></Html>}>
-        <RobotAssembly controls={controls} spinning={spinning} />
+        <RobotAssembly controls={controls} driveMode={driveMode} payloadState={payloadState} />
       </Suspense>
       <OrbitControls
         makeDefault

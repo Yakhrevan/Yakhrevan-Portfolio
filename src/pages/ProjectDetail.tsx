@@ -1,8 +1,10 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Github, ExternalLink, CheckCircle2, Tag, Calendar } from 'lucide-react';
+import { ArrowLeft, Github, ExternalLink, CheckCircle2, Tag, Calendar, Share2, Check } from 'lucide-react';
 import { Project } from '../types/portfolio';
-import { PickBotInteractive } from '../components/PickBot/PickBotInteractive';
+
+const PickBotStudio = lazy(() => import('../components/PickBot/PickBotStudio').then((module) => ({ default: module.PickBotStudio })));
+const PickBotCaseStudy = lazy(() => import('../components/PickBot/PickBotCaseStudy').then((module) => ({ default: module.PickBotCaseStudy })));
 
 interface ProjectDetailProps {
   project: Project;
@@ -10,10 +12,27 @@ interface ProjectDetailProps {
 }
 
 export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
+  const [shareStatus, setShareStatus] = useState<'idle' | 'copied' | 'error'>('idle');
+
   // Scroll to top when opening this page
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    const previousTitle = document.title;
+    document.title = `${project.title} | Yakhrevan — Robotics Portfolio`;
+    return () => { document.title = previousTitle; };
+  }, [project.title]);
+
+  const copyProjectLink = async () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('project', project.id);
+    url.hash = '';
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      setShareStatus('copied');
+    } catch {
+      setShareStatus('error');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white relative selection:bg-brand-blue/20">
@@ -31,6 +50,12 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to Portfolio
           </button>
+          {project.id === 'pickbot' && (
+            <button type="button" onClick={copyProjectLink} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-brand-blue transition-colors hover:border-brand-blue sm:px-4 sm:text-sm" aria-live="polite">
+              {shareStatus === 'copied' ? <Check className="h-4 w-4" aria-hidden="true" /> : <Share2 className="h-4 w-4" aria-hidden="true" />}
+              {shareStatus === 'copied' ? 'Link copied' : shareStatus === 'error' ? 'Copy unavailable' : 'Share PickBot'}
+            </button>
+          )}
         </div>
       </header>
 
@@ -88,7 +113,7 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
           </motion.div>
 
           {/* PickBot has a dedicated interactive 3D viewer; other projects retain their images. */}
-          {project.id === 'pickbot' ? <PickBotInteractive /> : <motion.div
+          {project.id === 'pickbot' ? <Suspense fallback={<div className="mt-16 rounded-3xl border border-slate-200 bg-slate-50 p-12 text-center text-sm text-brand-slate">Preparing PickBot studio…</div>}><PickBotStudio /></Suspense> : <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
@@ -192,6 +217,7 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
               )}
             </motion.div>
           </div>
+          {project.id === 'pickbot' && <Suspense fallback={<div className="mt-16 text-sm text-brand-slate">Loading engineering case study…</div>}><PickBotCaseStudy /></Suspense>}
         </div>
       </main>
 
