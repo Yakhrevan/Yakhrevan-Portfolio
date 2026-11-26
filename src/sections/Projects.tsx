@@ -1,47 +1,42 @@
+import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, CheckCircle2, Code2, FlaskConical } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, CheckCircle2, Code2, FlaskConical, ScanEye } from 'lucide-react';
 import { PROJECTS_DATA } from '../data/portfolioData';
+import { FEATURED_SHOWCASES, type ShowcaseId } from '../data/showcaseEvidence';
+import { EvidenceStatusBadges } from '../components/CaseStudy/EvidenceStatusBadges';
+import { FeaturedProjectPreview } from '../components/CaseStudy/FeaturedProjectPreview';
 import type { Project } from '../types/portfolio';
 
 interface ProjectsProps {
   onProjectClick?: (project: Project) => void;
 }
 
-const EVIDENCE = [
-  {
-    id: 'pickbot',
-    number: '01',
-    discipline: 'Mobile manipulation',
-    contribution: 'Designed the arm CAD, specified the four-wheel/four-joint configuration and reviewed the AI-assisted IK, grasp and drive demo.',
-    proof: '8 passing kinematics + drive tests',
-    boundary: 'Arm CAD supplied · Chassis illustrative · Hardware pending',
-    source: 'https://github.com/Yakhrevan/Yakhrevan-Portfolio/tree/main/src/components/PickBot',
-  },
-  {
-    id: 'navigation-lab',
-    number: '02',
-    discipline: 'Autonomous navigation',
-    contribution: 'Defined the goal-navigation, LiDAR and obstacle-replanning requirements and reviewed the AI-assisted simulation workflow.',
-    proof: '10 passing navigation tests',
-    boundary: 'Browser simulation · No Nav2 or Gazebo execution',
-    source: 'https://github.com/Yakhrevan/Yakhrevan-Portfolio/tree/main/src/components/NavLab',
-  },
-  {
-    id: 'robot-control-center',
-    number: '03',
-    discipline: 'Robot operations software',
-    contribution: 'Specified the AMR task, telemetry, fault and E-stop workflows and reviewed the AI-assisted interactive control demo.',
-    proof: '9 passing control-state tests',
-    boundary: 'Browser simulation · No ROS 2 or hardware connection',
-    source: 'https://github.com/Yakhrevan/Yakhrevan-Portfolio/tree/main/src/components/ControlCenter',
-  },
-] as const;
+const EVIDENCE = FEATURED_SHOWCASES;
 
 const FEATURED_IDS = new Set<string>(EVIDENCE.map((item) => item.id));
 
 export function Projects({ onProjectClick }: ProjectsProps) {
   const otherProjects = PROJECTS_DATA.filter((project) => !FEATURED_IDS.has(project.id));
   const reduceMotion = useReducedMotion();
+  const [activePreview, setActivePreview] = useState<ShowcaseId | null>(null);
+  const previewStudy = EVIDENCE.find((study) => study.id === activePreview);
+  const previewProject = PROJECTS_DATA.find((project) => project.id === activePreview);
+
+  useEffect(() => {
+    if (!activePreview) return;
+    const frame = requestAnimationFrame(() => {
+      const panel = document.getElementById('featured-preview');
+      panel?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      panel?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [activePreview, reduceMotion]);
+
+  const closePreview = () => {
+    const previous = activePreview;
+    setActivePreview(null);
+    if (previous) requestAnimationFrame(() => document.getElementById(`preview-trigger-${previous}`)?.focus());
+  };
 
   return (
     <section id="projects" className="relative overflow-hidden bg-white py-16 lg:py-24">
@@ -92,6 +87,7 @@ export function Projects({ onProjectClick }: ProjectsProps) {
                   <p className="font-mono text-[10px] font-bold uppercase tracking-[.17em] text-brand-blue">{item.discipline}</p>
                   <h3 className="mt-2 text-xl font-extrabold tracking-tight text-brand-navy">{project.title.replace(/^P\d+ — /, '')}</h3>
                   <p className="mt-2 min-h-[3rem] text-sm leading-relaxed text-brand-slate">{project.subtitle}</p>
+                  <div className="mt-3"><EvidenceStatusBadges compact /></div>
                   <div className="my-5 h-px bg-slate-100" />
 
                   <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-brand-blue">My contribution</p>
@@ -110,6 +106,16 @@ export function Projects({ onProjectClick }: ProjectsProps) {
                     >
                       Live demo + case study <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </button>
+                    <button
+                      id={`preview-trigger-${item.id}`}
+                      type="button"
+                      aria-controls="featured-preview"
+                      aria-expanded={activePreview === item.id}
+                      onClick={() => setActivePreview(activePreview === item.id ? null : item.id)}
+                      className="mt-2 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-blue/20 bg-brand-bg px-4 py-2.5 text-sm font-bold text-brand-blue transition-colors hover:border-brand-blue hover:bg-brand-sky-light"
+                    >
+                      <ScanEye className="h-4 w-4" aria-hidden="true" /> {activePreview === item.id ? 'Hide project preview' : 'Preview project evidence'}
+                    </button>
                     <a href={item.source} target="_blank" rel="noreferrer" className="mt-3 inline-flex w-full items-center justify-center gap-1.5 py-1 text-xs font-bold text-brand-blue hover:underline">
                       <Code2 className="h-3.5 w-3.5" aria-hidden="true" /> Review source <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                     </a>
@@ -119,6 +125,16 @@ export function Projects({ onProjectClick }: ProjectsProps) {
             );
           })}
         </div>
+
+        {previewStudy && previewProject && (
+          <FeaturedProjectPreview
+            key={previewStudy.id}
+            showcase={previewStudy}
+            project={previewProject}
+            onOpen={() => onProjectClick?.(previewProject)}
+            onClose={closePreview}
+          />
+        )}
 
         <div className="mt-16 border-t border-slate-200 pt-10">
           <div className="flex flex-wrap items-end justify-between gap-4">

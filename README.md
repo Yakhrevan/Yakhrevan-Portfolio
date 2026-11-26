@@ -55,6 +55,13 @@ The application also includes responsive navigation and a scroll-aware robot com
 - Three featured projects form a two-column tablet grid and a three-column wide-desktop grid. The older project cards have staggered, one-time scroll reveals and keyboard focus highlighting alongside hover feedback.
 - The Skills panel gives mobile visitors full width until larger desktop screens and exposes filter selection to assistive technology. All older sections, the original CV, loader, floating icons, robot illustrations and simulations remain present.
 
+### V8 — Inspectable featured project showcase
+
+- Each of the three existing featured cards now has a **Preview project evidence** action in addition to its original live-demo/case-study and source links. The preview switches between a media gallery and an evidence-led recruiter brief without loading the 3D simulation prematurely.
+- Shared `src/data/showcaseEvidence.ts` describes individual contributions, technology proof, validation limits and existing media. `ProjectEvidenceGallery`, `ProjectRecruiterView` and `EvidenceStatusBadges` are reused on the homepage preview and inside the five-chapter engineering case studies.
+- **Media honesty:** PickBot has virtual simulation stills from existing `public/projects/pickbot-sim-*.webp` assets; P6 Navigation and P2 Control Center currently have existing illustrative SVG interface diagrams, explicitly labeled as illustrations. Their genuine runtime behavior is available only through the respective interactive browser demos and exported run evidence. No physical robot photos or hardware-tested claims have been invented.
+- The original full project gallery (3 featured + 5 secondary cards), case-study chapters, live simulations, old CV, loading sequence, hero, square photo, full-home floating icons and slogan illustration are preserved. The new preview uses touch targets, keyboard-operable media selectors and reduced-motion-aware scroll-to-preview behavior.
+
 ### Recruiter-ready CV and homepage (P4)
 
 - **Classic identity preserved:** the skippable animated robot welcome, low-opacity floating technology logos across the entire home section, square portrait, illustrated “Think. Build. Repeat.” motto and original full-image project cards are restored. PickBot, P6 Navigation and P2 Control Center remain the three first featured evidence cards; every other project remains visible in a full-size card with tags and a details button. Reduced-motion visitors and project deep links skip the welcome scene. All case studies, simulations, sections and the original uploaded CV remain accessible.

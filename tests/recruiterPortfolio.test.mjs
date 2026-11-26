@@ -17,14 +17,15 @@ test('one-click resume is a real public PDF, not a placeholder link', () => {
 
 test('spotlight presents PickBot, Navigation and Control with source and clear ownership', () => {
   const projects = source('src/sections/Projects.tsx');
+  const evidence = source('src/data/showcaseEvidence.ts');
   for (const name of ['pickbot', 'navigation-lab', 'robot-control-center']) {
-    assert.ok(projects.includes(`id: '${name}'`), `missing featured project ${name}`);
+    assert.ok(evidence.includes(`id: '${name}'`), `missing featured project ${name}`);
   }
   assert.match(projects, /My contribution/);
   assert.match(projects, /AI-assisted/);
   assert.match(projects, /Live demo \+ case study/);
   assert.match(projects, /Review source/);
-  assert.match(projects, /Hardware pending|hardware validation/i);
+  assert.match(evidence, /Hardware pending|hardware validation/i);
 });
 
 test('front page has a useful route to projects, verified contact and relevant metadata', () => {
@@ -111,4 +112,51 @@ test('V7 card reveals and navigation respect reduced motion without removing old
   assert.match(additionalCards, /viewport=\{\{ once: true, amount: \.08 \}\}/);
   assert.match(additionalCards, /focus-within:ring-2/);
   assert.match(source('src/index.css'), /prefers-reduced-motion: reduce/);
+});
+
+test('V8 offers working preview and recruiter controls without removing the three simulations or five old cards', () => {
+  const projects = source('src/sections/Projects.tsx');
+  const preview = source('src/components/CaseStudy/FeaturedProjectPreview.tsx');
+  const caseStudy = source('src/components/CaseStudy/EngineeringCaseStudy.tsx');
+  const projectDetail = source('src/pages/ProjectDetail.tsx');
+
+  assert.match(projects, /<FeaturedProjectPreview/);
+  assert.match(projects, /Preview project evidence/);
+  assert.match(projects, /aria-expanded=\{activePreview === item\.id\}/);
+  assert.match(projects, /<EvidenceStatusBadges compact/);
+  assert.match(projects, /otherProjects\.map/);
+  assert.match(preview, /Visual evidence/);
+  assert.match(preview, /Recruiter brief/);
+  assert.match(preview, /Open live demo \+ full case study/);
+  assert.match(preview, /aria-pressed=\{tab === 'evidence'\}/);
+  assert.match(caseStudy, /<ProjectEvidenceGallery/);
+  assert.match(caseStudy, /<ProjectRecruiterView/);
+  for (const chapter of ['Problem', 'Architecture', 'Implementation', 'Testing', 'Results']) {
+    assert.ok(caseStudy.includes(`label: '${chapter}'`), `missing ${chapter} chapter`);
+  }
+  for (const id of ['pickbot', 'navigation-lab', 'robot-control-center']) {
+    assert.ok(projectDetail.includes(`project.id === '${id}'`), `missing interactive demo ${id}`);
+  }
+});
+
+test('V8 uses genuine existing media, truthful simulation status and original CV in reusable evidence UI', () => {
+  const data = source('src/data/showcaseEvidence.ts');
+  const gallery = source('src/components/CaseStudy/ProjectEvidenceGallery.tsx');
+  const recruiter = source('src/components/CaseStudy/ProjectRecruiterView.tsx');
+  const badges = source('src/components/CaseStudy/EvidenceStatusBadges.tsx');
+  const names = [...data.matchAll(/media\('([^']+)'\)/g)].map((match) => match[1]);
+  assert.ok(names.length >= 6, 'expected existing virtual stills and illustrative previews');
+  for (const name of names) assert.ok(statSync(join(root, 'public/projects', name)).size > 0, `missing media ${name}`);
+  assert.match(data, /Virtual simulation still/);
+  assert.match(data, /Illustrative interface diagram/);
+  assert.match(data, /not a runtime screenshot/i);
+  assert.match(data, /not a photograph/i);
+  assert.doesNotMatch(badges, />\s*Hardware-tested\s*</);
+  assert.match(badges, /Hardware unverified/);
+  assert.match(gallery, /aria-pressed=\{selected === index\}/);
+  assert.match(gallery, /Previous \$\{projectName\} evidence image/);
+  assert.match(recruiter, /Individual contribution/);
+  assert.match(recruiter, /AI-assisted/);
+  assert.match(recruiter, /Download original CV/);
+  assert.match(recruiter, /Yakhrevan_S_Resume\.pdf/);
 });

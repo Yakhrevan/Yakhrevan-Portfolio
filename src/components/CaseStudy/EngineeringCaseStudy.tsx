@@ -1,4 +1,8 @@
 import { ArrowDown, ArrowRight, ArrowUpRight, BookOpen, CheckCircle2, CircleHelp, Cpu, ExternalLink, FlaskConical, Layers3, ShieldCheck, Wrench } from 'lucide-react';
+import { SHOWCASE_BY_ID } from '../../data/showcaseEvidence';
+import { EvidenceStatusBadges } from './EvidenceStatusBadges';
+import { ProjectEvidenceGallery } from './ProjectEvidenceGallery';
+import { ProjectRecruiterView } from './ProjectRecruiterView';
 
 type CaseStudyId = 'pickbot' | 'navigation-lab' | 'robot-control-center';
 
@@ -167,6 +171,7 @@ function SectionNumber({ value, caption }: { value: string; caption: string }) {
 
 export function EngineeringCaseStudy({ projectId }: { projectId: CaseStudyId }) {
   const study = studies[projectId];
+  const showcase = SHOWCASE_BY_ID[projectId];
   const sectionId = `case-${projectId}`;
   return (
     <section id="engineering-case-study" aria-labelledby="engineering-case-study-title" className="mt-16 space-y-10 scroll-mt-28 lg:relative lg:left-1/2 lg:w-[min(1120px,calc(100vw-5rem))] lg:-translate-x-1/2">
@@ -175,8 +180,7 @@ export function EngineeringCaseStudy({ projectId }: { projectId: CaseStudyId }) 
         <div className="relative">
           <div className="flex flex-wrap items-center gap-2.5">
             <span className="rounded-md bg-[#123049] px-3 py-1.5 font-mono text-[10px] font-black tracking-[.16em] text-cyan-100">CASE STUDY {study.chapter}</span>
-            <span className="rounded-md bg-emerald-100 px-3 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[.12em] text-emerald-800">Software simulation-tested</span>
-            <span className="rounded-md border border-amber-300 bg-amber-50 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[.1em] text-amber-800">Hardware unverified</span>
+            <EvidenceStatusBadges />
           </div>
           <p className="mt-7 font-mono text-[10px] font-bold tracking-[.18em] text-brand-blue">{study.code}</p>
           <h2 id="engineering-case-study-title" className="mt-3 max-w-3xl text-3xl font-black tracking-tight text-brand-navy sm:text-4xl">{study.title}</h2>
@@ -189,7 +193,13 @@ export function EngineeringCaseStudy({ projectId }: { projectId: CaseStudyId }) 
         </div>
       </div>
 
+      <div id="case-study-evidence-gallery" className="grid scroll-mt-32 gap-5 xl:grid-cols-[1.15fr_.85fr]">
+        <ProjectEvidenceGallery entries={showcase.gallery} projectName={showcase.discipline} />
+        <ProjectRecruiterView showcase={showcase} />
+      </div>
+
       <nav aria-label="Case study chapters" className="flex flex-wrap gap-2">
+        <a href="#case-study-evidence-gallery" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-blue-200 bg-brand-sky-light px-3.5 py-2 text-xs font-bold text-brand-blue transition-colors hover:border-brand-blue">Gallery + quick view</a>
         {chapters.map((item) => <a key={item.number} href={`#${sectionId}-${item.number}`} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-brand-navy transition-colors hover:border-brand-blue hover:text-brand-blue"><span className="font-mono text-[10px] text-brand-blue">{item.number}</span>{item.label}</a>)}
       </nav>
 

@@ -6,6 +6,12 @@ Each portfolio project page now includes a common five-part study: **Problem →
 
 An independent, eight-page editable Canva presentation is available at https://www.canva.com/d/epHLpVJfvFrEnJF. Its original import source is [`canva-case-studies-source.html`](canva-case-studies-source.html); diagrams and project values are illustrative or evidence-labeled, never presented as real-robot photos.
 
+## V8 interactive evidence showcase
+
+The homepage now retains all three featured live-demo entry points while also offering a non-WebGL **Preview project evidence** panel for each. Visitors can inspect labeled media or switch to a recruiter summary covering the owner's specific contribution, reproducible software results, technology stack, validation boundary, public implementation/test links and original CV download.
+
+The same media-gallery, status-badge and recruiter-summary components are reused at the top of each existing five-part engineering case study. Existing chapters, architecture diagrams, test checks and claim/evidence tables remain in place. PickBot gallery media consists of virtual concept stills; P6 and P2 only have authored illustration previews, **not recorded runtime screenshots**. Genuine runtime behavior must be observed in the browser demos or their JSON exports. Hardware-testing status remains **unverified** for all three.
+
 ## Evidence labels
 
 | Label | Meaning | Example |
