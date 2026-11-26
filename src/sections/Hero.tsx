@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Download, Github, Linkedin, Mail, MapPin } from 'lucide-react';
 import { PERSONAL_INFO as P } from '../data/portfolioData';
 import { FloatingSkills } from '../components/FloatingSkills';
@@ -6,15 +6,16 @@ import { FloatingSkills } from '../components/FloatingSkills';
 const CAPABILITIES = ['Robot motion & IK', 'Autonomous navigation', 'Embedded control', 'Operator interfaces'];
 
 export function Hero() {
+  const reduceMotion = useReducedMotion();
   return (
-    <section id="home" className="bg-hero relative overflow-hidden pt-28 pb-14 sm:pt-32 lg:pt-36 lg:pb-24">
+    <section id="home" className="bg-hero relative overflow-hidden pb-14 pt-24 sm:pt-32 xl:pt-36 xl:pb-24">
       <div className="absolute inset-0 grid-dots opacity-30 [mask-image:radial-gradient(65%_65%_at_75%_45%,#000,transparent)] pointer-events-none" />
       <div className="absolute top-24 right-0 w-96 h-96 bg-brand-sky/15 rounded-full blur-3xl pointer-events-none" />
       <FloatingSkills />
 
-      <div className="container-x relative z-10 grid items-center gap-12 lg:grid-cols-[minmax(0,1.14fr)_minmax(440px,.86fr)] lg:gap-10 xl:gap-14">
+      <div className="container-x relative z-10 grid items-center gap-12 sm:gap-14 xl:grid-cols-[minmax(0,1.14fr)_minmax(380px,.86fr)] xl:gap-14">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55 }}
           className="min-w-0"
@@ -27,7 +28,7 @@ export function Hero() {
           </div>
 
           <p className="mt-8 text-sm font-bold tracking-wide text-brand-blue">Hi, I'm {P.name}.</p>
-          <h1 className="mt-3 max-w-3xl text-[2.8rem] leading-[1.1] sm:text-6xl lg:text-[4.2rem] xl:text-[5rem] font-extrabold tracking-[-.045em] text-brand-navy">
+          <h1 className="mt-3 max-w-3xl text-[clamp(2.05rem,9.5vw,2.8rem)] leading-[1.1] sm:text-6xl lg:text-[4.2rem] xl:text-[5rem] font-extrabold tracking-[-.045em] text-brand-navy">
             I build robotics systems
             <span className="block text-brand-blue">you can explore and test.</span>
           </h1>
@@ -49,10 +50,10 @@ export function Hero() {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#projects" className="btn-primary">
+            <a href="#projects" className="btn-primary w-full justify-center sm:w-auto">
               Explore engineering work <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
-            <a href={`${import.meta.env.BASE_URL}Yakhrevan_S_Resume.pdf`} download="Yakhrevan_S_Resume.pdf" className="btn-ghost">
+            <a href={`${import.meta.env.BASE_URL}Yakhrevan_S_Resume.pdf`} download="Yakhrevan_S_Resume.pdf" className="btn-ghost w-full justify-center sm:w-auto">
               <Download className="h-4 w-4" aria-hidden="true" /> Download CV
             </a>
             <a href={`mailto:${P.socials.email}`} className="inline-flex items-center gap-1.5 px-3 py-3 text-sm font-bold text-brand-navy hover:text-brand-blue">
@@ -72,7 +73,7 @@ export function Hero() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: .96, y: 14 }}
+          initial={reduceMotion ? false : { opacity: 0, scale: .96, y: 14 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: .65, delay: .1 }}
           className="mx-auto w-full max-w-[500px] lg:max-w-none"

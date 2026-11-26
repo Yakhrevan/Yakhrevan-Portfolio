@@ -11,6 +11,7 @@
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-wrap: break-word;
   }
   section {
     scroll-margin-top: 80px;
@@ -23,7 +24,7 @@
 
 @layer components {
   .container-x {
-    @apply w-full max-w-[1920px] mx-auto px-6 sm:px-10 lg:px-16 xl:px-24;
+    @apply w-full max-w-[1920px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-20 2xl:px-24;
   }
   .eyebrow {
     @apply inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase text-brand-blue;
@@ -39,10 +40,10 @@
     @apply bg-white rounded-2xl border border-slate-100 shadow-card;
   }
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-blue text-white text-sm font-bold shadow-glow hover:bg-brand-blue-dark hover:-translate-y-0.5 transition-all duration-200;
+    @apply inline-flex min-h-11 items-center gap-2 px-6 py-3 rounded-xl bg-brand-blue text-white text-sm font-bold shadow-glow hover:bg-brand-blue-dark hover:-translate-y-0.5 transition-all duration-200;
   }
   .btn-ghost {
-    @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-blue-100 text-brand-blue text-sm font-bold hover:bg-brand-bg hover:-translate-y-0.5 transition-all duration-200;
+    @apply inline-flex min-h-11 items-center gap-2 px-6 py-3 rounded-xl bg-white border border-blue-100 text-brand-blue text-sm font-bold hover:bg-brand-bg hover:-translate-y-0.5 transition-all duration-200;
   }
   .glass-panel {
     @apply bg-white/85 backdrop-blur-xl;

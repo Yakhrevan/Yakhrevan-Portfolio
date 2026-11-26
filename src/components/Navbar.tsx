@@ -32,10 +32,22 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [open]);
+
   const handleNavClick = (id: string) => {
     setOpen(false);
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (el) {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
   };
 
   return (
@@ -46,22 +58,22 @@ export function Navbar() {
           : 'bg-transparent'
       }`}
     >
-      <div className="container-x h-16 flex items-center justify-between">
+      <div className="container-x flex h-16 items-center justify-between gap-3">
         {/* Logo */}
         <a
           href="#home"
           onClick={(e) => { e.preventDefault(); handleNavClick('home'); }}
-          className="flex items-center gap-2.5 group"
+          className="group flex min-w-0 shrink-0 items-center gap-2 sm:gap-2.5"
           aria-label="Go to home"
         >
-          <img src={`${import.meta.env.BASE_URL}brand/logo-navy.png`} alt="Yakhrevan Logo" className="w-8 h-8 object-contain group-hover:scale-105 transition-transform" />
-          <span className="font-extrabold tracking-wide text-brand-navy text-lg">
+          <img src={`${import.meta.env.BASE_URL}brand/logo-navy.png`} alt="" className="h-7 w-7 shrink-0 object-contain transition-transform group-hover:scale-105 sm:h-8 sm:w-8" />
+          <span className="text-base font-extrabold tracking-wide text-brand-navy sm:text-lg">
             YAKH<span className="text-brand-blue">REVAN</span>
           </span>
         </a>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+        <nav className="hidden items-center gap-1 xl:flex" aria-label="Main navigation">
           {NAV_ITEMS.map(({ id, label }) => (
             <a
               key={id}
@@ -90,15 +102,16 @@ export function Navbar() {
           <a
             href="#contact"
             onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}
-            className="hidden md:inline-flex btn-primary !py-2 !px-5 !text-xs"
+            className="btn-primary !hidden !px-5 !py-2 !text-xs xl:!inline-flex"
           >
             Let's Connect
           </a>
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-slate-100 xl:hidden"
             onClick={() => setOpen(!open)}
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
+            aria-controls="mobile-navigation"
           >
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -113,15 +126,16 @@ export function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="md:hidden bg-white border-t border-slate-100 shadow-lift overflow-hidden"
+            id="mobile-navigation"
+            className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-slate-100 bg-white shadow-lift xl:hidden"
           >
-            <nav className="px-5 py-4 flex flex-col gap-1" aria-label="Mobile navigation">
+            <nav className="flex flex-col gap-1 px-5 py-4" aria-label="Mobile navigation">
               {NAV_ITEMS.map(({ id, label }) => (
                 <a
                   key={id}
                   href={`#${id}`}
                   onClick={(e) => { e.preventDefault(); handleNavClick(id); }}
-                  className={`px-4 py-2.5 rounded-xl font-semibold text-sm transition-colors ${
+                  className={`flex min-h-11 items-center rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
                     active === id
                       ? 'text-brand-blue bg-brand-sky-light'
                       : 'text-brand-navy hover:bg-slate-50'

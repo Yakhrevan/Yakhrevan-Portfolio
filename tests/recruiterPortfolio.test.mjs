@@ -75,3 +75,40 @@ test('original hero elements and full-sized project cards return without hiding 
   assert.match(projects, /project\.image/);
   assert.match(projects, /View Project/);
 });
+
+test('V7 mobile-first layout keeps every original element while avoiding tablet nav crowding', () => {
+  const hero = source('src/sections/Hero.tsx');
+  const navbar = source('src/components/Navbar.tsx');
+  const projects = source('src/sections/Projects.tsx');
+  const skills = source('src/sections/Skills.tsx');
+  const css = source('src/index.css');
+
+  assert.match(css, /max-w-\[1920px\].*px-5 sm:px-8 lg:px-12 xl:px-20/);
+  assert.match(hero, /text-\[clamp\(2\.05rem,9\.5vw,2\.8rem\)\]/);
+  assert.match(hero, /xl:grid-cols-\[minmax\(0,1\.14fr\)_minmax\(380px,\.86fr\)\]/);
+  assert.match(hero, /btn-primary w-full justify-center sm:w-auto/);
+  assert.match(hero, /btn-ghost w-full justify-center sm:w-auto/);
+  assert.match(navbar, /xl:flex/);
+  assert.match(navbar, /xl:hidden/);
+  assert.match(navbar, /aria-controls="mobile-navigation"/);
+  assert.match(navbar, /max-h-\[calc\(100dvh-4rem\)\]/);
+  assert.match(navbar, /event\.key === 'Escape'/);
+  assert.match(projects, /md:grid-cols-2 xl:grid-cols-3/);
+  assert.match(skills, /xl:flex-row/);
+  assert.match(skills, /aria-pressed=\{activeCategory === cat\}/);
+});
+
+test('V7 card reveals and navigation respect reduced motion without removing old cards', () => {
+  const hero = source('src/sections/Hero.tsx');
+  const navbar = source('src/components/Navbar.tsx');
+  const projects = source('src/sections/Projects.tsx');
+  const additionalCards = projects.split('otherProjects.map')[1];
+  assert.match(hero, /useReducedMotion\(\)/);
+  assert.match(navbar, /reduceMotion \? 'auto' : 'smooth'/);
+  assert.match(projects, /otherProjects\.map\(\(project, index\) => \(/);
+  assert.match(additionalCards, /<motion\.article/);
+  assert.match(additionalCards, /whileInView=\{reduceMotion \? undefined : \{ opacity: 1, y: 0 \}\}/);
+  assert.match(additionalCards, /viewport=\{\{ once: true, amount: \.08 \}\}/);
+  assert.match(additionalCards, /focus-within:ring-2/);
+  assert.match(source('src/index.css'), /prefers-reduced-motion: reduce/);
+});

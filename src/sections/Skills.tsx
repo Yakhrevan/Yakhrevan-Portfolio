@@ -59,7 +59,7 @@ export function Skills() {
       <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-brand-sky/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[30rem] h-[30rem] bg-brand-blue/5 rounded-full blur-[100px] pointer-events-none" />
       
-      <div className="container-x relative z-10 flex flex-col lg:flex-row gap-12 lg:gap-8 items-start">
+      <div className="container-x relative z-10 flex flex-col gap-12 items-start xl:flex-row xl:gap-8">
         
         {/* Left Side: Skills Content */}
         <div className="w-full lg:flex-1 space-y-8">
@@ -75,12 +75,13 @@ export function Skills() {
           </div>
 
           {/* Filter Pills */}
-          <div className="flex flex-wrap gap-2 pt-4">
+          <div className="flex flex-wrap gap-2 pt-4" role="group" aria-label="Filter engineering skills">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
+                aria-pressed={activeCategory === cat}
+                className={`min-h-11 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
                   activeCategory === cat
                     ? 'bg-brand-blue text-white shadow-md shadow-brand-blue/20'
                     : 'bg-slate-50 text-slate-500 hover:bg-slate-100 border border-slate-200'
@@ -125,7 +126,7 @@ export function Skills() {
         </div>
 
         {/* Right Side: Robot Image */}
-        <div className="hidden lg:flex w-[28rem] flex-col items-center sticky top-32 mt-4">
+        <div className="sticky top-32 mt-4 hidden w-[28rem] flex-col items-center xl:flex">
           <div className="w-full relative z-10">
             <div className="absolute inset-0 bg-gradient-to-t from-brand-sky/10 to-transparent rounded-full blur-3xl -z-10" />
             <img 

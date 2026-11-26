@@ -48,6 +48,13 @@ The application is organized into these main sections:
 
 The application also includes responsive navigation and a scroll-aware robot companion, loaded only after desktop scroll engagement. The WebGL lab waits until the visitor approaches its section.
 
+### V7 — Mobile layout and scroll polish
+
+- The classic homepage remains intact. Phone-sized viewports use fluid headline sizing and full-width project/CV actions; the hero stays stacked through tablet and smaller laptop widths, with a two-column layout on larger desktops.
+- Navigation uses a touch-friendly menu up to the desktop breakpoint, closes on Escape, and scrolls without animation for people requesting reduced motion.
+- Three featured projects form a two-column tablet grid and a three-column wide-desktop grid. The older project cards have staggered, one-time scroll reveals and keyboard focus highlighting alongside hover feedback.
+- The Skills panel gives mobile visitors full width until larger desktop screens and exposes filter selection to assistive technology. All older sections, the original CV, loader, floating icons, robot illustrations and simulations remain present.
+
 ### Recruiter-ready CV and homepage (P4)
 
 - **Classic identity preserved:** the skippable animated robot welcome, low-opacity floating technology logos across the entire home section, square portrait, illustrated “Think. Build. Repeat.” motto and original full-image project cards are restored. PickBot, P6 Navigation and P2 Control Center remain the three first featured evidence cards; every other project remains visible in a full-size card with tags and a details button. Reduced-motion visitors and project deep links skip the welcome scene. All case studies, simulations, sections and the original uploaded CV remain accessible.

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, CheckCircle2, Code2, FlaskConical } from 'lucide-react';
 import { PROJECTS_DATA } from '../data/portfolioData';
 import type { Project } from '../types/portfolio';
@@ -41,6 +41,7 @@ const FEATURED_IDS = new Set<string>(EVIDENCE.map((item) => item.id));
 
 export function Projects({ onProjectClick }: ProjectsProps) {
   const otherProjects = PROJECTS_DATA.filter((project) => !FEATURED_IDS.has(project.id));
+  const reduceMotion = useReducedMotion();
 
   return (
     <section id="projects" className="relative overflow-hidden bg-white py-16 lg:py-24">
@@ -63,7 +64,7 @@ export function Projects({ onProjectClick }: ProjectsProps) {
           </div>
         </div>
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+        <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {EVIDENCE.map((item, index) => {
             const project = PROJECTS_DATA.find((candidate) => candidate.id === item.id);
             if (!project) return null;
@@ -71,11 +72,11 @@ export function Projects({ onProjectClick }: ProjectsProps) {
             return (
               <motion.article
                 key={item.id}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: .05 }}
-                transition={{ duration: .4, delay: index * .06 }}
-                className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-slate-200/80 bg-white shadow-[0_8px_35px_-22px_rgba(15,23,42,.2)] transition-shadow hover:shadow-[0_18px_46px_-24px_rgba(15,23,42,.32)]"
+                transition={{ duration: .4, delay: Math.min(index * .06, .12) }}
+                className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-slate-200/80 bg-white shadow-[0_8px_35px_-22px_rgba(15,23,42,.2)] transition-all duration-300 hover:-translate-y-1 hover:border-brand-blue/30 hover:shadow-[0_18px_46px_-24px_rgba(15,23,42,.32)] focus-within:border-brand-blue/50 focus-within:ring-2 focus-within:ring-brand-blue/20"
               >
                 <div className="relative h-48 overflow-hidden bg-slate-100 sm:h-56 lg:h-48 xl:h-56">
                   <img
@@ -128,8 +129,15 @@ export function Projects({ onProjectClick }: ProjectsProps) {
             <p className="max-w-xl text-xs leading-relaxed text-brand-slate">Project descriptions below reflect the published portfolio; verification and supporting evidence vary by project.</p>
           </div>
           <div className="mt-7 grid items-stretch gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {otherProjects.map((project) => (
-              <article key={project.id} className="group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lift">
+            {otherProjects.map((project, index) => (
+              <motion.article
+                key={project.id}
+                initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: .08 }}
+                transition={{ duration: .45, delay: Math.min((index % 3) * .07, .14) }}
+                className="group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-blue/30 hover:shadow-lift focus-within:border-brand-blue/50 focus-within:ring-2 focus-within:ring-brand-blue/20"
+              >
                 <div className="relative h-48 overflow-hidden bg-slate-100 sm:h-52">
                   <img
                     src={project.image}
@@ -153,7 +161,7 @@ export function Projects({ onProjectClick }: ProjectsProps) {
                     View Project <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </div>
-              </article>
+              </motion.article>
             ))}
           </div>
         </div>
