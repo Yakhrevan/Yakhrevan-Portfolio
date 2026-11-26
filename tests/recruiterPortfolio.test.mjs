@@ -160,3 +160,11 @@ test('V8 uses genuine existing media, truthful simulation status and original CV
   assert.match(recruiter, /Download original CV/);
   assert.match(recruiter, /Yakhrevan_S_Resume\.pdf/);
 });
+
+test('V8 compact viewport keeps the decorative companion present but unobtrusive over project controls', () => {
+  const companion = source('src/components/ScrollCompanion.tsx');
+  assert.match(companion, /pointer-events-none fixed bottom-3 right-2 z-30 h-\[76px\] w-16/);
+  assert.match(companion, /opacity-40 sm:opacity-75 lg:opacity-100/);
+  assert.match(companion, /lg:h-\[140px\] lg:w-\[120px\]/);
+  assert.match(companion, /<Robot3D/);
+});

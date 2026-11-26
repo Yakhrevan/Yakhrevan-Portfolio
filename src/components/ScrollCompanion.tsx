@@ -46,17 +46,18 @@ export function ScrollCompanion({ sectionIds }: ScrollCompanionProps) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 60 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="fixed bottom-8 right-4 z-40 pointer-events-none"
-          style={{ width: '120px', height: '140px' }}
+          className="pointer-events-none fixed bottom-3 right-2 z-30 h-[76px] w-16 sm:bottom-6 sm:right-4 sm:h-[116px] sm:w-[100px] lg:bottom-8 lg:h-[140px] lg:w-[120px]"
           aria-hidden="true"
         >
-          <Robot3D
-            clip={currentClip}
-            loop
-            className="w-full h-full"
-            cam={[0, 0.8, 3.2]}
-            fov={28}
-          />
+          <div className="h-full w-full opacity-40 sm:opacity-75 lg:opacity-100">
+            <Robot3D
+              clip={currentClip}
+              loop
+              className="h-full w-full"
+              cam={[0, 0.8, 3.2]}
+              fov={28}
+            />
+          </div>
         </motion.div>
     </AnimatePresence>
   );
